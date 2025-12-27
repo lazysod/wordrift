@@ -1,0 +1,166 @@
+<?php
+// htdocs/app/wordle.php
+include_once __DIR__ . '/start.php'; // Load configuration and autoload
+
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+// require_once __DIR__ . '/start.php';
+global $config;
+$db = new DB($config);
+if (session_status() === PHP_SESSION_NONE) session_start();
+
+$public_actions = ['validate', 'leaderboard', 'daily', 'get_stats'];
+$action = $_REQUEST['action'] ?? '';
+if (!in_array($action, $public_actions)) {
+    // Only allow logged-in users for non-public actions
+    if (!isset($_SESSION[PREFIX . 'user_id'])) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Login required']);
+        exit;
+    }
+}
+
+// --- Check if user has played daily game today ---
+if ($action === 'daily_played_check') {
+    $user_id = $_SESSION[PREFIX . 'user_id'] ?? null;
+    $puzzle_date = date('Y-m-d');
+    error_log("CHECK: user_id=$user_id, puzzle_date=$puzzle_date");
+
+    if (!$user_id) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Login required']);
+        exit;
+    }
+    // $logger = new Logger(['daily_played'], 'User_id: ' . $user_id . ' date: ' . $puzzle_date);
+    // $logger->info("CHECK: user_id=$user_id, puzzle_date=$puzzle_date");
+    $sql = "SELECT 1 FROM `daily_played` WHERE `user_id`=? AND DATE(`game_date`)=? LIMIT 1";
+    $row = $db->fetch($sql, [$user_id, $puzzle_date]);
+    echo json_encode(['played' => $row ? true : false]);
+    exit;
+}
+
+if ($action === 'validate' && isset($_GET['guess'])) {
+    $guess = strtoupper($db->escapeString($_GET['guess']));
+    $sql = "SELECT 1 FROM `word_list` WHERE `word` = ? LIMIT 1";
+    $row = $db->fetch($sql, [$guess]);
+    if ($row === false) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Query failed']);
+        exit;
+    }
+    echo json_encode(['valid' => $row ? true : false]);
+    exit;
+}
+
+// --- Record game result ---
+if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Expect JSON body
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid JSON input']);
+        exit;
+    }
+    $user_id = $_SESSION[PREFIX . 'user_id'] ?? null;
+    $game_date = $input['game_date'] ?? date('Y-m-d'); // <-- always use the intended puzzle date!
+    $mode = $input['mode'] ?? '';
+    $result = $input['result'] ?? '';
+    $guesses = isset($input['guesses']) ? (int)$input['guesses'] : null;
+    $answer = $input['answer'] ?? '';
+    $guess_history = isset($input['guess_history']) ? $input['guess_history'] : '';
+    $missing = [];
+    if (!$user_id) $missing[] = 'user_id';
+    if (!$mode) $missing[] = 'mode';
+    if (!$result) $missing[] = 'result';
+    if ($guesses === null || $guesses === '') $missing[] = 'guesses';
+    if (!$answer) $missing[] = 'answer';
+    if (!empty($missing)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing required fields', 'fields' => $missing, 'input' => $input]);
+        exit;
+    }
+    // Only record completed games (win/loss)
+    if ($result === 'win' || $result === 'loss') {
+        require_once __DIR__ . '/class/game.php';
+        $game = new game($db); // <-- FIXED
+        $insert_id = $game->addGameResult($user_id, $game_date, $mode, $result, $guesses, $answer, $guess_history);
+        // If daily game, record in daily_played
+        if ($mode === 'daily') {
+            $user_id = $_SESSION[PREFIX . 'user_id'] ?? null;
+            $puzzle_date = $game_date; // <-- Use the intended puzzle date from frontend!
+            error_log("INSERT: user_id=$user_id, puzzle_date=$puzzle_date");
+
+            $sql = "SELECT 1 FROM `daily_played` WHERE `user_id`=? AND DATE(`game_date`)=? LIMIT 1";
+            $row = $db->fetch($sql, [$user_id, $puzzle_date]);
+            if (!$row) {
+                $sql2 = "INSERT INTO `daily_played` (`user_id`, `game_date`) VALUES (?, ?)";
+                $db->query($sql2, [$user_id, $puzzle_date]);
+            }
+        }
+        echo json_encode(['success' => true, 'id' => $insert_id]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => 'Game not completed']);
+    }
+    exit;
+}
+
+
+// --- Leaderboard API ---
+if ($action === 'leaderboard') {
+    require_once __DIR__ . '/class/game.php';
+    $game = new game($db); // <-- FIXED
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+    $rows = $game->getLeaderboard($limit);
+    echo json_encode(['leaderboard' => $rows]);
+    exit;
+}
+
+// --- Get stats API ---
+if ($action === 'get_stats') {
+    $user_id = $_SESSION[PREFIX . 'user_id'] ?? null;
+    $mode = $_GET['mode'] ?? '';
+    if (!$user_id) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Login required']);
+        exit;
+    }
+    if (!$mode) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing mode']);
+        exit;
+    }
+    $game = new game($db); // <-- FIXED
+    $stats = $game->getUserStats($user_id, $mode);
+    echo json_encode(['stats' => $stats]);
+    exit;
+}
+
+if ($action === 'daily') {
+    $game = new game($db); // already correct here
+    $puzzle_date = $_GET['game_date'] ?? date('Y-m-d');
+    $word = $game->getDailyWord($puzzle_date);
+    if (!$word) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Could not load word. Try refreshing.']);
+        exit;
+    }
+    echo json_encode(['word' => $word]);
+    exit;
+}
+
+if ($action === 'random') {
+    $row = $db->fetch("SELECT `word` FROM `word_list` ORDER BY RAND() LIMIT 1");
+    if (!$row) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Could not load word. Try refreshing.']);
+        exit;
+    }
+    echo json_encode(['word' => $row['word']]);
+    exit;
+}
+
+http_response_code(400);
+echo json_encode(['error' => 'Invalid request']);
