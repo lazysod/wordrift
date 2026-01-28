@@ -50,6 +50,7 @@ Thumbs.db
 
 # Ignore Composer dependencies
 /vendor/
+htdocs/vendor/
 
 # Ignore logs
 storage/logs/
