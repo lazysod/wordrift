@@ -66,11 +66,19 @@ class game
                         $expected = date('Y-m-d', strtotime($game_date . ' -1 day'));
                         if ($prev['result'] === 'win' && $prev_date === $expected) {
                             $current_streak = (int)$prev['current_streak'] + 1;
+                            // Only update max_streak if current_streak > previous max
+                            if ($current_streak > (int)$prev['max_streak']) {
+                                $max_streak = $current_streak;
+                            } else {
+                                $max_streak = (int)$prev['max_streak'];
+                            }
                         } else {
                             $current_streak = 1;
+                            // After a break, always set max_streak to previous max
+                            $max_streak = (int)$prev['max_streak'];
                         }
-                        $max_streak = max($current_streak, (int)$prev['max_streak']);
                     } else {
+                        // Only set max_streak to 1 if this is the very first win ever
                         $current_streak = 1;
                         $max_streak = 1;
                     }
@@ -239,16 +247,28 @@ class game
     public function getMaxDailyStreak($user_id)
     {
         $db = $this->db;
-        $sql = "SELECT result FROM game_results WHERE user_id = ? AND mode = 'daily' ORDER BY game_date ASC";
+        $sql = "SELECT game_date, result FROM game_results WHERE user_id = ? AND mode = 'daily' ORDER BY game_date ASC";
         $rows = $db->fetchAll($sql, [$user_id]);
         $maxStreak = 0;
         $currentStreak = 0;
+        $lastWinDate = null;
         foreach ($rows as $row) {
             if ($row['result'] === 'win') {
-                $currentStreak++;
+                if ($lastWinDate) {
+                    $expected = date('Y-m-d', strtotime($lastWinDate . ' +1 day'));
+                    if ($row['game_date'] === $expected) {
+                        $currentStreak++;
+                    } else {
+                        $currentStreak = 1;
+                    }
+                } else {
+                    $currentStreak = 1;
+                }
                 if ($currentStreak > $maxStreak) $maxStreak = $currentStreak;
+                $lastWinDate = $row['game_date'];
             } else {
                 $currentStreak = 0;
+                $lastWinDate = null;
             }
         }
         return $maxStreak;
