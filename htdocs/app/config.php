@@ -9,7 +9,7 @@ return array (
   'logo_small' => '/assets/images/logo_small.png',
   'db' => 
   array (
-    'host' => '127.0.0.1',
+    'host' => 'localhost',
     'username' => 'root',
     'password' => 'root',
     'database' => 'awordgame',
@@ -48,7 +48,7 @@ return array (
   'logo_url' => '/themes/default/assets/images/logo_small.png',
   'partials_path' => '/views/partials',
   'admin_views_path' => '/views/admin',
-  'log_path' => '/Users/barry/MAMP_SITES/wordgame/htdocs/app/../storage/logs',
+  'log_path' => __DIR__ . '/../storage/logs',
   'js_path' => '/js',
   'assets_path' => '/assets',
   'uploads_path' => '/storage/uploads',

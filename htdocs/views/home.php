@@ -212,22 +212,39 @@ require __DIR__ . '/partials/header.php';
                     feedback.textContent = 'Please enter a 5-letter word.';
                     return;
                 }
-                // Validate guess with backend
+                // Validate guess with backend using jQuery AJAX
                 feedback.textContent = 'Checking word...';
-                try {
-                    const res = await fetch(`${PATH}/app/wordle.php?action=validate&guess=${guess}`);
-                    const data = await res.json();
-                    if (!data.valid) {
-                        feedback.innerHTML = '<span class="text-danger">Not a valid word!</span>';
-                        // Do NOT use up a guess for invalid word
-                        // Just show feedback and return
-                        return;
-                    }
-                } catch (err) {
-                    feedback.innerHTML = '<span class="text-danger">Error validating word.</span>';
+                let validWord = false;
+                let ajaxError = false;
+                await new Promise((resolve) => {
+                    $.ajax({
+                        url: `${PATH}/app/wordle.php?action=validate&guess=${guess}`,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (typeof data.valid !== 'undefined') {
+                                if (data.valid) {
+                                    validWord = true;
+                                } else {
+                                    feedback.innerHTML = '<span class="text-danger">Not a valid word!</span>';
+                                }
+                            } else {
+                                feedback.innerHTML = `<span class="text-danger">Error validating word: <b>${guess}</b></span>`;
+                                // Do not block further play for unexpected backend response
+                            }
+                            resolve();
+                        },
+                        error: function(xhr, status, error) {
+                            feedback.innerHTML = `<span class="text-danger">Error validating word: <b>${guess}</b></span>`;
+                            ajaxError = true;
+                            resolve();
+                        }
+                    });
+                });
+                if (!validWord && ajaxError) {
+                    // Only block further play if it was a true AJAX/network error
                     return;
                 }
-                // Update grid and build emoji row
                 const rowCells = grid[currentRow].querySelectorAll('.wordle-cell');
                 let answerArr = answer.split('');
                 let guessArr = guess.split('');
@@ -379,17 +396,24 @@ require __DIR__ . '/partials/header.php';
             // --- Stats and Leaderboard ---
             // --- Stats by mode ---
             async function fetchStats(mode) {
-                try {
-                    const res = await fetch(`${PATH}/app/wordle.php?action=get_stats&mode=${mode}`);
-                    const data = await res.json();
-                    if (data.stats) {
-                        return data.stats;
-                    } else {
-                        return { played: 0, wins: 0, streak: 0, maxStreak: 0 };
-                    }
-                } catch (e) {
-                    return { played: 0, wins: 0, streak: 0, maxStreak: 0 };
-                }
+                // Use jQuery AJAX to ensure X-Requested-With header is sent
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: `${PATH}/app/wordle.php?action=get_stats&mode=${mode}`,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.stats) {
+                                resolve(data.stats);
+                            } else {
+                                resolve({ played: 0, wins: 0, streak: 0, maxStreak: 0 });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            resolve({ played: 0, wins: 0, streak: 0, maxStreak: 0 });
+                        }
+                    });
+                });
             }
 
             async function updateStatsDisplay() {
@@ -404,42 +428,41 @@ require __DIR__ . '/partials/header.php';
             }
             // --- Real leaderboard ---
             async function updateLeaderboardDisplay() {
-                try {
-                    // Use PATH for leaderboard fetch
-
-                    const res = await fetch(`${PATH}/app/wordle.php?action=leaderboard`);
-                    const text = await res.text();
-
-                    let data;
-                    try {
-                        data = JSON.parse(text);
-                    } catch (err) {
-                        document.getElementById('wordle-leaderboard').innerHTML = '<div class="text-danger">Invalid JSON from server:<br><pre>' + text + '</pre></div>';
-                        return;
-                    }
-                    if (!data.leaderboard || !Array.isArray(data.leaderboard) || data.leaderboard.length === 0) {
-                        document.getElementById('wordle-leaderboard').innerHTML = '<div class="text-danger">No leaderboard data returned.<br><pre>' + text + '</pre></div>';
-                        return;
-                    }
-                    // Sort leaderboard by wins field (from backend)
-                    const leaderboard = Array.isArray(data.leaderboard) ? [...data.leaderboard] : [];
-                    leaderboard.sort((a, b) => ((b.wins || 0) - (a.wins || 0)));
-                    const top10 = leaderboard.slice(0, 10);
-                    let html = '<ol class="mb-0">';
-                    top10.forEach((user) => {
-                        let name = user.display_name || user.user || 'Anonymous';
-                        // Highlight current user if logged in
-                        if (window.currentUserId && (user.user_id == window.currentUserId || user.id == window.currentUserId)) {
-                            name = `<span class="text-primary">${name} (You)</span>`;
+                // Use jQuery AJAX to ensure X-Requested-With header is sent
+                $.ajax({
+                    url: `${PATH}/app/wordle.php?action=leaderboard`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (!data.leaderboard || !Array.isArray(data.leaderboard) || data.leaderboard.length === 0) {
+                            document.getElementById('wordle-leaderboard').innerHTML = '<div class="text-danger">No leaderboard data returned.</div>';
+                            return;
                         }
-                        const dailyWins = user.wins || 0;
-                        html += `<li><b>${name}</b> <span class="text-muted">(${dailyWins} daily win${dailyWins===1?'':'s'})</span></li>`;
-                    });
-                    html += '</ol>';
-                    document.getElementById('wordle-leaderboard').innerHTML = html;
-                } catch (e) {
-                    document.getElementById('wordle-leaderboard').innerHTML = '<div class="text-danger">Could not load leaderboard.<br>' + e + '</div>';
-                }
+                        // Sort leaderboard by wins field (from backend)
+                        const leaderboard = Array.isArray(data.leaderboard) ? [...data.leaderboard] : [];
+                        leaderboard.sort((a, b) => ((b.wins || 0) - (a.wins || 0)));
+                        const top10 = leaderboard.slice(0, 10);
+                        let html = '<ol class="mb-0">';
+                        top10.forEach((user) => {
+                            let name = user.display_name || user.user || 'Anonymous';
+                            // Highlight current user if logged in
+                            if (window.currentUserId && (user.user_id == window.currentUserId || user.id == window.currentUserId)) {
+                                name = `<span class="text-primary">${name} (You)</span>`;
+                            }
+                            const dailyWins = user.wins || 0;
+                            html += `<li><b>${name}</b> <span class="text-muted">(${dailyWins} daily win${dailyWins===1?'':'s'})</span></li>`;
+                        });
+                        html += '</ol>';
+                        document.getElementById('wordle-leaderboard').innerHTML = html;
+                    },
+                    error: function(xhr, status, error) {
+                        let msg = 'Could not load leaderboard.';
+                        if (xhr && xhr.responseText) {
+                            msg += '<br>' + xhr.responseText;
+                        }
+                        document.getElementById('wordle-leaderboard').innerHTML = '<div class="text-danger">' + msg + '</div>';
+                    }
+                });
             }
             // Set current user id for highlighting
             window.currentUserId = <?php echo isset($_SESSION[PREFIX . 'user_id']) ? json_encode($_SESSION[PREFIX . 'user_id']) : 'null'; ?>;
@@ -517,52 +540,78 @@ require __DIR__ . '/partials/header.php';
                 }
             }
             async function blockIfPlayedToday() {
-                // Check with backend if user has played today
-                try {
-                    const res = await fetch(`${PATH}/app/wordle.php?action=daily_played_check`);
-                    const data = await res.json();
-                    console.log(data);
-                    if (data.played) {
-                        feedback.innerHTML = '<div class="alert alert-warning" role="alert">You have already played today! Come back tomorrow.</div>';
-                        gameOver = true;
-                        return true;
-                    }
-                } catch (e) {
-                    // fallback: allow play if error
-                }
-                return false;
+                // Check with backend if user has played today using jQuery AJAX
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: `${PATH}/app/wordle.php?action=daily_played_check`,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            console.log(data);
+                            if (data.played) {
+                                feedback.innerHTML = '<div class="alert alert-warning" role="alert">You have already played today! Come back tomorrow.</div>';
+                                gameOver = true;
+                                resolve(true);
+                            } else {
+                                resolve(false);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // fallback: allow play if error
+                            resolve(false);
+                        }
+                    });
+                });
             }
             async function fetchAnswer() {
-                try {
+                return new Promise((resolve) => {
                     const todayStr = getTodayStr(); // Use local time
-                    const res = await fetch(`${PATH}/app/wordle.php?action=daily&game_date=${todayStr}`);
-                    const data = await res.json();
-                    if (data.word) {
-                        answer = data.word.toUpperCase();
-                    } else {
-                        feedback.textContent = 'Could not load word. Try refreshing.';
-                        gameOver = true;
-                    }
-                } catch (e) {
-                    feedback.textContent = 'Error connecting to server!';
-                    gameOver = true;
-                }
+                    $.ajax({
+                        url: `${PATH}/app/wordle.php?action=daily&game_date=${todayStr}`,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.word) {
+                                answer = data.word.toUpperCase();
+                                resolve();
+                            } else {
+                                feedback.textContent = 'Could not load word. Try refreshing.';
+                                gameOver = true;
+                                resolve();
+                            }
+                        },
+                        error: function(xhr, status, err) {
+                            feedback.textContent = 'Error connecting to server!';
+                            gameOver = true;
+                            resolve();
+                        }
+                    });
+                });
             }
             async function fetchRandomAnswer() {
-                try {
-                    const res = await fetch(`${PATH}/app/wordle.php?action=random`);
-                    const data = await res.json();
-                    if (data.word) {
-                        answer = data.word.toUpperCase();
-                        gameOver = false;
-                    } else {
-                        feedback.textContent = 'Could not load word. Try refreshing.';
-                        gameOver = true;
-                    }
-                } catch (e) {
-                    feedback.textContent = 'Error connecting to server!!';
-                    gameOver = true;
-                }
+                // Use jQuery AJAX to ensure X-Requested-With header is sent
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: `${PATH}/app/wordle.php?action=random`,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.word) {
+                                answer = data.word.toUpperCase();
+                                gameOver = false;
+                            } else {
+                                feedback.textContent = 'Could not load word. Try refreshing.';
+                                gameOver = true;
+                            }
+                            resolve();
+                        },
+                        error: function(xhr, status, error) {
+                            feedback.textContent = 'Error connecting to server!!';
+                            gameOver = true;
+                            resolve();
+                        }
+                    });
+                });
             }
             // Start with daily mode
             fetchAnswer().then(blockIfPlayedToday);
@@ -586,33 +635,40 @@ require __DIR__ . '/partials/header.php';
                     console.error('Missing required fields:', {mode, result, guesses, answer});
                     return;
                 }
-                try {
-                    const res = await fetch(`${PATH}/app/wordle.php?action=record_result`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(requestBody)
-                    });
-                    const responseText = await res.text();
-                    let data;
-                    try {
-                        data = JSON.parse(responseText);
-                    } catch (err) {
-                        feedback.innerHTML = '<div class="alert alert-danger">Invalid JSON from server:<br><pre>' + responseText + '</pre></div>';
-                        return;
+                // Use jQuery AJAX to ensure X-Requested-With header is sent
+                $.ajax({
+                    url: `${PATH}/app/wordle.php?action=record_result`,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(requestBody),
+                    success: function(data, textStatus, jqXHR) {
+                        if (jqXHR.status === 401) {
+                            feedback.innerHTML = '<div class="alert alert-danger">You must be logged in to record your result. <a href="login.php">Log in</a></div>';
+                            return;
+                        }
+                        if (!data.success) {
+                            feedback.innerHTML = '<div class="alert alert-danger">Failed to record result: ' + (data.error || 'Unknown error') + '</div>';
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        let responseText = jqXHR.responseText || '';
+                        let url = `${PATH}/app/wordle.php?action=record_result`;
+                        try {
+                            let data = JSON.parse(responseText);
+                            if (jqXHR.status === 401) {
+                                feedback.innerHTML = '<div class="alert alert-danger">You must be logged in to record your result. <a href="login.php">Log in</a></div>';
+                                return;
+                            }
+                            if (!data.success) {
+                                feedback.innerHTML = '<div class="alert alert-danger">Failed to record result: ' + (data.error || 'Unknown error') + '</div>';
+                            }
+                        } catch (err) {
+                            console.error('Invalid JSON from server:', {url, responseText});
+                            feedback.innerHTML = '<div class="alert alert-danger">Invalid JSON from server:<br><b>' + url + '</b><br><pre>' + responseText + '</pre></div>';
+                        }
                     }
-                    if (res.status === 401) {
-                        feedback.innerHTML = '<div class="alert alert-danger">You must be logged in to record your result. <a href="login.php">Log in</a></div>';
-                        return;
-                    }
-                    if (!data.success) {
-                        feedback.innerHTML = '<div class="alert alert-danger">Failed to record result: ' + (data.error || 'Unknown error') + '</div>';
-                    }
-                } catch (e) {
-                    feedback.innerHTML = '<div class="alert alert-danger">Error sending result to server.</div>';
-                    console.error('recordResult error:', e);
-                }
+                });
             }
 
             function showShareButton(result, guesses) {

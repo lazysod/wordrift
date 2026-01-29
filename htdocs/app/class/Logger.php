@@ -11,7 +11,11 @@ class Logger
     {
         $this->logDir = rtrim($config['log_path'], '/');
         if (!is_dir($this->logDir)) {
-            mkdir($this->logDir, 0777, true);
+            // Suppress warning, check again after
+            @mkdir($this->logDir, 0777, true);
+            if (!is_dir($this->logDir)) {
+                throw new \RuntimeException('Logger: Failed to create log directory: ' . $this->logDir);
+            }
         }
         $this->logFile = $this->logDir . '/app.log';
     }

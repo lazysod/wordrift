@@ -1,7 +1,7 @@
 <?php
 // htdocs/app/wordle.php
 include_once __DIR__ . '/start.php'; // Load configuration and autoload
-
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -45,17 +45,26 @@ if ($action === 'validate' && isset($_GET['guess'])) {
     $guess = strtoupper($db->escapeString($_GET['guess']));
     $sql = "SELECT 1 FROM `word_list` WHERE `word` = ? LIMIT 1";
     $row = $db->fetch($sql, [$guess]);
-    if ($row === false) {
+    $errorInfo = $db->errorInfo();
+    if ($row === false && $errorInfo && $errorInfo[0] !== '00000') {
         http_response_code(500);
-        echo json_encode(['error' => 'Query failed']);
+        echo json_encode(['error' => 'Query failed', 'db_error' => $errorInfo]);
         exit;
     }
+    // If $row is false but no DB error, it means not found (not a valid word)
     echo json_encode(['valid' => $row ? true : false]);
     exit;
 }
 
 // --- Record game result ---
 if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Only allow AJAX requests
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'code' => 403, 'message' => 'Invalid access method (AJAX required)']);
+        exit;
+    }
     // Expect JSON body
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input) {
@@ -164,3 +173,14 @@ if ($action === 'random') {
 
 http_response_code(400);
 echo json_encode(['error' => 'Invalid request']);
+}else{
+    $data = array(
+        'status' => 'error',
+        'code' => 403,
+        'message' => 'Invalid access method'
+    );
+    echo '<pre>';
+    echo json_encode($data);
+
+    echo '</pre>';
+}
