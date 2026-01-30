@@ -1,32 +1,71 @@
 <?php
 // htdocs/app/wordle.php
+$action = $_GET['action'] ?? $_POST['action'] ?? null;
+$is_ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
 include_once __DIR__ . '/start.php'; // Load configuration and autoload
-if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-// require_once __DIR__ . '/start.php';
-global $config;
-$db = new DB($config);
-if (session_status() === PHP_SESSION_NONE) session_start();
+// Allow AJAX or direct GET for leaderboard and last_result
+if ($is_ajax || $action === 'last_result' || $action === 'leaderboard') {
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    // require_once __DIR__ . '/start.php';
+    global $config;
+    $db = new DB($config);
+    if (session_status() === PHP_SESSION_NONE) session_start();
 
-$public_actions = ['validate', 'leaderboard', 'daily', 'get_stats'];
-$action = $_REQUEST['action'] ?? '';
-if (!in_array($action, $public_actions)) {
-    // Only allow logged-in users for non-public actions
-    if (!isset($_SESSION[PREFIX . 'user_id'])) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Login required']);
+    $public_actions = ['validate', 'leaderboard', 'daily', 'get_stats'];
+    $action = $_REQUEST['action'] ?? '';
+    if (!in_array($action, $public_actions)) {
+        // Only allow logged-in users for non-public actions
+        if (!isset($_SESSION[PREFIX . 'user_id'])) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Login required']);
+            exit;
+        }
+    }
+
+    // --- Return last game session for user (for showing last guesses as actual words) ---
+    if ($action === 'last_result') {
+        $user_id = $_SESSION[PREFIX . 'user_id'] ?? null;
+        $mode = $_GET['mode'] ?? 'daily';
+        $today = date('Y-m-d');
+        if (!$user_id) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Login required']);
+            exit;
+        }
+        $sql = "SELECT guesses_made, answer, game_date FROM game_sessions WHERE user_id = ? AND mode = ? AND is_complete = 1 AND game_date = ? ORDER BY id DESC LIMIT 1";
+        $row = $db->fetch($sql, [$user_id, $mode, $today]);
+        if ($row && !empty($row['guesses_made'])) {
+            $guesses = json_decode($row['guesses_made'], true);
+            $guessed_words = [];
+            $guessed_results = [];
+            foreach ($guesses as $g) {
+                $guessed_words[] = $g['word'];
+                $guessed_results[] = $g['result']; // array of 'correct', 'present', 'absent'
+            }
+            echo json_encode([
+                'guessed_words' => $guessed_words,
+                'guessed_results' => $guessed_results,
+                'answer' => $row['answer'],
+                'game_date' => $row['game_date']
+            ]);
+        } else {
+            echo json_encode([
+                'guessed_words' => [],
+                'guessed_results' => [],
+                'answer' => '',
+                'game_date' => ''
+            ]);
+        }
         exit;
     }
-}
 
 // --- Check if user has played daily game today ---
 if ($action === 'daily_played_check') {
     $user_id = $_SESSION[PREFIX . 'user_id'] ?? null;
     $puzzle_date = date('Y-m-d');
-    error_log("CHECK: user_id=$user_id, puzzle_date=$puzzle_date");
 
     if (!$user_id) {
         http_response_code(401);
@@ -95,11 +134,33 @@ if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         require_once __DIR__ . '/class/game.php';
         $game = new game($db); // <-- FIXED
         $insert_id = $game->addGameResult($user_id, $game_date, $mode, $result, $guesses, $answer, $guess_history);
+
+        // --- NEW: Insert or update game_sessions for persistent guesses ---
+        $guesses_made = $input['guesses_made'] ?? null; // Should be a JSON string or array
+        if (!$guesses_made && !empty($input['guess_history'])) {
+            // Try to reconstruct guesses_made from guess_history (legacy)
+            $guesses_made = json_encode(array_map(function($word) {
+                return ['word' => $word, 'result' => []];
+            }, explode("\n", $input['guess_history'])));
+        } elseif (is_array($guesses_made)) {
+            $guesses_made = json_encode($guesses_made);
+        }
+        $is_complete = 1;
+        // Upsert into game_sessions
+        $sql = "SELECT id FROM game_sessions WHERE user_id = ? AND game_date = ? AND mode = ? LIMIT 1";
+        $existing = $db->fetch($sql, [$user_id, $game_date, $mode]);
+        if ($existing) {
+            $sql = "UPDATE game_sessions SET guesses_made = ?, answer = ?, is_complete = ?, updated_at = NOW() WHERE id = ?";
+            $db->query($sql, [$guesses_made, $answer, $is_complete, $existing['id']]);
+        } else {
+            $sql = "INSERT INTO game_sessions (user_id, game_date, mode, guesses_made, answer, is_complete, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
+            $db->query($sql, [$user_id, $game_date, $mode, $guesses_made, $answer, $is_complete]);
+        }
+
         // If daily game, record in daily_played
         if ($mode === 'daily') {
             $user_id = $_SESSION[PREFIX . 'user_id'] ?? null;
             $puzzle_date = $game_date; // <-- Use the intended puzzle date from frontend!
-            error_log("INSERT: user_id=$user_id, puzzle_date=$puzzle_date");
 
             $sql = "SELECT 1 FROM `daily_played` WHERE `user_id`=? AND DATE(`game_date`)=? LIMIT 1";
             $row = $db->fetch($sql, [$user_id, $puzzle_date]);
@@ -179,8 +240,5 @@ echo json_encode(['error' => 'Invalid request']);
         'code' => 403,
         'message' => 'Invalid access method'
     );
-    echo '<pre>';
     echo json_encode($data);
-
-    echo '</pre>';
 }

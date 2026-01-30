@@ -103,9 +103,17 @@ require __DIR__ . '/partials/header.php';
         </div>
     </div>
     <!-- Stats and Leaderboard -->
-    <script>
+    <script type="module">
         document.addEventListener('DOMContentLoaded', function() {
             var PATH = '';
+            // --- Utility: get today's date as YYYY-MM-DD ---
+            const getTodayStr = function() {
+                const d = new Date();
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
             const keyboard = document.getElementById('wordle-keyboard');
             const feedback = document.getElementById('wordle-feedback');
             const grid = document.getElementById('wordle-grid').querySelectorAll('.d-flex.justify-content-center');
@@ -147,7 +155,7 @@ require __DIR__ . '/partials/header.php';
             }
 
             // --- Update grid display for current guess ---
-            function updateGridDisplay() {
+            const updateGridDisplay = function() {
                 if (currentRow >= grid.length) return;
                 const rowCells = grid[currentRow].querySelectorAll('.wordle-cell');
                 for (let i = 0; i < 5; i++) {
@@ -156,7 +164,7 @@ require __DIR__ . '/partials/header.php';
             }
 
             // --- Update keyboard key colors based on feedback ---
-            function updateKeyboardColors() {
+            const updateKeyboardColors = function() {
                 // Track best status for each letter
                 const keyStatus = {};
                 for (let row = 0; row < currentRow + (gameOver ? 1 : 0); row++) {
@@ -198,7 +206,7 @@ require __DIR__ . '/partials/header.php';
             }
 
             // --- Handle guess submission ---
-            async function handleGuess(guess) {
+            const handleGuess = async function(guess) {
                 if (gameOver) return;
                 if (!answer) {
                     feedback.textContent = 'Game not ready. Please wait...';
@@ -226,11 +234,10 @@ require __DIR__ . '/partials/header.php';
                                 if (data.valid) {
                                     validWord = true;
                                 } else {
-                                    feedback.innerHTML = '<span class="text-danger">Not a valid word!</span>';
+                                    feedback.innerHTML = '<span class="text-danger">Not in word list!</span>';
                                 }
                             } else {
                                 feedback.innerHTML = `<span class="text-danger">Error validating word: <b>${guess}</b></span>`;
-                                // Do not block further play for unexpected backend response
                             }
                             resolve();
                         },
@@ -241,10 +248,8 @@ require __DIR__ . '/partials/header.php';
                         }
                     });
                 });
-                if (!validWord && ajaxError) {
-                    // Only block further play if it was a true AJAX/network error
-                    return;
-                }
+                // Block further handling if not valid
+                if (!validWord || ajaxError) return;
                 const rowCells = grid[currentRow].querySelectorAll('.wordle-cell');
                 let answerArr = answer.split('');
                 let guessArr = guess.split('');
@@ -275,6 +280,7 @@ require __DIR__ . '/partials/header.php';
                     }
                 }
                 // Build emoji row for sharing
+                // Build emoji row for sharing (not for guessHistory)
                 if (guess === answer) {
                     emojiRow = '🟩🟩🟩🟩🟩';
                 } else {
@@ -305,7 +311,11 @@ require __DIR__ . '/partials/header.php';
                     }
                     emojiRow = emojiArr.join('');
                 }
-                guessHistory.push(emojiRow);
+                // Store the actual guessed word, not emoji, in guessHistory
+                // Always store guessed word (not emoji) in guessHistory for backend
+                if (/^[A-Z]{5}$/.test(guess)) {
+                    guessHistory.push(guess);
+                }
                 // Win/Lose feedback
                 if (guess === answer) {
                     feedback.innerHTML = '<span style="font-size:1.5em;font-weight:bold;color:#6aaa64">🎉 <b>Congratulations!</b> 🎉<br>You guessed the word! 🏆</span>';
@@ -359,12 +369,12 @@ require __DIR__ . '/partials/header.php';
             }
 
             // --- Share Feature ---
-            function hideShareButton() {
+            const hideShareButton = function() {
                 let shareBtn = document.getElementById('wordle-share-btn');
                 if (shareBtn) shareBtn.style.display = 'none';
             }
 
-            function showNewRandomGameButton() {
+            const showNewRandomGameButton = function() {
                 let newBtn = document.getElementById('wordle-new-random-btn');
                 let newBtnContainer = document.getElementById('wordle-new-random-container');
                 if (!newBtnContainer) {
@@ -388,14 +398,14 @@ require __DIR__ . '/partials/header.php';
                 }
             }
 
-            function hideNewRandomGameButton() {
+            const hideNewRandomGameButton = function() {
                 let newBtn = document.getElementById('wordle-new-random-btn');
                 if (newBtn) newBtn.style.display = 'none';
             }
 
             // --- Stats and Leaderboard ---
             // --- Stats by mode ---
-            async function fetchStats(mode) {
+            const fetchStats = async function(mode) {
                 // Use jQuery AJAX to ensure X-Requested-With header is sent
                 return new Promise((resolve) => {
                     $.ajax({
@@ -416,7 +426,7 @@ require __DIR__ . '/partials/header.php';
                 });
             }
 
-            async function updateStatsDisplay() {
+            const updateStatsDisplay = async function() {
                 const stats = await fetchStats(mode);
                 document.getElementById('wordle-stats').innerHTML = `
                     <div>Games Played: <b>${stats.played}</b></div>
@@ -427,7 +437,7 @@ require __DIR__ . '/partials/header.php';
                 `;
             }
             // --- Real leaderboard ---
-            async function updateLeaderboardDisplay() {
+            const updateLeaderboardDisplay = async function() {
                 // Use jQuery AJAX to ensure X-Requested-With header is sent
                 $.ajax({
                     url: `${PATH}/app/wordle.php?action=leaderboard`,
@@ -498,7 +508,7 @@ require __DIR__ . '/partials/header.php';
                 updateStatsDisplay();
             });
 
-            function resetGame() {
+            const resetGame = function() {
                 // Clear grid
                 for (let row of grid) {
                     for (let cell of row.querySelectorAll('.wordle-cell')) {
@@ -521,7 +531,7 @@ require __DIR__ . '/partials/header.php';
                 });
             }
 
-            async function showDefinition(word) {
+            const showDefinition = async function(word) {
                 definitionDiv.textContent = 'Looking up definition...';
                 const dictUrl = `https://dictionaryapi.dev/`;
                 const wordUrl = `https://www.google.com/search?q=define+${encodeURIComponent(word)}`;
@@ -539,7 +549,7 @@ require __DIR__ . '/partials/header.php';
                     definitionDiv.innerHTML = `No definition found for <b>${word}</b>. <a href="${wordUrl}" target="_blank" rel="noopener">Search "${word}"</a>`;
                 }
             }
-            async function blockIfPlayedToday() {
+            const blockIfPlayedToday = async function() {
                 // Check with backend if user has played today using jQuery AJAX
                 return new Promise((resolve) => {
                     $.ajax({
@@ -563,7 +573,7 @@ require __DIR__ . '/partials/header.php';
                     });
                 });
             }
-            async function fetchAnswer() {
+            const fetchAnswer = async function() {
                 return new Promise((resolve) => {
                     const todayStr = getTodayStr(); // Use local time
                     $.ajax({
@@ -588,7 +598,7 @@ require __DIR__ . '/partials/header.php';
                     });
                 });
             }
-            async function fetchRandomAnswer() {
+            const fetchRandomAnswer = async function() {
                 // Use jQuery AJAX to ensure X-Requested-With header is sent
                 return new Promise((resolve) => {
                     $.ajax({
@@ -614,19 +624,122 @@ require __DIR__ . '/partials/header.php';
                 });
             }
             // Start with daily mode
-            fetchAnswer().then(blockIfPlayedToday);
+
+            // --- On page load, if logged in, check if played today and show guesses if so
+            if (window.currentUserId) {
+                const todayStr = getTodayStr();
+                $.ajax({
+                    url: `${PATH}/app/wordle.php?action=daily_played_check`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data && data.played) {
+                            // User has played today, fetch last_result
+                            $.ajax({
+                                url: `${PATH}/app/wordle.php?action=last_result&mode=daily`,
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(result) {
+                                    if (result && Array.isArray(result.guessed_words) && Array.isArray(result.guessed_results)) {
+                                        let guesses = result.guessed_words;
+                                        let results = result.guessed_results;
+                                        for (let row = 0; row < guesses.length && row < grid.length; row++) {
+                                            const rowCells = grid[row].querySelectorAll('.wordle-cell');
+                                            let guessWord = guesses[row];
+                                            let resultRow = results[row] || [];
+                                            for (let i = 0; i < 5; i++) {
+                                                let letter = guessWord[i] ? guessWord[i].toUpperCase() : '';
+                                                rowCells[i].textContent = letter;
+                                                // Color cell based on result
+                                                if (resultRow[i] === 'correct') {
+                                                    rowCells[i].style.background = '#6aaa64';
+                                                    rowCells[i].style.color = '#fff';
+                                                } else if (resultRow[i] === 'present') {
+                                                    rowCells[i].style.background = '#c9b458';
+                                                    rowCells[i].style.color = '#fff';
+                                                } else if (resultRow[i] === 'absent') {
+                                                    rowCells[i].style.background = '#787c7e';
+                                                    rowCells[i].style.color = '#fff';
+                                                } else {
+                                                    rowCells[i].style.background = '#fff';
+                                                    rowCells[i].style.color = '#222';
+                                                }
+                                            }
+                                        }
+                                        feedback.innerHTML = '<div class="alert alert-warning" role="alert">You have already played today! Here are your guesses.</div>';
+                                    }
+                                }
+                            });
+                        } else {
+                            // Not played today, normal game start
+                            fetchAnswer().then(blockIfPlayedToday);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // fallback: allow play if error
+                        fetchAnswer().then(blockIfPlayedToday);
+                    }
+                });
+            } else {
+                fetchAnswer().then(blockIfPlayedToday);
+            }
 
             // --- Save result to backend ---
-            async function recordResult(result, guesses, answer) {
+            const recordResult = async function(result, guesses, answer) {
 
                 // Extra debug: log PATH and request body
+                // Build guesses_made array for backend persistence
+                // Build guesses_made (words + color results) and guess_history (emoji grid)
+                const guesses_made = guessHistory.map((word, idx) => {
+                    const rowCells = grid[idx]?.querySelectorAll('.wordle-cell');
+                    let resultArr = [];
+                    if (rowCells && rowCells.length === 5) {
+                        for (let i = 0; i < 5; i++) {
+                            const bg = rowCells[i].style.background;
+                            if (bg === 'rgb(106, 170, 100)' || bg === '#6aaa64') {
+                                resultArr.push('correct');
+                            } else if (bg === 'rgb(201, 180, 88)' || bg === '#c9b458') {
+                                resultArr.push('present');
+                            } else if (bg === 'rgb(120, 124, 126)' || bg === '#787c7e') {
+                                resultArr.push('absent');
+                            } else {
+                                resultArr.push('absent');
+                            }
+                        }
+                    }
+                    return { word, result: resultArr };
+                });
+
+                // Build emoji grid for guess_history
+                const emojiRows = guessHistory.map((word, idx) => {
+                    const rowCells = grid[idx]?.querySelectorAll('.wordle-cell');
+                    let emojiArr = [];
+                    if (rowCells && rowCells.length === 5) {
+                        for (let i = 0; i < 5; i++) {
+                            const bg = rowCells[i].style.background;
+                            if (bg === 'rgb(106, 170, 100)' || bg === '#6aaa64') {
+                                emojiArr.push('🟩');
+                            } else if (bg === 'rgb(201, 180, 88)' || bg === '#c9b458') {
+                                emojiArr.push('🟨');
+                            } else if (bg === 'rgb(120, 124, 126)' || bg === '#787c7e') {
+                                emojiArr.push('⬛');
+                            } else {
+                                emojiArr.push('⬛');
+                            }
+                        }
+                    }
+                    return emojiArr.join('');
+                });
+
                 const requestBody = {
                     game_date: getTodayStr(),
                     mode: mode,
                     result: result,
                     guesses: guesses,
                     answer: answer,
-                    guess_history: (guessHistory.join('\n').substring(0, 255))
+                    // guess_history is now the emoji grid
+                    guess_history: emojiRows.join('\n').substring(0, 255),
+                    guesses_made: guesses_made
                 };
                
                 // Validate required fields
@@ -671,7 +784,7 @@ require __DIR__ . '/partials/header.php';
                 });
             }
 
-            function showShareButton(result, guesses) {
+            const showShareButton = function(result, guesses) {
                 let shareBtn = document.getElementById('wordle-share-btn');
                 let shareContainer = document.getElementById('wordle-share-container');
                 if (!shareContainer) {
@@ -736,14 +849,7 @@ require __DIR__ . '/partials/header.php';
                 }
             });
 
-            function getTodayStr() {
-                const d = new Date();
-                // Use local time, not UTC
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
+            // (moved to top)
             // <-- Add missing closing brace for DOMContentLoaded
         });
     </script>

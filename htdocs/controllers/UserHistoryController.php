@@ -28,11 +28,11 @@ class UserHistoryController
         $totalPages = ceil($totalRows / $perPage);
 
         // Fetch paginated results
-        $sql = "SELECT game_date, guesses, answer 
-                FROM game_results 
-                WHERE user_id = ? AND result = 'win'
-                ORDER BY game_date DESC
-                LIMIT $perPage OFFSET $offset";
+        $sql = "SELECT game_date, guesses, answer, guess_history 
+            FROM game_results 
+            WHERE user_id = ? AND result = 'win'
+            ORDER BY game_date DESC
+            LIMIT $perPage OFFSET $offset";
         $history = $db->fetchAll($sql, [$user_id]);
 
         // Pagination info for view
