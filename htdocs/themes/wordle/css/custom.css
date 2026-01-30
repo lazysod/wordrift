@@ -215,3 +215,13 @@ label {
         text-overflow: ellipsis;
     }
 }
+footer {
+    color: #c1c1c1;
+}
+.footer_link {
+    color: #fff;
+    text-decoration: none;
+}
+a.footer_link:hover {
+    color: aqua;
+}
