@@ -2,9 +2,9 @@
 $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
     . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 ?>
-<title>Wordrift | Word Guessing Game</title>
+<title><?php echo $config['site_name'] ?> | <?php echo $config['site_tagline'] ?></title>
 <meta name="Author" content="Wordrift"> 
-<meta name="description" content="Wordrift is the fun word puzzle game that challenges your vocabulary and creativity.">
+<meta name="description" content="<?php echo $config['site_description']; ?>">
 <meta name="keywords" content="writing, editing, collaboration, Wordrift">
 <meta name="expires" content="never"> 
 <meta name="language" content="EN"> 
@@ -17,17 +17,17 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
 <!-- start link -->
 <link rel="image_src" href="https://wordrift.org/assets/images/large_logo.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Wordrift | The Word Guessing Game">
+<meta property="og:title" content="<?php echo $config['site_name'] ?> | <?php echo $config['site_tagline'] ?>">
 <meta property="og:image" content="https://wordrift.org/assets/images/large_logo.png">
-<meta property="og:description" content="Wordrift is the fun word puzzle game that challenges your vocabulary and creativity.">
+<meta property="og:description" content="<?php echo $config['site_description']; ?>">
 <meta property="og:url" content="<?php echo htmlspecialchars($currentUrl); ?>">
 <link href="https://wordrift.org/assets/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
 <!-- Twitter Card -->
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@">
-<meta name="twitter:title" content="Wordrift | The Word Guessing Game">
-<meta name="twitter:description" content="Wordrift is the fun word puzzle game that challenges your vocabulary and creativity.">
+<meta name="twitter:title" content="<?php echo $config['site_name'] ?> | <?php echo $config['site_tagline'] ?>  ">
+<meta name="twitter:description" content="<?php echo $config['site_description']; ?>">
 <meta name="twitter:image" content="https://wordrift.org/assets/images/large_logo.png">
 
 <!-- Fav Icons -->

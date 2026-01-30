@@ -56,6 +56,16 @@ if (!isset($router)) {
     $router = new Router();
 }
 
+// Register static routes for privacy and terms (after router is initialized)
+$router->get('/privacy', function() {
+    require __DIR__ . '/../views/privacy.php';
+    exit;
+});
+$router->get('/terms', function() {
+    require __DIR__ . '/../views/terms.php';
+    exit;
+});
+
 // Register core admin routes
 $router->get('/admin/modules', ['ModuleManagerController', 'index']);
 $router->post('/admin/modules/update', ['ModuleManagerController', 'update']);

@@ -6,14 +6,12 @@
             <div class="container px-5">
                 <div class="row align-items-center justify-content-between flex-column flex-sm-row">
                     <div class="col-auto">
-                        <div class="small m-0 text-white">Copyright &copy; <?php echo date('Y') . ' Laysod'; ?></div>
+                        <div class="small m-0 ">Copyright &copy; <?php echo date('Y') . ' <a href="https://lzy.link/lazysod" class="footer_link">Laysod</a> - Powered by <a href="https://strataphp.org" class="footer_link">Strata PHP Framework</a>'; ?></div>
                     </div>
                     <div class="col-auto">
-                        <a class="link-light small" href="#!">Privacy</a>
-                        <span class="text-white mx-1">&middot;</span>
-                        <a class="link-light small" href="#!">Terms</a>
-                        <span class="text-white mx-1">&middot;</span>
-                        <a class="link-light small" href="https://lzy.link/lazysod">Contact</a>
+                        <a class="link-light small" href="/privacy">Privacy</a>
+                        <span class=" mx-1">&middot;</span>
+                        <a class="link-light small" href="/terms">Terms</a>
                     </div>
                 </div>
             </div>

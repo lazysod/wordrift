@@ -60,10 +60,7 @@ return array (
     array (
         'home' => array('enabled' => true, 'suitable_as_default' => true),
         'user' => array('enabled' => true, 'suitable_as_default' => false),
-        'contact' => array('enabled' => true, 'suitable_as_default' => true),
-        'links' => array('enabled' => true, 'suitable_as_default' => true),
-        'admin' => array('enabled' => true, 'suitable_as_default' => false),
-        'helloworld' => array('enabled' => true, 'suitable_as_default' => false),
+        'admin' => array('enabled' => true, 'suitable_as_default' => false)
     ),
     'session_prefix' => 'app_',
     'csrf_token' => true,

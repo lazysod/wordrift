@@ -1,7 +1,8 @@
 <?php
 return array (
-  'site_name' => 'StrataPHP',
-  'site_description' => 'A simple PHP framework',
+  'site_name' => 'Wordrift',
+  'site_tagline' => 'The Word Guessing Game',
+  'site_description' => 'Excisting Word Game based on the famous Wordle. Powered by the Strata Framework',
   'admin_email' => 'noreply@albaweb.net',
   'form_email' => 'divinorum2001@gmail.com',
   'base_url' => 'http://localhost:8888',
@@ -23,7 +24,7 @@ return array (
     'encryption' => 'tls',
     'from_email' => 'noreply@albaweb.net',
   ),
-  'debug' => true,
+  'debug' => false,
   'timezone' => 'Europe/London',
   'session_lifetime' => 3600,
   'version' => '1.0.0',
@@ -32,13 +33,12 @@ return array (
   array (
     0 => '127.0.0.1',
   ),
-  'base_path' => '/Users/barry/MAMP_SITES/wordgame/htdocs/app/../',
   'theme' => 'wordle',
   'theme_path' => '/themes/wordle',
   'theme_config' => 
   array (
     'name' => 'Wordle Theme',
-    'author' => 'Strata Team',
+    'author' => 'Lazysod',
     'version' => '1.0',
     'logo' => '/assets/images/logo_small.png',
     'favicon' => '/assets/images/favicon.ico',
@@ -65,11 +65,6 @@ return array (
     array (
       'enabled' => true,
       'suitable_as_default' => false,
-    ),
-    'contact' => 
-    array (
-      'enabled' => false,
-      'suitable_as_default' => true,
     ),
     'admin' => 
     array (

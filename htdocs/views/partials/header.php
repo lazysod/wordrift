@@ -1,7 +1,12 @@
 <?php
-// Show all errors for debugging
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+$config = include __DIR__ . '/../../app/config.php';
+
+if( $config['debug'] === true){
+    // Show all errors for debugging
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+}
+
 // Safe checks for required variables
 if (!class_exists('App')) {
     echo '<div class="alert alert-danger">App class not found.</div>';
@@ -29,7 +34,7 @@ $navConfig = include __DIR__ . '/../../app/navConfig.php';
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <?php //include(VIEW_ROOT . DS . 'core' . DS . 'meta.php'); 
+    <?php include('meta.php'); 
     ?>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
