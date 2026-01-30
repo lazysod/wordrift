@@ -25,7 +25,6 @@ class game
 
     public function addGameResult($user_id, $game_date, $mode, $result, $guesses, $answer, $guess_history = null)
     {
-        error_log("addGameResult called: user_id=$user_id, game_date=$game_date, mode=$mode, result=$result");
         $db = $this->db;
 
         $game_date = date('Y-m-d', strtotime($game_date));
