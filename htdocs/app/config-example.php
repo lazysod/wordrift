@@ -1,79 +1,89 @@
 <?php
-// Example config file for Strata Framework
-require_once __DIR__ . '/theme.php';
-// date_default_timezone_set('Europe/London');
+// Example config file for Wordrift
+// Copy to config.php and fill in your own values
+// Only load db_conf.php if it exists
+if (file_exists(__DIR__ . '/db_conf.php')) {
+    $db_conf = include __DIR__ . '/db_conf.php';
+} else {
+    $db_conf = [
+        'db_host' => '',
+        'db_user' => '',
+        'db_pass' => '',
+        'db_name' => ''
+    ];
+}
 return array (
-    'site_name' => 'StrataPHP',
-    'site_description' => 'A simple PHP framework',
-    'admin_email' => 'your-admin@example.com',
-    'form_email' => 'your-form@example.com',
-    'base_url' => 'http://localhost:8888',
-    'dashboard_url' => '/admin/dashboard',
-    'logo_small' => '/assets/images/logo_small.png',
-    'db' => 
+  'site_name' => 'Wordrift',
+  'site_tagline' => 'The Word Guessing Game',
+  'site_description' => 'Word Game based on Wordle.',
+  'admin_email' => '', // your admin email
+  'form_email' => '', // your form email
+  'base_url' => '', // e.g. http://localhost:8888
+  'dashboard_url' => '/admin/dashboard',
+  'logo_small' => '/assets/images/logo_small.png',
+  'db' => 
+  array (
+    'host' => $db_conf['db_host'],
+    'username' => $db_conf['db_user'],
+    'password' => $db_conf['db_pass'],
+    'database' => $db_conf['db_name'],
+  ),
+  'mail' => 
+  array (
+    'host' => '',
+    'username' => '',
+    'password' => '',
+    'port' => 587,
+    'encryption' => 'tls',
+    'from_email' => '',
+  ),
+  'debug' => false,
+  'timezone' => 'Europe/London',
+  'session_lifetime' => 3600,
+  'version' => '1.0.0',
+  'maintenance_mode' => false,
+  'allowed_ips' => array('127.0.0.1'),
+  'theme' => 'wordle',
+  'theme_path' => '/themes/wordle',
+  'theme_config' => array(),
+  'logo_url' => '/themes/default/assets/images/logo_small.png',
+  'partials_path' => '/views/partials',
+  'admin_views_path' => '/views/admin',
+  'log_path' => __DIR__ . '/../storage/logs',
+  'js_path' => '/js',
+  'assets_path' => '/assets',
+  'uploads_path' => '/storage/uploads',
+  'prefix' => 'framework',
+  'token_expiry' => 3600,
+  'modules' => 
+  array (
+    'home' => 
     array (
-        'host' => '127.0.0.1',
-        'username' => 'your_db_user',
-        'password' => 'your_db_password',
-        'database' => 'your_db_name',
+      'enabled' => true,
+      'suitable_as_default' => true,
     ),
-    'mail' => 
+    'user' => 
     array (
-        'host' => 'smtp.example.com',
-        'username' => 'your-smtp-user@example.com',
-        'password' => 'your_smtp_password',
-        'port' => 587,
-        'encryption' => 'tls',
-        'from_email' => 'your-smtp-user@example.com',
+      'enabled' => true,
+      'suitable_as_default' => false,
     ),
-    'debug' => true,
-    'timezone' => 'Europe/London',
-    'session_lifetime' => 3600,
-    'version' => '1.0.0',
-    'maintenance_mode' => false,
-    'allowed_ips' => 
+    'admin' => 
     array (
-        0 => '127.0.0.1',
+      'enabled' => true,
+      'suitable_as_default' => false,
     ),
-    'base_path' => __DIR__ . '/../',
-    'theme' => 'default',
-    'theme_path' => '/themes/default',
-    'theme_config' => array (
-        'name' => 'Default Theme',
-        'author' => 'Strata Team',
-        'version' => '1.0',
-        'logo' => '/assets/images/logo_small.png',
-        'favicon' => '/assets/images/favicon.ico',
-        'css' => '/css/styles.css',
-        'js' => '/js/scripts.js',
-    ),
-    'logo_url' => '/themes/default/assets/images/logo_small.png',
-    'partials_path' => '/views/partials',
-    'admin_views_path' => '/views/admin',
-    'log_path' => __DIR__ . '/../storage/logs',
-    'js_path' => '/js',
-    'assets_path' => '/assets',
-    'uploads_path' => '/storage/uploads',
-    'prefix' => 'framework',
-    'token_expiry' => 3600,
-    'modules' => 
-    array (
-        'home' => array('enabled' => true, 'suitable_as_default' => true),
-        'user' => array('enabled' => true, 'suitable_as_default' => false),
-        'admin' => array('enabled' => true, 'suitable_as_default' => false)
-    ),
-    'session_prefix' => 'app_',
-    'csrf_token' => true,
-    'login_redirect' => '/',
-    'system_pages' => 
-    array (
-        404 => '/views/errors/404.php',
-        500 => '/views/errors/500.php',
-    ),
-    'custom_pages' => 
-    array (
-        'privacy' => '/views/privacy.php',
-        'terms' => '/views/terms.php',
-    ),
-    'default_module' => 'home',
+  ),
+  'session_prefix' => 'app_',
+  'csrf_token' => true,
+  'login_redirect' => '/',
+  'login_path' => '/user/login',
+  'system_pages' => array(
+    404 => '/views/errors/404.php',
+    500 => '/views/errors/500.php',
+  ),
+  'custom_pages' => array(
+    'privacy' => '/views/privacy.php',
+    'terms' => '/views/terms.php',
+  ),
+  'default_module' => 'home',
 );

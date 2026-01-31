@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 formattedDate = `${d}-${m}-${y}`;
             }
             const text = results
-                ? `Wordrift (${formattedDate}) ${answer} ${attempts}/6\n${results}`.replace(/\n+$/g, '')
-                : `Wordrift (${formattedDate}) ${answer} ${attempts}/6`;
+                ? `Wordrift (${formattedDate})  ${attempts}/6\n${results}`.replace(/\n+$/g, '')
+                : `Wordrift (${formattedDate})  ${attempts}/6`;
             navigator.clipboard.writeText(text).then(() => {
                 btn.textContent = 'Copied!';
                 setTimeout(() => { btn.textContent = 'Share'; }, 1500);

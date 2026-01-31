@@ -1,4 +1,16 @@
 <?php
+// Only load db_conf.php if it exists
+if (file_exists(__DIR__ . '/db_conf.php')) {
+    $db_conf = include __DIR__ . '/db_conf.php';
+} else {
+    $db_conf = [
+        'db_host' => '',
+        'db_user' => '',
+        'db_pass' => '',
+        'db_name' => ''
+    ];
+}
+
 return array (
   'site_name' => 'Wordrift',
   'site_tagline' => 'The Word Guessing Game',
@@ -10,10 +22,10 @@ return array (
   'logo_small' => '/assets/images/logo_small.png',
   'db' => 
   array (
-    'host' => 'localhost',
-    'username' => 'root',
-    'password' => 'root',
-    'database' => 'awordgame',
+    'host' => $db_conf['db_host'],
+    'username' => $db_conf['db_user'],
+    'password' => $db_conf['db_pass'],
+    'database' => $db_conf['db_name'],
   ),
   'mail' => 
   array (
@@ -24,7 +36,7 @@ return array (
     'encryption' => 'tls',
     'from_email' => 'noreply@albaweb.net',
   ),
-  'debug' => false,
+  'debug' => true,
   'timezone' => 'Europe/London',
   'session_lifetime' => 3600,
   'version' => '1.0.0',

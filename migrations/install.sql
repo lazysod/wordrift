@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Aug 30, 2025 at 09:41 AM
--- Server version: 10.6.23-MariaDB-cll-lve-log
--- PHP Version: 8.3.19
+-- Host: localhost:8889
+-- Generation Time: Jan 30, 2026 at 04:44 PM
+-- Server version: 5.7.39
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `lazysodco_wordrift`
+-- Database: `1f_test`
 --
 
 -- --------------------------------------------------------
@@ -27,51 +27,14 @@ SET time_zone = "+00:00";
 -- Table structure for table `cookie_login`
 --
 
-DROP TABLE IF EXISTS `cookie_login`;
 CREATE TABLE `cookie_login` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `cookie_hash` varchar(255) NOT NULL,
   `date_added` date NOT NULL,
-  `last_updated` timestamp NULL DEFAULT current_timestamp(),
+  `last_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `expiry_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
---
--- Dumping data for table `cookie_login`
---
-
-INSERT INTO `cookie_login` (`id`, `user_id`, `cookie_hash`, `date_added`, `last_updated`, `expiry_date`) VALUES
-(1, 1, '5e1db55007506734eaf692590653735393440afa', '2025-07-29', '2025-07-29 12:41:03', '2025-08-05'),
-(2, 13, '0e4e65c726b6f074cac7a2116a56c0c516f45a47', '2025-07-29', '2025-07-29 12:58:03', '2025-08-28'),
-(3, 1, 'afb40f4c6ca672df41dbe7948dae8334fa891212', '2025-07-29', '2025-07-29 12:58:21', '2025-08-28'),
-(4, 10, '072a98b682f2e1a2d1eb7efc2edf15bdb8b54c12', '2025-07-29', '2025-07-29 14:11:27', '2025-08-28'),
-(5, 1, '2ee414568d0853e96584e5a63a8233da6247bf0b', '2025-07-29', '2025-07-29 22:22:31', '2025-08-28'),
-(6, 1, '74041515c15995ec3c87d6b02ed313dced83455d', '2025-07-30', '2025-07-29 23:49:05', '2025-08-29'),
-(7, 9, '025611aa69e16a0afd3da8c2768f03349f9f86eb', '2025-07-30', '2025-07-30 07:57:14', '2025-08-29'),
-(9, 1, 'c45e2238f1b7dfe176b53c0df800e1a817476854', '2025-08-01', '2025-08-01 04:34:07', '2025-08-31'),
-(10, 1, '32cd5e51fafc8f1d00b3a586c1a4c9bc44390473', '2025-08-01', '2025-08-01 04:36:17', '2025-08-31'),
-(11, 13, 'fb9e6c31b1ebced3e6ff679698df8278bb66cb5e', '2025-08-01', '2025-08-01 17:21:25', '2025-08-31'),
-(12, 1, '816d05d28bf374d7884ed8c1111da4892db961c6', '2025-08-03', '2025-08-02 23:54:54', '2025-09-02'),
-(13, 14, 'a2446022e26bfb6ecb12ad01dd61a91016d22ae7', '2025-08-03', '2025-08-03 00:03:56', '2025-09-02'),
-(14, 15, '5772d6cda71f0e7446b509bcf14040a8598ceb71', '2025-08-07', '2025-08-07 15:10:42', '2025-09-06'),
-(16, 10, '70c85799544949449d3722fa2e26c75700443c98', '2025-08-08', '2025-08-08 22:13:34', '2025-09-07'),
-(17, 10, 'ec5ceb170a9331f609704f1416e2001a31e6cce3', '2025-08-08', '2025-08-08 22:15:34', '2025-09-07'),
-(18, 1, '8ca669c6664ddce0c3b323162e0c099d6d6e89cd', '2025-08-12', '2025-08-12 12:45:54', '2025-09-11'),
-(19, 13, 'ffafc421b94a0d3e5651d68ac9e5fa29cc9950b5', '2025-08-17', '2025-08-17 22:52:29', '2025-09-16'),
-(20, 1, 'e5cb675577c0197c6f178ec03244a6e40ec0a49d', '2025-08-21', '2025-08-21 15:52:05', '2025-09-20'),
-(21, 1, 'e0cc7b71e9bf62b758889fa83aa7335372f79de0', '2025-08-21', '2025-08-21 15:54:50', '2025-09-20'),
-(22, 1, 'db00e4fdc8a6d8fc749a23649c9ec9343051ec47', '2025-08-21', '2025-08-21 15:59:37', '2025-09-20'),
-(23, 1, '8b7471f4ae0bf59f5f0a425068c05d96f4801b9e', '2025-08-21', '2025-08-21 16:07:24', '2025-09-20'),
-(24, 1, '5f573b82f1da8677c86d695538c530d136b6c489', '2025-08-21', '2025-08-21 16:08:47', '2025-09-20'),
-(25, 1, 'c02b74809aaccf4972b9bb7059fa28aa91a255a3', '2025-08-21', '2025-08-21 16:09:14', '2025-09-20'),
-(26, 1, 'f66b7dcd21696a4242e1ff93608c405741802c92', '2025-08-21', '2025-08-21 16:14:15', '2025-09-20'),
-(27, 10, '37551ac41b8825d8db7bcadc9656dbdcbe7f3914', '2025-08-21', '2025-08-21 17:29:36', '2025-09-20'),
-(28, 1, '389b4f6ee5bd60bebd9d0708da23ba8b4134620b', '2025-08-21', '2025-08-21 19:49:40', '2025-09-20'),
-(29, 16, 'dca7d04102c326cf00ed5aac983d712827329f31', '2025-08-21', '2025-08-21 19:50:25', '2025-09-20'),
-(30, 1, 'f1815edb36968ad4a072464d6e5083ccc5d82333', '2025-08-21', '2025-08-21 19:50:33', '2025-09-20'),
-(31, 17, 'd968fc3125e52a9de4e6a66f892a6db646632248', '2025-08-21', '2025-08-21 19:51:56', '2025-09-20'),
-(32, 19, '3be76cc016a8c850661956c5f71d14c621cf6a69', '2025-08-25', '2025-08-25 22:39:11', '2025-09-24');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -79,76 +42,11 @@ INSERT INTO `cookie_login` (`id`, `user_id`, `cookie_hash`, `date_added`, `last_
 -- Table structure for table `daily_played`
 --
 
-DROP TABLE IF EXISTS `daily_played`;
 CREATE TABLE `daily_played` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
-  `game_date` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
---
--- Dumping data for table `daily_played`
---
-
-INSERT INTO `daily_played` (`id`, `user_id`, `game_date`) VALUES
-(1, 1, '2025-07-30 07:51:24'),
-(2, 10, '2025-07-30 21:36:25'),
-(3, 13, '2025-07-30 22:33:12'),
-(4, 10, '2025-07-31 19:55:14'),
-(5, 13, '2025-07-31 21:05:46'),
-(7, 13, '2025-08-01 17:26:06'),
-(8, 13, '2025-08-02 23:20:57'),
-(9, 1, '2025-08-03 00:00:50'),
-(10, 1, '2025-08-07 15:36:14'),
-(11, 1, '2025-08-08 19:47:00'),
-(12, 10, '2025-08-08 22:37:14'),
-(13, 13, '2025-08-08 22:50:15'),
-(14, 1, '2025-08-08 23:03:01'),
-(15, 13, '2025-08-09 14:31:23'),
-(16, 10, '2025-08-09 14:35:16'),
-(17, 14, '2025-08-09 18:43:06'),
-(18, 10, '2025-08-10 04:32:13'),
-(19, 1, '2025-08-10 09:41:15'),
-(20, 10, '2025-08-11 05:03:06'),
-(21, 10, '2025-08-12 00:27:01'),
-(22, 1, '2025-08-12 12:47:34'),
-(23, 13, '2025-08-12 14:45:22'),
-(24, 10, '2025-08-13 00:36:52'),
-(25, 1, '2025-08-13 11:05:04'),
-(26, 10, '2025-08-14 05:51:52'),
-(27, 1, '2025-08-14 21:32:26'),
-(28, 1, '2025-08-14 23:29:25'),
-(29, 10, '2025-08-15 13:08:57'),
-(30, 13, '2025-08-15 21:41:27'),
-(31, 10, '2025-08-16 02:22:36'),
-(32, 13, '2025-08-16 17:11:12'),
-(33, 10, '2025-08-17 00:54:33'),
-(34, 13, '2025-08-17 22:53:49'),
-(35, 10, '2025-08-18 02:36:22'),
-(36, 10, '2025-08-19 04:40:23'),
-(37, 10, '2025-08-20 01:31:24'),
-(38, 10, '2025-08-21 11:24:13'),
-(39, 1, '2025-08-21 17:33:45'),
-(40, 17, '2025-08-21 20:00:10'),
-(41, 10, '2025-08-22 00:20:51'),
-(42, 1, '2025-08-22 08:46:51'),
-(43, 1, '2025-08-22 23:15:15'),
-(44, 10, '2025-08-23 15:56:46'),
-(45, 10, '2025-08-23 23:20:20'),
-(46, 1, '2025-08-24 06:48:33'),
-(47, 1, '2025-08-24 23:04:03'),
-(48, 10, '2025-08-24 23:57:17'),
-(49, 19, '2025-08-25 22:43:43'),
-(50, 1, '2025-08-26 08:17:36'),
-(51, 10, '2025-08-26 19:35:01'),
-(52, 1, '2025-08-26 23:04:30'),
-(53, 10, '2025-08-27 00:06:46'),
-(54, 1, '2025-08-27 23:00:00'),
-(55, 10, '2025-08-27 23:00:00'),
-(56, 1, '2025-08-28 23:00:00'),
-(57, 10, '2025-08-28 23:00:00'),
-(58, 10, '2025-08-29 23:00:00'),
-(59, 1, '2025-08-29 23:00:00');
+  `game_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -156,132 +54,39 @@ INSERT INTO `daily_played` (`id`, `user_id`, `game_date`) VALUES
 -- Table structure for table `game_results`
 --
 
-DROP TABLE IF EXISTS `game_results`;
 CREATE TABLE `game_results` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `game_date` date NOT NULL,
-  `mode` enum('daily','random') NOT NULL,
-  `result` enum('win','loss') NOT NULL,
+  `mode` enum('daily','random') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `result` enum('win','loss') COLLATE utf8mb4_unicode_ci NOT NULL,
   `guesses` tinyint(4) NOT NULL,
-  `answer` char(5) NOT NULL,
-  `guess_history` text DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `max_streak` int(11) DEFAULT 0,
-  `current_streak` int(11) DEFAULT 0,
-  `game_mode` enum('daily','random','speed','') DEFAULT 'daily'
+  `answer` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guess_history` text COLLATE utf8mb4_unicode_ci,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `max_streak` int(11) DEFAULT '0',
+  `current_streak` int(11) DEFAULT '0',
+  `game_mode` enum('daily','random','speed','') COLLATE utf8mb4_unicode_ci DEFAULT 'daily'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `game_results`
+-- Table structure for table `game_sessions`
 --
 
-INSERT INTO `game_results` (`id`, `user_id`, `game_date`, `mode`, `result`, `guesses`, `answer`, `guess_history`, `created_at`, `max_streak`, `current_streak`, `game_mode`) VALUES
-(2, 1, '2025-07-27', 'daily', 'win', 2, 'GROPE', '\"[\\\"\\u2b1b\\\\ud83d\\\\ud83d\\\\ud83d\\u2b1b___\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\\\udfe9\\ud83d\\udfe9\\ud83d\\udfe9\\\"]\"', '2025-07-27 17:11:49', 1, 1, 'daily'),
-(3, 9, '2025-07-28', 'daily', 'win', 6, 'GROPE', '\"[\\\"\\\\ud83d\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\ud83d\\udfe9\\\",\\\"\\\\ud83d\\u2b1b\\u2b1b\\u2b1b\\u2b1b__\\\",\\\"\\u2b1b\\u2b1b\\\\ud83d\\u2b1b\\u2b1b__\\\",\\\"\\\\ud83d\\\\ud83d\\u2b1b\\u2b1b\\u2b1b__\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\ud83d\\udfe9\\ud83d\\udfe9\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\\\udfe9\\ud83d\\udfe9\\ud83d\\udfe9\\\"]\"', '2025-07-28 00:41:54', 1, 1, 'daily'),
-(4, 10, '2025-07-28', 'daily', 'win', 4, 'HAVOC', '\"[\\\"\\u2b1b\\u2b1b\\\\ud83d\\u2b1b\\u2b1b_\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b__\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b__\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\\\udfe9\\ud83d\\udfe9\\ud83d\\udfe9\\\"]\"', '2025-07-28 02:18:36', 1, 1, 'daily'),
-(5, 1, '2025-07-28', 'daily', 'win', 4, 'HAVOC', '\"[\\\"\\u2b1b\\u2b1b\\\\ud83d\\\\ud83d\\u2b1b__\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b__\\\",\\\"\\u2b1b\\u2b1b\\\\ud83d\\\\ud83d\\u2b1b__\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\\\udfe9\\ud83d\\udfe9\\ud83d\\udfe9\\\"]\"', '2025-07-28 08:21:39', 2, 2, 'daily'),
-(6, 11, '2025-07-28', 'daily', 'win', 6, 'HAVOC', '\"[\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b_\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b_\\\",\\\"\\u2b1b\\u2b1b\\\\ud83d\\u2b1b\\u2b1b_\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b_\\\",\\\"\\u2b1b\\u2b1b\\u2b1b\\u2b1b\\u2b1b_\\\",\\\"\\\\ud83d\\u2b1b\\u2b1b\\u2b1b\\ud83d\\udfe8__\\\"]\"', '2025-07-28 09:23:54', 0, 0, 'daily'),
-(7, 1, '2025-07-28', 'random', 'loss', 6, 'KNEED', '[\"⬛🟨⬛🟩⬛\",\"⬛⬛🟩🟩⬛\",\"⬛⬛🟩🟩⬛\",\"⬛⬛🟩🟩🟨\",\"⬛⬛🟩🟩⬛\",\"🟩🟩🟩🟩⬛\"]', '2025-07-28 20:25:55', 0, 0, 'daily'),
-(8, 1, '2025-07-28', 'random', 'win', 6, 'HANDY', '[\"⬛⬛⬛🟨⬛\",\"🟨⬛⬛⬛⬛\",\"⬛⬛⬛⬛⬛\",\"🟩⬛⬛⬛⬛\",\"🟩🟩⬛⬛🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-28 20:32:06', 0, 0, 'daily'),
-(9, 1, '2025-07-29', 'daily', 'win', 3, 'PATSY', '[\"🟩🟩⬛🟩🟩\",\"🟩🟩🟨🟨🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 09:13:51', 3, 3, 'daily'),
-(10, 13, '2025-07-29', 'daily', 'win', 5, 'PATSY', '[\"🟩⬛⬛⬛🟨\",\"🟩⬛🟨🟨⬛\",\"🟩🟩⬛🟨🟩\",\"🟩🟩🟩⬛🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 14:01:22', 1, 1, 'daily'),
-(11, 1, '2025-07-29', 'random', 'loss', 6, 'LATHE', '[\"🟨⬛⬛⬛⬛\",\"🟨⬛⬛🟨🟩\",\"⬛🟩⬛🟨🟩\",\"⬛🟩⬛🟨🟩\",\"🟩🟩⬛⬛🟩\",\"🟩🟩⬛⬛🟩\"]', '2025-07-29 15:04:47', 0, 0, 'daily'),
-(12, 1, '2025-07-29', 'random', 'win', 4, 'QUOTE', '[\"⬛⬛⬛⬛🟩\",\"⬛⬛🟨⬛🟩\",\"🟨⬛⬛🟩🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 15:06:46', 0, 0, 'daily'),
-(13, 1, '2025-07-29', 'random', 'loss', 6, 'SKIMP', '[\"⬛🟨⬛⬛⬛\",\"⬛⬛⬛🟨⬛\",\"🟨⬛⬛⬛⬛\",\"⬛⬛🟩⬛⬛\",\"⬛🟨⬛⬛⬛\",\"⬛🟨⬛⬛⬛\"]', '2025-07-29 15:16:36', 0, 0, 'daily'),
-(14, 10, '2025-07-29', 'daily', 'win', 3, 'PATSY', '[\"🟨🟨🟨⬛⬛\",\"🟩🟩🟨🟨⬛\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 15:18:45', 2, 2, 'daily'),
-(15, 1, '2025-07-29', 'random', 'win', 3, 'HUMOR', '[\"⬛⬛⬛🟨⬛\",\"🟨⬛🟨🟩⬛\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 15:19:07', 0, 0, 'daily'),
-(16, 1, '2025-07-29', 'random', 'win', 6, 'WRUNG', '[\"⬛⬛🟨⬛🟨\",\"⬛🟨🟨🟨⬛\",\"🟨🟩⬛🟩⬛\",\"⬛🟩⬛🟩⬛\",\"⬛🟩⬛🟩⬛\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 15:22:38', 0, 0, 'daily'),
-(17, 10, '2025-07-29', 'random', 'win', 3, 'SPELL', '[\"🟨⬛🟨⬛🟨\",\"🟩🟨🟩⬛🟨\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 15:24:02', 0, 0, 'daily'),
-(18, 1, '2025-07-29', 'random', 'win', 4, 'VISOR', '[\"⬛🟨🟨⬛⬛\",\"⬛🟩⬛⬛🟨\",\"⬛🟩⬛🟨🟨\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 15:24:51', 0, 0, 'daily'),
-(19, 1, '2025-07-29', 'daily', 'win', 5, 'PATSY', '[\"🟨🟨⬛⬛⬛\",\"🟩⬛⬛⬛⬛\",\"🟩⬛⬛⬛⬛\",\"🟩🟩🟨🟨⬛\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 19:50:22', 3, 3, 'daily'),
-(20, 1, '2025-07-29', 'daily', 'win', 5, 'PATSY', '[\"⬛⬛⬛⬛⬛\",\"🟨🟨⬛⬛⬛\",\"🟨🟩⬛⬛🟩\",\"⬛🟩⬛🟩🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 23:28:03', 3, 3, 'daily'),
-(21, 1, '2025-07-29', 'random', 'win', 5, 'QUOTH', '[\"⬛⬛⬛🟨⬛\",\"⬛⬛🟩⬛⬛\",\"⬛⬛🟩⬛⬛\",\"🟩🟩🟩🟩⬛\",\"🟩🟩🟩🟩🟩\"]', '2025-07-29 23:49:07', 0, 0, 'daily'),
-(22, 1, '2025-07-30', 'daily', 'win', 6, 'PATSY', '[\"⬛⬛⬛⬛⬛\",\"🟨⬛🟨🟩⬛\",\"⬛⬛⬛🟩⬛\",\"⬛🟩⬛🟩🟩\",\"⬛⬛🟨🟩🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-30 00:04:43', 4, 4, 'daily'),
-(23, 1, '2025-07-30', 'random', 'win', 4, 'SWING', '[\"⬛⬛⬛🟨⬛\",\"🟩⬛⬛🟨⬛\",\"🟩⬛⬛🟨⬛\",\"🟩🟩🟩🟩🟩\"]', '2025-07-30 00:06:23', 0, 0, 'daily'),
-(24, 1, '2025-07-30', 'random', 'win', 4, 'DRAWN', '[\"⬛⬛🟨⬛🟩\",\"🟨⬛🟨⬛🟩\",\"🟩🟩🟩⬛🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-30 00:09:06', 0, 0, 'daily'),
-(25, 1, '2025-07-30', 'random', 'win', 5, 'REPLY', '[\"⬛🟩⬛⬛⬛\",\"⬛🟩⬛⬛⬛\",\"⬛🟩⬛🟩⬛\",\"⬛🟩⬛🟩🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-30 00:13:26', 0, 0, 'daily'),
-(26, 1, '2025-07-30', 'random', 'win', 6, 'GLIDE', '[\"⬛🟨🟨⬛⬛\",\"⬛🟩🟨⬛⬛\",\"⬛🟩⬛⬛🟩\",\"⬛🟩⬛⬛🟩\",\"⬛🟩🟩⬛🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-30 00:17:10', 0, 0, 'daily'),
-(27, 1, '2025-07-30', 'daily', 'loss', 6, 'TRULY', '[\"⬛🟩🟩⬛⬛\",\"⬛🟩🟩⬛⬛\",\"⬛🟩🟩⬛🟨\",\"⬛🟩🟩⬛🟨\",\"🟩🟩🟩⬛⬛\",\"🟩🟩🟩⬛⬛\"]', '2025-07-30 08:13:22', 3, 0, 'daily'),
-(28, 1, '2025-07-30', 'random', 'win', 4, 'SHADE', '[\"🟨⬛⬛⬛🟩\",\"⬛🟨🟨⬛🟩\",\"🟨⬛🟩⬛🟩\",\"🟩🟩🟩🟩🟩\"]', '2025-07-30 09:15:03', 0, 0, 'daily'),
-(29, 1, '2025-07-30', 'daily', 'win', 4, 'TRULY', '⬛⬛⬛⬛⬛\n⬛🟩🟩⬛⬛\n⬛🟩🟩⬛🟨\n🟩🟩🟩🟩🟩', '2025-07-30 09:16:41', 4, 4, 'daily'),
-(31, 1, '2025-07-30', 'random', 'win', 4, 'EXIST', '⬛⬛⬛🟨⬛\n⬛🟨🟩⬛⬛\n🟨⬛🟩⬛🟨\n🟩🟩🟩🟩🟩', '2025-07-30 11:41:38', 9, 1, 'daily'),
-(32, 10, '2025-07-30', 'daily', 'win', 5, 'TRULY', '🟩🟩⬛⬛⬛\n⬛⬛🟨🟨⬛\n⬛⬛⬛🟨🟨\n🟩🟩🟩⬛⬛\n🟩🟩🟩🟩🟩', '2025-07-30 22:36:25', 3, 3, 'daily'),
-(33, 13, '2025-07-30', 'daily', 'win', 6, 'TRULY', '⬛⬛⬛⬛🟨\n⬛⬛🟨⬛🟨\n🟩⬛🟨🟨⬛\n🟩🟩🟩⬛⬛\n🟩🟩🟩⬛⬛\n🟩🟩🟩🟩🟩', '2025-07-30 23:33:12', 2, 2, 'daily'),
-(34, 10, '2025-07-31', 'daily', 'win', 5, 'FORTY', '⬛🟨⬛🟨⬛\n🟨🟨🟨⬛⬛\n⬛🟩🟨⬛🟨\n⬛🟩🟩🟩⬛\n🟩🟩🟩🟩🟩', '2025-07-31 20:55:14', 4, 4, 'daily'),
-(35, 13, '2025-07-31', 'daily', 'win', 6, 'FORTY', '⬛⬛⬛⬛⬛\n⬛🟨⬛🟨🟨\n⬛🟨🟨🟩⬛\n⬛🟨🟨🟨🟩\n⬛⬛⬛🟩🟩\n🟩🟩🟩🟩🟩', '2025-07-31 22:05:46', 3, 3, 'daily'),
-(36, 13, '2025-07-31', 'random', 'win', 4, 'FELLA', '⬛🟨⬛⬛⬛\n⬛🟩🟨⬛⬛\n🟨🟩⬛🟨🟨\n🟩🟩🟩🟩🟩', '2025-07-31 22:10:28', 1, 1, 'daily'),
-(37, 1, '2025-08-01', 'daily', 'win', 4, 'DEITY', '⬛⬛⬛⬛⬛\n⬛🟨⬛⬛🟩\n⬛🟩⬛🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-01 05:39:18', 9, 2, 'daily'),
-(38, 13, '2025-08-01', 'daily', 'win', 6, 'DEITY', '⬛🟩⬛⬛⬛\n⬛🟩⬛⬛⬛\n⬛🟩⬛⬛🟩\n🟨🟩🟨⬛🟩\n⬛🟩⬛🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-01 18:26:06', 4, 4, 'daily'),
-(39, 13, '2025-08-01', 'random', 'win', 5, 'PAYEE', '⬛⬛🟨⬛⬛\n⬛🟩🟨⬛🟨\n⬛🟩⬛🟨🟨\n🟨🟨⬛⬛🟨\n🟩🟩🟩🟩🟩', '2025-08-01 18:33:06', 2, 2, 'daily'),
-(40, 13, '2025-08-02', 'daily', 'win', 4, 'UNCLE', '⬛🟨⬛🟨⬛\n🟨⬛🟨⬛⬛\n⬛🟨⬛⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-03 00:20:57', 5, 5, 'daily'),
-(41, 1, '2025-08-02', 'random', 'win', 3, 'BEACH', '⬛⬛⬛⬛⬛\n⬛⬛⬛⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-03 00:57:48', 9, 2, 'daily'),
-(42, 1, '2025-08-03', 'daily', 'win', 3, 'UNCLE', '⬛🟨⬛🟨⬛\n🟨🟨⬛🟨🟩\n🟩🟩🟩🟩🟩', '2025-08-03 01:00:50', 9, 1, 'daily'),
-(43, 1, '2025-08-07', 'daily', 'win', 5, 'LEMUR', '🟨⬛🟨⬛⬛\n🟨⬛🟨⬛⬛\n⬛🟨🟨🟨⬛\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-07 16:36:14', 9, 1, 'daily'),
-(44, 1, '2025-08-08', 'daily', 'win', 6, 'DRAFT', '🟨⬛⬛⬛⬛\n🟨⬛⬛⬛🟩\n⬛⬛🟩⬛🟩\n⬛⬛🟩🟨🟩\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-08 20:47:00', 9, 2, 'daily'),
-(45, 10, '2025-08-08', 'daily', 'win', 3, 'DRAFT', '⬛🟨⬛🟨⬛\n⬛⬛🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-08 23:37:14', 4, 1, 'daily'),
-(46, 13, '2025-08-08', 'daily', 'win', 5, 'DRAFT', '🟨⬛⬛⬛⬛\n🟨🟨🟨⬛⬛\n⬛🟩🟩🟩🟩\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-08 23:50:15', 5, 1, 'daily'),
-(47, 13, '2025-08-08', 'daily', 'win', 5, 'DRAFT', '🟨⬛⬛⬛⬛\n🟨🟨🟨⬛⬛\n⬛🟩🟩🟩🟩\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-08 23:50:15', 5, 1, 'daily'),
-(48, 1, '2025-08-08', 'daily', 'win', 5, 'DRAFT', '⬛⬛🟨⬛⬛\n🟨⬛⬛🟨🟩\n⬛🟩🟩🟩🟩\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-09 00:03:01', 9, 2, 'daily'),
-(49, 13, '2025-08-09', 'daily', 'win', 5, 'SLOPE', '⬛⬛🟨⬛⬛\n🟩⬛🟨⬛🟨\n🟩🟨🟩⬛🟩\n🟩⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-09 15:31:23', 5, 2, 'daily'),
-(50, 10, '2025-08-09', 'daily', 'win', 4, 'SLOPE', '🟩⬛🟨⬛⬛\n🟩🟨⬛⬛🟩\n🟩⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-09 15:35:16', 4, 2, 'daily'),
-(51, 10, '2025-08-09', 'random', 'win', 5, 'PUBIC', '⬛⬛⬛⬛⬛\n⬛⬛⬛⬛⬛\n🟨🟩⬛⬛⬛\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-09 18:39:33', 2, 2, 'daily'),
-(52, 10, '2025-08-09', 'random', 'win', 5, 'GUILE', '⬛⬛🟨⬛⬛\n⬛🟨🟩🟨⬛\n⬛⬛🟩🟩🟩\n⬛⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-09 19:02:39', 3, 3, 'daily'),
-(53, 14, '2025-08-09', 'daily', 'win', 4, 'SLOPE', '⬛⬛⬛⬛🟨\n🟨⬛🟩🟩⬛\n🟨🟨⬛⬛⬛\n🟩🟩🟩🟩🟩', '2025-08-09 19:43:06', 1, 1, 'daily'),
-(54, 1, '2025-08-09', 'random', 'win', 6, 'VOGUE', '⬛🟩⬛⬛⬛\n⬛🟩⬛⬛⬛\n⬛🟩⬛⬛⬛\n⬛🟩⬛🟨🟩\n🟨🟩⬛⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-09 23:17:56', 9, 3, 'daily'),
-(55, 10, '2025-08-09', 'random', 'win', 4, 'ALERT', '⬛⬛🟩⬛🟩\n⬛🟨🟩🟨🟩\n🟩⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-09 23:20:41', 4, 4, 'daily'),
-(56, 13, '2025-08-09', 'random', 'win', 4, 'SAPPY', '🟨🟩⬛⬛⬛\n⬛🟩⬛⬛⬛\n🟩🟩⬛⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-09 23:22:43', 3, 3, 'daily'),
-(57, 10, '2025-08-09', 'random', 'win', 4, 'SEVEN', '⬛🟩⬛🟨⬛\n🟩🟩⬛🟩⬛\n🟩🟩⬛🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-09 23:26:43', 5, 5, 'daily'),
-(58, 13, '2025-08-09', 'random', 'win', 6, 'PLAZA', '⬛🟨⬛⬛⬛\n⬛⬛🟩⬛⬛\n⬛🟩🟩⬛⬛\n⬛🟩🟩⬛⬛\n⬛🟩🟩🟩⬛\n🟩🟩🟩🟩🟩', '2025-08-09 23:30:48', 4, 4, 'daily'),
-(59, 13, '2025-08-09', 'random', 'win', 3, 'RATIO', '⬛🟨🟨🟨⬛\n⬛🟩🟩⬛🟨\n🟩🟩🟩🟩🟩', '2025-08-09 23:34:12', 5, 5, 'daily'),
-(60, 10, '2025-08-09', 'random', 'win', 5, 'SNIFF', '🟩⬛⬛⬛⬛\n🟩⬛⬛⬛⬛\n🟩⬛🟩⬛⬛\n🟩⬛🟩🟨⬛\n🟩🟩🟩🟩🟩', '2025-08-09 23:40:07', 6, 6, 'daily'),
-(61, 10, '2025-08-09', 'random', 'win', 4, 'LEANT', '⬛⬛🟨🟨🟩\n⬛🟩🟩⬛🟩\n🟩🟩🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-09 23:54:58', 7, 7, 'daily'),
-(62, 10, '2025-08-10', 'daily', 'win', 5, 'ANNOY', '⬛⬛⬛🟨⬛\n🟩⬛⬛⬛🟨\n🟩⬛⬛🟩⬛\n🟩⬛⬛🟩⬛\n🟩🟩🟩🟩🟩', '2025-08-10 05:32:13', 4, 3, 'daily'),
-(63, 10, '2025-08-10', 'random', 'win', 4, 'REACH', '⬛⬛🟨🟨⬛\n🟨⬛⬛⬛🟨\n🟨🟩🟩🟨⬛\n🟩🟩🟩🟩🟩', '2025-08-10 05:35:28', 8, 8, 'daily'),
-(64, 10, '2025-08-10', 'random', 'win', 3, 'LEMUR', '⬛🟨🟨⬛⬛\n🟩🟩⬛⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-10 05:38:42', 9, 9, 'daily'),
-(65, 1, '2025-08-10', 'daily', 'win', 3, 'ANNOY', '⬛⬛🟨🟨🟩\n🟩⬛🟨🟨🟩\n🟩🟩🟩🟩🟩', '2025-08-10 10:41:15', 9, 1, 'daily'),
-(66, 10, '2025-08-10', 'random', 'win', 4, 'SPOKE', '🟩⬛⬛⬛🟩\n🟩⬛⬛🟨🟩\n🟩🟩🟩⬛⬛\n🟩🟩🟩🟩🟩', '2025-08-10 17:29:44', 10, 10, 'daily'),
-(67, 10, '2025-08-10', 'random', 'win', 3, 'BEEFY', '⬛⬛🟩⬛⬛\n🟨⬛🟩🟨⬛\n🟩🟩🟩🟩🟩', '2025-08-10 17:41:00', 11, 11, 'daily'),
-(68, 10, '2025-08-11', 'daily', 'win', 4, 'LINGO', '⬛⬛⬛⬛⬛\n⬛⬛🟨🟨⬛\n⬛⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-11 06:03:06', 4, 4, 'daily'),
-(69, 10, '2025-08-12', 'daily', 'win', 3, 'BLEAK', '⬛⬛🟩🟩⬛\n⬛🟩🟩🟩⬛\n🟩🟩🟩🟩🟩', '2025-08-12 01:27:01', 5, 5, 'daily'),
-(70, 1, '2025-08-12', 'daily', 'win', 4, 'BLEAK', '⬛🟨⬛⬛⬛\n🟨🟨⬛⬛🟨\n🟩🟨⬛🟨🟨\n🟩🟩🟩🟩🟩', '2025-08-12 13:47:34', 9, 1, 'daily'),
-(71, 13, '2025-08-12', 'daily', 'win', 6, 'BLEAK', '⬛⬛⬛⬛🟨\n🟨🟨⬛⬛⬛\n⬛🟩🟩⬛⬛\n⬛🟩🟩🟩⬛\n🟩🟩🟩🟩⬛\n🟩🟩🟩🟩🟩', '2025-08-12 15:45:22', 5, 1, 'daily'),
-(72, 10, '2025-08-13', 'daily', 'win', 4, 'DITTY', '⬛🟨⬛⬛⬛\n⬛⬛⬛🟩⬛\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-13 01:36:52', 6, 6, 'daily'),
-(73, 10, '2025-08-13', 'random', 'win', 5, 'BRAND', '⬛🟩🟩⬛🟨\n⬛🟩🟩🟩⬛\n⬛🟩🟩🟩⬛\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-13 01:45:02', 12, 12, 'daily'),
-(74, 1, '2025-08-13', 'daily', 'win', 4, 'DITTY', '⬛⬛⬛⬛⬛\n⬛⬛🟨⬛⬛\n🟩🟩🟩🟩⬛\n🟩🟩🟩🟩🟩', '2025-08-13 12:05:04', 9, 2, 'daily'),
-(75, 10, '2025-08-14', 'daily', 'win', 6, 'CURLY', '⬛⬛⬛⬛⬛\n⬛🟨🟨⬛⬛\n🟨🟩⬛🟨⬛\n🟩🟩🟩⬛🟩\n🟩🟩🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-14 06:51:52', 7, 7, 'daily'),
-(76, 1, '2025-08-14', 'daily', 'win', 6, 'CURLY', '⬛⬛⬛⬛⬛\n⬛⬛⬛🟨⬛\n⬛⬛⬛🟨⬛\n🟩⬛🟨⬛⬛\n🟩🟩🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-14 22:32:26', 9, 3, 'daily'),
-(77, 1, '2025-08-14', 'daily', 'win', 5, 'CURLY', '⬛⬛⬛🟩🟩\n⬛⬛⬛🟩🟩\n⬛⬛⬛🟩🟩\n🟩⬛⬛🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-15 00:29:25', 9, 3, 'daily'),
-(78, 10, '2025-08-15', 'daily', 'win', 5, 'CEDAR', '⬛⬛🟨⬛⬛\n⬛🟩⬛⬛⬛\n⬛🟩⬛🟨🟨\n⬛🟩🟨🟨⬛\n🟩🟩🟩🟩🟩', '2025-08-15 14:08:57', 8, 8, 'daily'),
-(79, 13, '2025-08-15', 'daily', 'win', 4, 'CEDAR', '⬛⬛🟨⬛⬛\n🟩🟨⬛⬛🟨\n🟩🟨🟨🟩⬛\n🟩🟩🟩🟩🟩', '2025-08-15 22:41:27', 5, 1, 'daily'),
-(80, 10, '2025-08-16', 'daily', 'win', 4, 'DIRGE', '⬛⬛⬛⬛🟩\n⬛⬛⬛🟨🟩\n🟨🟨🟨⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-16 03:22:36', 9, 9, 'daily'),
-(81, 13, '2025-08-16', 'daily', 'win', 6, 'DIRGE', '⬛⬛⬛⬛⬛\n⬛⬛⬛🟨🟨\n⬛⬛⬛🟨🟩\n⬛🟨🟨🟨🟩\n🟨🟩🟨🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-16 18:11:12', 5, 2, 'daily'),
-(82, 10, '2025-08-17', 'daily', 'win', 3, 'GROWN', '⬛⬛⬛⬛🟨\n🟩🟨⬛🟨⬛\n🟩🟩🟩🟩🟩', '2025-08-17 01:54:33', 10, 10, 'daily'),
-(83, 13, '2025-08-17', 'daily', 'win', 6, 'GROWN', '⬛⬛⬛⬛⬛\n⬛⬛🟨⬛⬛\n⬛🟩🟩🟨⬛\n⬛🟩🟩🟩🟩\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-17 23:53:49', 5, 3, 'daily'),
-(84, 10, '2025-08-18', 'daily', 'win', 2, 'HORDE', '⬛🟨🟨⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-18 03:36:22', 11, 11, 'daily'),
-(85, 10, '2025-08-19', 'daily', 'win', 4, 'DROOL', '⬛🟩⬛⬛⬛\n⬛🟩🟩⬛🟨\n🟩🟩🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-19 05:40:23', 12, 12, 'daily'),
-(86, 10, '2025-08-20', 'daily', 'win', 3, 'SHUCK', '🟩⬛⬛⬛⬛\n🟩⬛⬛⬛🟨\n🟩🟩🟩🟩🟩', '2025-08-20 02:31:24', 13, 13, 'daily'),
-(87, 10, '2025-08-21', 'daily', 'win', 3, 'CRYPT', '⬛🟨⬛⬛⬛\n⬛🟨🟨⬛🟨\n🟩🟩🟩🟩🟩', '2025-08-21 12:24:13', 14, 14, 'daily'),
-(88, 10, '2025-08-21', 'random', 'win', 4, 'ALOFT', '⬛🟨⬛🟨⬛\n🟩⬛🟨🟨⬛\n🟩🟩⬛🟨🟩\n🟩🟩🟩🟩🟩', '2025-08-21 18:33:00', 13, 13, 'daily'),
-(89, 1, '2025-08-21', 'daily', 'win', 4, 'CRYPT', '⬛⬛⬛⬛⬛\n🟩⬛⬛⬛⬛\n🟩⬛⬛⬛🟨\n🟩🟩🟩🟩🟩', '2025-08-21 18:33:45', 9, 1, 'daily'),
-(90, 17, '2025-08-21', 'daily', 'win', 4, 'CRYPT', '⬛⬛⬛🟨🟩\n⬛🟩⬛⬛🟩\n⬛🟩⬛⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-21 21:00:10', 1, 1, 'daily'),
-(91, 10, '2025-08-22', 'daily', 'win', 3, 'CUMIN', '⬛⬛⬛⬛🟨\n🟩⬛🟨🟨⬛\n🟩🟩🟩🟩🟩', '2025-08-22 01:20:51', 15, 15, 'daily'),
-(92, 1, '2025-08-22', 'daily', 'win', 3, 'CUMIN', '⬛⬛🟨🟨⬛\n⬛⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-22 09:46:51', 9, 2, 'daily'),
-(94, 10, '2025-08-23', 'daily', 'win', 4, 'STOCK', '🟩🟩⬛⬛⬛\n🟩🟩🟩⬛⬛\n🟩🟩🟩⬛⬛\n🟩🟩🟩🟩🟩', '2025-08-23 16:56:46', 16, 16, 'daily'),
-(95, 10, '2025-08-23', 'daily', 'win', 3, 'STOCK', '🟩🟩⬛⬛⬛\n🟩🟩🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-24 00:20:20', 16, 16, 'daily'),
-(96, 1, '2025-08-24', 'daily', 'win', 4, 'GRAVY', '🟨⬛⬛⬛⬛\n⬛🟨⬛⬛⬛\n⬛🟩🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-24 07:48:33', 9, 1, 'daily'),
-(97, 1, '2025-08-24', 'daily', 'win', 6, 'GRAVY', '🟨⬛⬛⬛⬛\n⬛⬛🟩⬛⬛\n⬛⬛🟩🟨⬛\n⬛🟩🟩⬛⬛\n🟩🟩🟩⬛⬛\n🟩🟩🟩🟩🟩', '2025-08-25 00:04:03', 9, 1, 'daily'),
-(98, 10, '2025-08-24', 'daily', 'win', 6, 'GRAVY', '⬛⬛⬛🟨⬛\n⬛⬛🟩⬛⬛\n⬛🟩🟩⬛⬛\n⬛🟩🟩⬛⬛\n🟩🟩🟩⬛⬛\n🟩🟩🟩🟩🟩', '2025-08-25 00:57:17', 17, 17, 'daily'),
-(99, 19, '2025-08-25', 'daily', 'win', 4, 'LOCUS', '⬛⬛⬛⬛⬛\n🟨🟩🟨⬛⬛\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-25 23:43:43', 1, 1, 'daily'),
-(100, 1, '2025-08-26', 'daily', 'win', 5, 'WIDER', '⬛🟨⬛🟨⬛\n⬛🟨🟨🟨🟨\n⬛🟩🟩🟩🟩\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-26 09:17:36', 9, 1, 'daily'),
-(101, 10, '2025-08-26', 'daily', 'win', 3, 'WIDER', '⬛⬛🟨⬛⬛\n🟩🟨🟨🟨🟨\n🟩🟩🟩🟩🟩', '2025-08-26 20:35:01', 17, 1, 'daily'),
-(102, 1, '2025-08-26', 'daily', 'win', 3, 'WIDER', '⬛⬛🟨🟩🟩\n🟩⬛⬛🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-27 00:04:30', 9, 1, 'daily'),
-(103, 10, '2025-08-27', 'daily', 'win', 5, 'BREED', '⬛⬛🟩⬛⬛\n⬛🟩🟩🟩⬛\n⬛🟩🟩🟩🟩\n⬛🟩🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-27 01:06:46', 17, 2, 'daily'),
-(104, 1, '2025-08-27', 'daily', 'win', 3, 'BREED', '⬛🟨⬛⬛⬛\n🟩⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-28 00:37:41', 9, 2, 'daily'),
-(105, 10, '2025-08-28', 'daily', 'win', 6, 'QUITE', '⬛🟨🟨⬛⬛\n⬛⬛🟨🟩🟩\n🟨⬛🟩🟩🟩\n🟨⬛🟩🟩🟩\n🟨⬛🟩🟩🟩\n🟩🟩🟩🟩🟩', '2025-08-28 01:12:42', NULL, NULL, 'daily'),
-(106, 1, '2025-08-28', 'daily', 'win', 5, 'QUITE', '⬛⬛⬛🟨⬛\n⬛🟨⬛⬛🟩\n⬛⬛🟩⬛🟩\n⬛🟩🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-29 00:08:38', 9, 3, 'daily'),
-(107, 10, '2025-08-29', 'daily', 'win', 5, 'CHAFE', '⬛⬛🟨🟨⬛\n⬛⬛🟩⬛🟩\n⬛⬛🟩⬛🟩\n🟨⬛🟩⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-30 00:13:48', 1, 1, 'daily'),
-(108, 1, '2025-08-30', 'daily', 'win', 3, 'CACHE', '🟨⬛⬛⬛⬛\n⬛🟩⬛⬛🟩\n🟩🟩🟩🟩🟩', '2025-08-30 09:38:15', 9, 1, 'daily');
+CREATE TABLE `game_sessions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `game_date` date NOT NULL,
+  `mode` enum('daily','random') NOT NULL,
+  `answer` char(5) NOT NULL,
+  `guesses_made` text,
+  `guess_count` tinyint(4) DEFAULT '0',
+  `is_complete` tinyint(1) DEFAULT '0',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -289,60 +94,12 @@ INSERT INTO `game_results` (`id`, `user_id`, `game_date`, `mode`, `result`, `gue
 -- Table structure for table `ip_log`
 --
 
-DROP TABLE IF EXISTS `ip_log`;
 CREATE TABLE `ip_log` (
   `ip_id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `ip_address` varchar(100) NOT NULL,
-  `date` timestamp NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
---
--- Dumping data for table `ip_log`
---
-
-INSERT INTO `ip_log` (`ip_id`, `user_id`, `ip_address`, `date`) VALUES
-(1, 2, '::1', '2023-05-03 08:35:02'),
-(2, 2, '::1', '2023-05-03 10:21:04'),
-(3, 2, '::1', '2023-05-03 10:23:23'),
-(4, 2, '::1', '2023-05-04 07:40:10'),
-(5, 2, '::1', '2023-05-04 15:19:07'),
-(6, 2, '::1', '2023-05-05 07:43:31'),
-(7, 2, '::1', '2023-05-06 10:05:37'),
-(8, 2, '::1', '2023-05-09 08:08:44'),
-(9, 2, '::1', '2023-05-09 08:48:43'),
-(10, 2, '::1', '2023-05-10 07:30:04'),
-(11, 2, '::1', '2023-05-10 11:14:08'),
-(12, 2, '::1', '2023-05-10 14:15:40'),
-(13, 2, '::1', '2023-05-10 14:20:28'),
-(14, 2, '::1', '2023-05-10 14:22:59'),
-(15, 2, '::1', '2023-05-10 14:24:38'),
-(16, 2, '::1', '2023-05-11 07:46:07'),
-(17, 2, '::1', '2023-05-11 13:18:12'),
-(18, 2, '::1', '2023-05-11 13:28:45'),
-(19, 2, '::1', '2023-05-12 09:23:33'),
-(20, 2, '::1', '2023-05-12 10:14:07'),
-(21, 2, '::1', '2023-05-12 10:29:00'),
-(22, 2, '::1', '2023-05-12 11:00:54'),
-(23, 2, '::1', '2023-05-12 11:03:46'),
-(24, 2, '::1', '2023-05-12 12:37:55'),
-(25, 2, '::1', '2023-05-12 12:40:50'),
-(26, 2, '::1', '2023-05-16 07:46:45'),
-(27, 2, '::1', '2023-05-16 09:07:08'),
-(28, 2, '::1', '2023-05-17 10:01:36'),
-(29, 2, '::1', '2023-05-17 13:30:49'),
-(30, 2, '::1', '2023-05-17 13:35:34'),
-(31, 2, '::1', '2023-05-17 13:35:49'),
-(32, 2, '::1', '2023-05-17 13:37:16'),
-(33, 9, '::1', '2023-05-18 14:43:33'),
-(34, 17, '::1', '2023-05-22 14:14:14'),
-(35, 8, '::1', '2023-05-29 07:52:02'),
-(36, 18, '::1', '2023-05-31 11:43:01'),
-(37, 2, '86.15.90.112', '2023-06-14 09:55:15'),
-(38, 2, '172.224.224.48', '2023-06-21 10:07:31'),
-(39, 8, '86.15.88.61', '2023-06-28 10:50:06'),
-(40, 2, '86.15.88.61', '2023-06-28 10:58:39'),
-(41, 33, '86.15.88.61', '2023-06-28 11:04:29');
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -350,14 +107,13 @@ INSERT INTO `ip_log` (`ip_id`, `user_id`, `ip_address`, `date`) VALUES
 -- Table structure for table `rank`
 --
 
-DROP TABLE IF EXISTS `rank`;
 CREATE TABLE `rank` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `title` varchar(23) NOT NULL,
-  `level` int(3) DEFAULT 0,
-  `admin` int(1) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `level` int(3) DEFAULT '0',
+  `admin` int(1) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rank`
@@ -372,11 +128,10 @@ INSERT INTO `rank` (`id`, `user_id`, `title`, `level`, `admin`) VALUES
 -- Table structure for table `rank_info`
 --
 
-DROP TABLE IF EXISTS `rank_info`;
 CREATE TABLE `rank_info` (
   `ri_id` int(11) NOT NULL,
   `rank_title` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `rank_info`
@@ -393,50 +148,13 @@ INSERT INTO `rank_info` (`ri_id`, `rank_title`) VALUES
 -- Table structure for table `reset`
 --
 
-DROP TABLE IF EXISTS `reset`;
 CREATE TABLE `reset` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `key` varchar(255) NOT NULL,
-  `date` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `expiry_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `reset`
---
-
-INSERT INTO `reset` (`id`, `user_id`, `key`, `date`, `expiry_date`) VALUES
-(39, 1, 'bb7384d9fa673685d807d2476700218bdb51e28aa6202faefd2116161c24ebe8', '2025-08-21 15:58:31', '2025-08-21 17:58:31');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `settings`
---
-
-DROP TABLE IF EXISTS `settings`;
-CREATE TABLE `settings` (
-  `id` int(1) NOT NULL,
-  `base_url` varchar(255) NOT NULL,
-  `admin_id` int(11) NOT NULL,
-  `app_title` varchar(150) NOT NULL,
-  `app_tag` varchar(150) NOT NULL,
-  `home_login` int(1) NOT NULL DEFAULT 1,
-  `last_updated` timestamp NULL DEFAULT current_timestamp(),
-  `user_register` int(1) NOT NULL DEFAULT 1,
-  `cookie_warning` int(1) NOT NULL DEFAULT 1,
-  `salt` varchar(255) NOT NULL,
-  `app_email` varchar(120) NOT NULL,
-  `session_prefix` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `settings`
---
-
-INSERT INTO `settings` (`id`, `base_url`, `admin_id`, `app_title`, `app_tag`, `home_login`, `last_updated`, `user_register`, `cookie_warning`, `salt`, `app_email`, `session_prefix`) VALUES
-(1, 'https://crm.comparicare.co.uk', 2, 'Comparicare', 'Affordable healthcare at your fingertips', 1, '2022-04-19 21:49:57', 0, 0, '0SRzGjsIi.OuEd9,sh*u5p[_nZ>^3dTrCN)BYMzd6N5ihKBbRc@H;l7EQzrb@Vxt', 'divinorum2001@gmail.com', 'HCRM_');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -444,7 +162,6 @@ INSERT INTO `settings` (`id`, `base_url`, `admin_id`, `app_title`, `app_tag`, `h
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(255) NOT NULL,
   `display_name` varchar(50) NOT NULL,
@@ -453,36 +170,18 @@ CREATE TABLE `users` (
   `location` varchar(200) DEFAULT NULL,
   `security_hash` varchar(255) NOT NULL,
   `avatar` varchar(120) DEFAULT 'assets/images/blank_user.png',
-  `rank` int(1) NOT NULL DEFAULT 0,
-  `is_admin` int(1) DEFAULT 0,
-  `sys_admin` int(1) DEFAULT 0,
+  `rank` int(1) NOT NULL DEFAULT '0',
+  `is_admin` int(1) DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
+  `sys_admin` int(1) DEFAULT '0',
   `last_access` datetime DEFAULT NULL,
-  `active` int(1) DEFAULT 1,
+  `active` int(1) DEFAULT '1',
   `date` date DEFAULT NULL,
-  `dead_switch` int(1) DEFAULT 0,
+  `dead_switch` int(1) DEFAULT '0',
   `avatar_color` varchar(10) DEFAULT NULL,
-  `correct_answers_count` int(11) DEFAULT 0,
-  `reputation_points` int(11) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `display_name`, `email`, `pwd`, `location`, `security_hash`, `avatar`, `rank`, `is_admin`, `sys_admin`, `last_access`, `active`, `date`, `dead_switch`, `avatar_color`, `correct_answers_count`, `reputation_points`) VALUES
-(1, 'Lazysod', 'divinorum2001@gmail.com', '$2y$12$AVOTtNsK6THpWp86ds2.2ekULICrVZ3yJ9UVG5zjwQsgCF1QjYuPK', NULL, 'eadee2397845d6a762b373238264fe14', 'app/uploads/users/avatar/1/smile.png', 1, 1, 0, '2025-08-30 09:37:17', 1, NULL, 0, 'indigo', 0, 0),
-(7, 'albaweb', 'admin@albaweb.net', '$2y$12$0hY.dRZo5q4aUhHfQ6ShrOCUC/iyfK9CNhMG9zvyvCQ5tWLYIaK9e', NULL, '$2y$12$PjI2LdUoNQ69IsXRnXaDNO9OAPOu2ZBD1OP3FCAA5BxsOqvwtc0J2', 'app/img/default.png', 0, 0, 0, '2025-07-22 12:24:16', 1, '2025-07-22', 0, NULL, 0, 0),
-(8, 'ghost', 'divinorum2001+test@gmail.com', '$2y$12$LSyF1d.NXEXHE5W5ZtOwAOxf7LPL.JuDlc08uZexQyqfVTRAkJgfO', NULL, 'ccad5156a4deac5f671b9fde87887165', 'assets/images/blank_user.png', 0, 0, 0, '2025-07-28 00:18:25', 1, NULL, 0, NULL, 0, 0),
-(9, 'sara', 'sara@albaweb.net', '$2y$12$NwGtgwqYUHXhbtSbJSzsFeYVf/sbCCgTaVntOQdqq82EUNO4ALeca', NULL, 'cd53c8e97fbd5904973240e473957bbc', 'assets/images/blank_user.png', 0, 0, 0, '2025-07-30 08:57:14', 1, NULL, 0, NULL, 0, 0),
-(10, 'Coinneach', 'coinneachmacanndrais@gmail.com', '$2y$12$r1wVj7gRXv.OmVpyDJXIXOnCZpFaHWWjr2DepTCJ0OeF8yyOJHaEO', NULL, '70ebf7b5dbd67b11c9dc714639d679c7', 'assets/images/blank_user.png', 0, 0, 0, '2025-08-30 01:10:47', 1, NULL, 0, NULL, 0, 0),
-(11, 'Debbie', 'debbie.kirkpatrick1@googlemail.com', '$2y$12$sPoF8mOrRhnUsxcICqZAveExG9GQsoDpqhdDn7y1mZFxW8/SUDmGS', NULL, '86eb184a5688033e5af15091810c2dc4', 'assets/images/blank_user.png', 0, 0, 0, '2025-07-28 14:02:11', 1, NULL, 0, NULL, 0, 0),
-(12, 'Scruffy', 'xwl8rak3o@mozmail.com', '$2y$12$Pi8VGC8nr8UD1fPAoCuUiOGBHeqacdI.BbhG6tNAGYF1ej/Uvy4YW', NULL, '46ac64c7c44b66dc143c02fb539c49be', 'assets/images/blank_user.png', 0, 0, 0, '2025-07-28 19:41:12', 1, NULL, 0, NULL, 0, 0),
-(13, 'Lisa', 'lisawilliams_@live.com', '$2y$12$.rPzJcqA1HsG.niPt.Aj0eI5TExNb9.c0P9MgPmvPLnxw6E6dI6/y', NULL, 'f3e9c67a98cdd472bf835d76e948256b', 'assets/images/blank_user.png', 0, 0, 0, '2025-08-17 23:52:29', 1, NULL, 0, NULL, 0, 0),
-(14, 'Peace', 'kelly.warrillow@yahoo.co.uk', '$2y$12$qaemxwuOCimBSDdkML65S.BO.8BJ3IKpzaqLwdj/hknznpJUxjoPy', NULL, '939952e14a99d14867e45c6b13d21880', 'assets/images/blank_user.png', 0, 0, 0, '2025-08-09 19:30:34', 1, NULL, 0, NULL, 0, 0),
-(15, 'gazzatron', 'garrylaing@gmail.com', '$2y$12$7I.tGsV3S9VhmYr8akr4iO/xbgctz4m7.8MN83oFdm8GcN0JKl20i', NULL, '79dc2c6b60b35a2af27aa392b4de4ea9', 'assets/images/blank_user.png', 0, 0, 0, '2025-08-07 16:10:42', 1, NULL, 0, NULL, 0, 0),
-(17, 'ZombiWorkshop', 'zombiworkshop@yahoo.co.uk', '$2y$12$MlPDwehgyGlpVOFe2Cnqw.WlIuHcdaQ2UlzHCKUM/tZX0z9zF2yh6', NULL, 'c7ec0e1429bd1d3e401d09bd084f2fb1', 'assets/images/blank_user.png', 0, 0, 0, '2025-08-22 13:45:20', 1, NULL, 0, NULL, 0, 0),
-(18, 'kieran', 'kieran.macneil000@gmail.com', '$2y$12$hsfFJGQjGO8uervEMMzkwuErKugpQuMHpKuVvYBxu3PhtqSJTy16e', NULL, 'c78e16655f836e017dc80fc0f873313e', 'assets/images/blank_user.png', 0, 0, 0, NULL, 0, NULL, 0, NULL, 0, 0),
-(19, 'Mo', 'saorsascot@gmail.com', '$2y$12$qV1xbjgzUvKQhAyDeXsz/uNH.ADMzNmHOFLm1a/IDZmr9oQMsQXp6', NULL, '2446a773373673ca19d2333bb4937076', 'assets/images/blank_user.png', 0, 0, 0, '2025-08-25 23:39:11', 1, NULL, 0, NULL, 0, 0);
+  `correct_answers_count` int(11) DEFAULT '0',
+  `reputation_points` int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -490,23 +189,13 @@ INSERT INTO `users` (`id`, `display_name`, `email`, `pwd`, `location`, `security
 -- Table structure for table `user_activation`
 --
 
-DROP TABLE IF EXISTS `user_activation`;
 CREATE TABLE `user_activation` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `activation_key` varchar(255) NOT NULL,
   `entry_date` datetime NOT NULL,
   `expiry_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
---
--- Dumping data for table `user_activation`
---
-
-INSERT INTO `user_activation` (`id`, `user_id`, `activation_key`, `entry_date`, `expiry_date`) VALUES
-(14, 16, '7987e1e3fbdc24d97af6892318b2dde2b180aa64c90f231c76d60d08bb2f453b', '2025-08-10 12:02:01', '2025-08-11 12:02:01'),
-(15, 17, 'b2fa7e97d856c4e659ff68f4f1cbd1af9856a47926a92bb4b320fe130abd4ed8', '2025-08-10 12:05:46', '2025-08-11 12:05:46'),
-(18, 18, '0f7c4ca4109105968369b43ad4af4c44c6789e42a1b3967b6f249687c82dd8f3', '2025-08-23 00:11:10', '2025-08-24 00:11:10');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -514,11 +203,10 @@ INSERT INTO `user_activation` (`id`, `user_id`, `activation_key`, `entry_date`, 
 -- Table structure for table `word_list`
 --
 
-DROP TABLE IF EXISTS `word_list`;
 CREATE TABLE `word_list` (
   `word_id` int(255) NOT NULL,
   `word` varchar(12) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `word_list`
@@ -2839,7 +2527,8 @@ INSERT INTO `word_list` (`word_id`, `word`) VALUES
 (2312, 'rower'),
 (2313, 'artsy'),
 (2314, 'rural'),
-(2315, 'shave');
+(2315, 'shave'),
+(2317, 'hated');
 
 --
 -- Indexes for dumped tables
@@ -2865,6 +2554,13 @@ ALTER TABLE `game_results`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `game_sessions`
+--
+ALTER TABLE `game_sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_daily_session` (`user_id`,`game_date`,`mode`);
+
+--
 -- Indexes for table `ip_log`
 --
 ALTER TABLE `ip_log`
@@ -2886,12 +2582,6 @@ ALTER TABLE `rank_info`
 -- Indexes for table `reset`
 --
 ALTER TABLE `reset`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `settings`
---
-ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2920,25 +2610,31 @@ ALTER TABLE `word_list`
 -- AUTO_INCREMENT for table `cookie_login`
 --
 ALTER TABLE `cookie_login`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `daily_played`
 --
 ALTER TABLE `daily_played`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `game_results`
 --
 ALTER TABLE `game_results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `game_sessions`
+--
+ALTER TABLE `game_sessions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ip_log`
 --
 ALTER TABLE `ip_log`
-  MODIFY `ip_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `ip_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rank`
@@ -2956,31 +2652,25 @@ ALTER TABLE `rank_info`
 -- AUTO_INCREMENT for table `reset`
 --
 ALTER TABLE `reset`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
-
---
--- AUTO_INCREMENT for table `settings`
---
-ALTER TABLE `settings`
-  MODIFY `id` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_activation`
 --
 ALTER TABLE `user_activation`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `word_list`
 --
 ALTER TABLE `word_list`
-  MODIFY `word_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2317;
+  MODIFY `word_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2319;
 
 --
 -- Constraints for dumped tables
