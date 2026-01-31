@@ -73,3 +73,7 @@ node_modules/
 
 # Ignore test output
 /tests/output/
+bin/
+dev/
+htdocs/app/db_conf.php
+htdocs/app/config.php
