@@ -196,14 +196,14 @@ CREATE TABLE `reset` (
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(255) NOT NULL,
-  `first_name` varchar(50) DEFAULT NULL,
-  `second_name` varchar(50) DEFAULT NULL,
+  `display_name` varchar(50) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `pwd` varchar(128) NOT NULL,
   `security_hash` varchar(255) NOT NULL,
   `avatar` varchar(120) DEFAULT 'dist/img/avatar.png',
   `is_admin` int(1) DEFAULT '0',
   `sys_admin` int(1) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
   `rank` int(1) DEFAULT '0',
   `last_access` datetime DEFAULT NULL,
   `active` int(1) DEFAULT '0',

@@ -106,13 +106,20 @@ require __DIR__ . '/partials/header.php';
     <script type="module">
         document.addEventListener('DOMContentLoaded', function() {
             var PATH = '';
-            // --- Utility: get today's date as YYYY-MM-DD ---
+            // --- Utility: get today's date as YYYY-MM-DD for DB, and DD-MM-YYYY for display ---
             const getTodayStr = function() {
                 const d = new Date();
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
                 const day = String(d.getDate()).padStart(2, '0');
                 return `${year}-${month}-${day}`;
+            }
+            const getTodayDisplayStr = function() {
+                const d = new Date();
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${day}-${month}-${year}`;
             }
             const keyboard = document.getElementById('wordle-keyboard');
             const feedback = document.getElementById('wordle-feedback');
@@ -369,6 +376,8 @@ require __DIR__ . '/partials/header.php';
             }
 
             // --- Share Feature ---
+            let emojiRows = [];
+
             const hideShareButton = function() {
                 let shareBtn = document.getElementById('wordle-share-btn');
                 if (shareBtn) shareBtn.style.display = 'none';
@@ -445,7 +454,7 @@ require __DIR__ . '/partials/header.php';
                     dataType: 'json',
                     success: function(data) {
                         if (!data.leaderboard || !Array.isArray(data.leaderboard) || data.leaderboard.length === 0) {
-                            document.getElementById('wordle-leaderboard').innerHTML = '<div class="text-danger">No leaderboard data returned.</div>';
+                            document.getElementById('wordle-leaderboard').innerHTML = '<div class="text-danger">No leaderboard data available at the moment!</div>';
                             return;
                         }
                         // Sort leaderboard by wins field (from backend)
@@ -711,7 +720,7 @@ require __DIR__ . '/partials/header.php';
                 });
 
                 // Build emoji grid for guess_history
-                const emojiRows = guessHistory.map((word, idx) => {
+                emojiRows = guessHistory.map((word, idx) => {
                     const rowCells = grid[idx]?.querySelectorAll('.wordle-cell');
                     let emojiArr = [];
                     if (rowCells && rowCells.length === 5) {
@@ -801,19 +810,9 @@ require __DIR__ . '/partials/header.php';
                     shareBtn.onclick = function() {
                         // Word Rift style: header and emoji grid, include game mode
                         const modeLabel = mode === 'daily' ? 'Daily' : (mode === 'random' ? 'Random' : mode.charAt(0).toUpperCase() + mode.slice(1));
-                        const title = `Word Rift (${modeLabel}) ${getTodayStr()} ${result === 'win' ? guesses : 'X'}/6`;
+                        const title = `Word Rift (${modeLabel}) ${getTodayDisplayStr()} ${result === 'win' ? guesses : 'X'}/6`;
                         // Only allow 🟩, 🟨, ⬛ in output, and ensure each row is exactly 5 characters
-                        const grid = guessHistory.map(row => {
-                            // Replace placeholders, remove any non-emoji, then ensure exactly 5 emoji chars
-                            let emojiArr = row.replace(/_/g, '⬛').replace(/[^🟩🟨⬛]/gu, '').match(/./gu) || [];
-                            // Always force to exactly 5 emoji squares
-                            if (emojiArr.length < 5) {
-                                while (emojiArr.length < 5) emojiArr.push('⬛');
-                            } else if (emojiArr.length > 5) {
-                                emojiArr = emojiArr.slice(0, 5);
-                            }
-                            return emojiArr.join('');
-                        }).join('\n');
+                        const grid = emojiRows.join('\n');
                         const text = `${title}\n${grid}`;
                         navigator.clipboard.writeText(text).then(() => {
                             shareBtn.textContent = 'Copied!';

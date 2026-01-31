@@ -1,5 +1,12 @@
 <?php
-// Load config early for session prefix
+// Redirect to /install if db_conf.php does not exist and not already on /install or /app/install.php
+if (!file_exists(__DIR__ . '/db_conf.php')) {
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    if (strpos($uri, '/install') === false && strpos($uri, '/app/install.php') === false) {
+        header('Location: /install');
+        exit;
+    }
+}
 $config = isset($config) ? $config : (file_exists(__DIR__ . '/config.php') ? require __DIR__ . '/config.php' : []);
 
 // Set timezone based on config entry
@@ -56,6 +63,19 @@ if (!isset($router)) {
     $router = new Router();
 }
 
+$router->get('/install', function() {
+    require __DIR__ . '/../views/install.php';
+    exit;
+});
+$router->get('/create_admin', function() {
+    require __DIR__ . '/../views/create_admin.php';
+    exit;
+});
+
+$router->post('/create_admin', function() {
+    require __DIR__ . '/../app/create_admin.php';
+    exit;
+});
 // Register static routes for privacy and terms (after router is initialized)
 $router->get('/privacy', function() {
     require __DIR__ . '/../views/privacy.php';
@@ -63,6 +83,11 @@ $router->get('/privacy', function() {
 });
 $router->get('/terms', function() {
     require __DIR__ . '/../views/terms.php';
+    exit;
+});
+
+$router->get('/admin_created', function() {
+    require __DIR__ . '/../views/admin_created.php';
     exit;
 });
 

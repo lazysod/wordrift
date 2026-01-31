@@ -5,9 +5,13 @@ $config = require __DIR__ . '/app/config.php';
 // Timezone
 date_default_timezone_set($config['timezone']);
 
-$db = new DB($config);
-$user = new User($db, $config);
-$user->cookie_check();
+// Only create DB and User if db_conf.php exists
+if (file_exists(__DIR__ . '/app/db_conf.php')) {
+    $db = new DB($config);
+    $user = new User($db, $config);
+    $user->cookie_check();
+}
+
 $requestPath = '/' . trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 if ($requestPath === '//') { $requestPath = '/';
 }
