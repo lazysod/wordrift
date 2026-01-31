@@ -73,7 +73,7 @@ node_modules/
 
 htdocs/app/db_conf.php
 htdocs/app/config.php
-seeds/
+/seeds/
 /templates/
 /template/
 /tests/
