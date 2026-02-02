@@ -9,6 +9,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Check for required config files
+$configPath = __DIR__ . '/config.php';
+$mailConfigPath = __DIR__ . '/mail_config.php';
+if (!file_exists($configPath)) {
+    echo json_encode(['success' => false, 'error' => 'config.php is missing. Please copy config-example.php to config.php and update your settings.']);
+    exit;
+}
+if (!file_exists($mailConfigPath)) {
+    echo json_encode(['success' => false, 'error' => 'mail_config.php is missing. Please copy mail_config-example.php to mail_config.php and update your settings.']);
+    exit;
+}
+
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
 $db_host = $input['db_host'] ?? '';

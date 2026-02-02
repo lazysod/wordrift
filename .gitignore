@@ -71,6 +71,10 @@ storage/uploads/
 # Ignore node modules (if any)
 node_modules/
 
+# Block sensitive config files for public repo
+htdocs/app/config.php
+htdocs/app/db_conf.php
+htdos/app/mail_config.php
 /seeds/
 /templates/
 /template/
