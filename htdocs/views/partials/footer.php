@@ -35,7 +35,10 @@
                 $js_path = App::config('js_path') . '/' . $pageJs . '.js';
             }
             ?>
-        <script src="<?php echo $js_path; ?>"></script>
+        <?php if( file_exists($js_path)){
+            echo '<script src="' . $js_path . '"></script>';
+        } ?>
+        
         <?php endif; ?>
         </body>
 

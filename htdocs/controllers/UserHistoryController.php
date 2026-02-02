@@ -27,13 +27,28 @@ class UserHistoryController
         $totalRows = $total ? array_values($total)[0] : 0;
         $totalPages = ceil($totalRows / $perPage);
 
-        // Fetch paginated results
-        $sql = "SELECT game_date, guesses, answer, guess_history 
+        // Fetch paginated results from game_results
+        $sql = "SELECT game_date, guesses, answer, guess_history, mode 
             FROM game_results 
             WHERE user_id = ? AND result = 'win'
             ORDER BY game_date DESC
             LIMIT $perPage OFFSET $offset";
         $history = $db->fetchAll($sql, [$user_id]);
+
+        // For each result, fetch guessed words from game_sessions
+        foreach ($history as &$row) {
+            $mode = $row['mode'] ?? 'daily';
+            $game_date = $row['game_date'];
+            $sessionSql = "SELECT guesses_made FROM game_sessions WHERE user_id = ? AND game_date = ? AND mode = ? AND is_complete = 1 ORDER BY id DESC LIMIT 1";
+            $session = $db->fetch($sessionSql, [$user_id, $game_date, $mode]);
+            if ($session && !empty($session['guesses_made'])) {
+                $guessesArr = json_decode($session['guesses_made'], true);
+                $row['guessed_words'] = array_column($guessesArr, 'word');
+            } else {
+                $row['guessed_words'] = [];
+            }
+        }
+        unset($row);
 
         // Pagination info for view
         $pagination = [

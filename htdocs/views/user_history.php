@@ -13,13 +13,14 @@ require_once __DIR__ . '/partials/header.php';
                         <th>Word</th>
                         <th>Attempts</th>
                         <th>Colored Results</th>
+                        <th>Guesses</th>
                         <th>Share</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($history as $row): ?>
                         <tr>
-                            <td><?= htmlspecialchars($row['game_date']) ?></td>
+                            <td><?= date('d-m-Y', strtotime($row['game_date'])); ?></td>
                             <td><?= htmlspecialchars($row['answer']) ?></td>
                             <td><?= htmlspecialchars($row['guesses']) ?></td>
                             <td style="font-family:monospace;white-space:normal;">
@@ -31,11 +32,23 @@ require_once __DIR__ . '/partials/header.php';
                                 ?>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-outline-success btn-sm share-history-btn" 
+                                <?php
+                                // Show actual guessed words from guessed_words if present, else fallback
+                                if (!empty($row['guessed_words']) && is_array($row['guessed_words'])) {
+                                    foreach ($row['guessed_words'] as $g) {
+                                        echo htmlspecialchars($g) . '<br>';
+                                    }
+                                } else {
+                                    echo '<p class="text-muted">Guesses Not Available</p>';
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-success btn-sm share-history-btn"
                                     data-date="<?= htmlspecialchars($row['game_date']) ?>"
                                     data-answer="<?= htmlspecialchars($row['answer']) ?>"
                                     data-attempts="<?= htmlspecialchars($row['guesses']) ?>"
-                                    data-results="<?= htmlspecialchars(str_replace(array("\r","\n"), "\\n", $row['guess_history'] ?? '')) ?>">
+                                    data-results="<?= htmlspecialchars(str_replace(array("\r", "\n"), "\\n", $row['guess_history'] ?? '')) ?>">
                                     Share
                                 </button>
                             </td>
@@ -55,39 +68,45 @@ require_once __DIR__ . '/partials/header.php';
                 </nav>
             <?php endif; ?>
         <?php else: ?>
-            <?php if(!isset($_SESSION[PREFIX . 'user_id'])): ?>
-            <div class="col-12 text-center"><div class="alert alert-danger">You need to be logged in to view history.</div></div>
+            <?php if (!isset($_SESSION[PREFIX . 'user_id'])): ?>
+                <div class="col-12 text-center">
+                    <div class="alert alert-danger">You need to be logged in to view history.</div>
+                </div>
             <?php else: ?>
-            <div class="col-12 text-center"><div class="alert alert-warning">No correct guesses recorded yet.</div></div>
+                <div class="col-12 text-center">
+                    <div class="alert alert-warning">No correct guesses recorded yet.</div>
+                </div>
             <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.share-history-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const date = btn.getAttribute('data-date');
-            const answer = btn.getAttribute('data-answer');
-            const attempts = btn.getAttribute('data-attempts');
-            let results = btn.getAttribute('data-results').replace(/\\n/g, '\n');
-            // Remove any trailing blank lines
-            results = results.replace(/\n+$/g, '');
-            // Format date as DD-MM-YYYY for sharing
-            let formattedDate = date;
-            if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-                const [y, m, d] = date.split('-');
-                formattedDate = `${d}-${m}-${y}`;
-            }
-            const text = results
-                ? `Wordrift (${formattedDate})  ${attempts}/6\n${results}`.replace(/\n+$/g, '')
-                : `Wordrift (${formattedDate})  ${attempts}/6`;
-            navigator.clipboard.writeText(text).then(() => {
-                btn.textContent = 'Copied!';
-                setTimeout(() => { btn.textContent = 'Share'; }, 1500);
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.share-history-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const date = btn.getAttribute('data-date');
+                const answer = btn.getAttribute('data-answer');
+                const attempts = btn.getAttribute('data-attempts');
+                let results = btn.getAttribute('data-results').replace(/\\n/g, '\n');
+                // Remove any trailing blank lines
+                results = results.replace(/\n+$/g, '');
+                // Format date as DD-MM-YYYY for sharing
+                let formattedDate = date;
+                if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+                    const [y, m, d] = date.split('-');
+                    formattedDate = `${d}-${m}-${y}`;
+                }
+                const text = results ?
+                    `Wordrift (${formattedDate})  ${attempts}/6\n${results}`.replace(/\n+$/g, '') :
+                    `Wordrift (${formattedDate})  ${attempts}/6`;
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        btn.textContent = 'Share';
+                    }, 1500);
+                });
             });
         });
     });
-});
 </script>
 <?php require_once __DIR__ . '/partials/footer.php'; ?>

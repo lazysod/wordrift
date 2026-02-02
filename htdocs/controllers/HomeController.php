@@ -1,5 +1,4 @@
 <?php
-error_log('DEBUG: HomeController.php loaded');
 class HomeController
 {
     public function index()
