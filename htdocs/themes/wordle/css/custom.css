@@ -1,3 +1,10 @@
+/* Blacked out/unused wordle cells */
+.wordle-cell-unused {
+    background: #222 !important;
+    color: #222 !important;
+    border-color: #444 !important;
+    pointer-events: none;
+}
 /* 
     Insert your custom CSS overides below
 */

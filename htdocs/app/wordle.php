@@ -97,6 +97,22 @@ if ($action === 'validate' && isset($_GET['guess'])) {
 
 // --- Record game result ---
 if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Debug: log incoming request for troubleshooting
+    $logFile = __DIR__ . '/../storage/logs/wordle_debug.log';
+    file_put_contents($logFile, "\n==== record_result ====".PHP_EOL, FILE_APPEND);
+    $rawInput = file_get_contents('php://input');
+
+    // Only allow AJAX requests
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'code' => 403, 'message' => 'Invalid access method (AJAX required)']);
+        exit;
+    }
+    // Expect JSON body
+    $input = json_decode($rawInput, true);
+    file_put_contents($logFile, 'Raw input: '.$rawInput.PHP_EOL, FILE_APPEND);
+    file_put_contents($logFile, 'Parsed input: '.print_r($input, true).PHP_EOL, FILE_APPEND);
     // Only allow AJAX requests
     if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
         http_response_code(403);
@@ -131,25 +147,33 @@ if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     // Only record completed games (win/loss)
     if ($result === 'win' || $result === 'loss') {
-        require_once __DIR__ . '/class/game.php';
-        $game = new game($db); // <-- FIXED
-        $insert_id = $game->addGameResult($user_id, $game_date, $mode, $result, $guesses, $answer, $guess_history);
-
         // --- NEW: Insert or update game_sessions for persistent guesses ---
-        $guesses_made = $input['guesses_made'] ?? null; // Should be a JSON string or array
+        $guesses_made = $input['guesses_made'] ?? null; // Could be JSON string or array
         if (!$guesses_made && !empty($input['guess_history'])) {
             // Try to reconstruct guesses_made from guess_history (legacy)
             $guesses_made = json_encode(array_map(function($word) {
                 return ['word' => $word, 'result' => []];
             }, explode("\n", $input['guess_history'])));
-        } elseif (is_array($guesses_made)) {
+        } else if (is_array($guesses_made)) {
             $guesses_made = json_encode($guesses_made);
+        } else if (is_string($guesses_made)) {
+            // If it's a string, check if it's valid JSON, and re-encode to ensure DB always gets a string
+            $decoded = json_decode($guesses_made, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $guesses_made = json_encode($decoded);
+            } // else leave as-is (may be null or invalid)
         }
+        file_put_contents($logFile, 'guesses_made (pre-save): '.print_r($guesses_made, true).PHP_EOL, FILE_APPEND);
+        require_once __DIR__ . '/class/game.php';
+        $game = new game($db); // <-- FIXED
+        $insert_id = $game->addGameResult($user_id, $game_date, $mode, $result, $guesses, $answer, $guess_history);
         $is_complete = 1;
         // Upsert into game_sessions
         $sql = "SELECT id FROM game_sessions WHERE user_id = ? AND game_date = ? AND mode = ? LIMIT 1";
         $existing = $db->fetch($sql, [$user_id, $game_date, $mode]);
         if ($existing) {
+                        file_put_contents($logFile, 'Updating game_sessions: '.print_r([$guesses_made, $answer, $is_complete, $existing['id']], true).PHP_EOL, FILE_APPEND);
+                        file_put_contents($logFile, 'Inserting game_sessions: '.print_r([$user_id, $game_date, $mode, $guesses_made, $answer, $is_complete], true).PHP_EOL, FILE_APPEND);
             $sql = "UPDATE game_sessions SET guesses_made = ?, answer = ?, is_complete = ?, updated_at = NOW() WHERE id = ?";
             $db->query($sql, [$guesses_made, $answer, $is_complete, $existing['id']]);
         } else {

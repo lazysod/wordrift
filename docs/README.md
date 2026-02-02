@@ -53,6 +53,16 @@ The admin panel provides full control over your Wordrift installation:
 - The system will automatically skip duplicates and invalid entries
 - You can manage the word list at any time for full control
 
+**Important notes about daily puzzles and word list length:**
+
+- The daily puzzle uses your uploaded word list in order, one word per day, starting from the date you first install or reset the list.
+- The first word in your list becomes the answer for the first available daily puzzle, the second word for the next day, and so on.
+- If your word list runs out (e.g., fewer words than days since install), the daily game will break for all users until you upload more words.
+- **Recommended:** Upload at least 365 words for a year of daily play, or more for uninterrupted operation. For long-term sites, consider uploading several years' worth (e.g., 1000+ words).
+- You can safely add more words at any time; new words will be used for future dates.
+
+Be sure to plan your word list size according to how long you want the daily game to run without interruption.
+
 ## Streaks & Statistics
 
 - **Streaks:**

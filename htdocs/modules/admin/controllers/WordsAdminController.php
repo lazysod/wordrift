@@ -3,6 +3,30 @@ require_once __DIR__ . '/AdminBaseController.php';
 
 class WordsAdminController extends AdminBaseController
 {
+    public function export()
+    {
+        // session_start() is already called in AdminBaseController
+        if (empty($_SESSION[PREFIX . 'admin']) || $_SESSION[PREFIX . 'admin'] < 1) {
+            http_response_code(403);
+            exit('Unauthorized');
+        }
+        if (!isset($_GET['csrf_token']) || $_GET['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')) {
+            http_response_code(400);
+            exit('Invalid CSRF token');
+        }
+        global $config;
+        $db = new DB($config);
+        $words = $db->fetchAll("SELECT word FROM word_list ORDER BY word_id ASC");
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="word_list.csv"');
+        $output = fopen('php://output', 'w');
+        foreach ($words as $row) {
+            fputcsv($output, [$row['word']]);
+        }
+        fclose($output);
+        exit;
+    }
+
     public function index()
     {
         // require_once __DIR__ . '/../view/admin_header.php';
@@ -27,12 +51,20 @@ class WordsAdminController extends AdminBaseController
 
     public function remove()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+        session_start();
+        if (empty($_SESSION['admin'])) {
+            http_response_code(403);
+            exit('Unauthorized');
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['csrf_token']) && $_POST['csrf_token'] === ($_SESSION['csrf_token'] ?? '')) {
             global $config;
             $db = new DB($config);
             $db->query("DELETE FROM word_list WHERE word_id = ?", [intval($_POST['id'])]);
             header('Location: /admin/words');
             exit;
+        } else {
+            http_response_code(400);
+            exit('Invalid request');
         }
     }
 
@@ -98,7 +130,17 @@ class WordsAdminController extends AdminBaseController
 
     public function deleteAll()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm']) && $_POST['confirm'] === 'yes') {
+        // session_start() is already called in AdminBaseController
+        if (empty($_SESSION[PREFIX . 'admin']) || $_SESSION[PREFIX . 'admin'] < 1) {
+            http_response_code(403);
+            exit('Unauthorized');
+        }
+        if (
+            $_SERVER['REQUEST_METHOD'] === 'POST' && 
+            isset($_POST['confirm'], $_POST['csrf_token']) && 
+            $_POST['confirm'] === 'yes' && 
+            $_POST['csrf_token'] === ($_SESSION['csrf_token'] ?? '')
+        ) {
             global $config;
             $db = new DB($config);
             $db->query("TRUNCATE TABLE word_list");
@@ -106,6 +148,9 @@ class WordsAdminController extends AdminBaseController
             $_SESSION['admin_words_msg'] = "All words deleted!";
             header('Location: /admin/words');
             exit;
+        } else {
+            http_response_code(400);
+            exit('Invalid request');
         }
     }
 }

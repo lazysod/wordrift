@@ -14,3 +14,4 @@ $router->post('/admin/words/remove', ['WordsAdminController', 'remove']);
 $router->post('/admin/words/upload', ['WordsAdminController', 'upload']);
 $router->post('/admin/words/add', ['WordsAdminController', 'add']);
 $router->post('/admin/words/deleteall', ['WordsAdminController', 'deleteAll']);
+$router->get('/admin/words/export', ['WordsAdminController', 'export']);

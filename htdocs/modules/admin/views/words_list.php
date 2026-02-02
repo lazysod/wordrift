@@ -3,6 +3,10 @@ if (!isset($config)) {
     $config = file_exists($_SERVER['DOCUMENT_ROOT'] . '/app/config.php') ? include $_SERVER['DOCUMENT_ROOT'] . '/app/config.php' : [];
 }
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
 require_once __DIR__ . '/../../../views/partials/admin_header.php';
 ?>
 <div class="container py-4">
@@ -32,10 +36,32 @@ require_once __DIR__ . '/../../../views/partials/admin_header.php';
     </form>
     <form method="post" action="/admin/words/deleteall" class="mb-3" id="deleteAllForm">
         <input type="hidden" name="confirm" value="yes">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
             Delete All Words
         </button>
     </form>
+    <button type="button" class="btn btn-info mb-3" id="downloadWordsBtn">Download Words (CSV)</button>
+<script>
+document.getElementById('downloadWordsBtn').addEventListener('click', function() {
+    fetch('/admin/words/export?csrf_token=<?= htmlspecialchars($csrf_token) ?>')
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'word_list.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => alert('Download failed: ' + error));
+});
+</script>
 
     <!-- Bootstrap 5 Modal for Delete All Confirmation -->
     <div class="modal fade" id="deleteAllModal" tabindex="-1" aria-labelledby="deleteAllModalLabel" aria-hidden="true">
@@ -79,6 +105,7 @@ require_once __DIR__ . '/../../../views/partials/admin_header.php';
                     <td>
                         <form method="post" action="/admin/words/remove" style="display:inline;">
                             <input type="hidden" name="id" value="<?= $w['word_id'] ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Remove this word?');">Remove</button>
                         </form>
                     </td>

@@ -11,7 +11,7 @@ require __DIR__ . '/partials/header.php';
     <?php if (!isset($_SESSION[PREFIX . 'user_id'])): ?>
     <h1 id="logo" class="text-center mb-4" data-url="<?php echo $basePath === '/' ? '' : $basePath; ?>">Wordrift Clone</h1>
     <?php else: ?>
-        <h1 id="logo" class="text-center mb-4" data-url="<?php echo $basePath === '/' ? '' : $basePath; ?>">Welcome to Wordrift <?php echo htmlspecialchars($_SESSION[PREFIX . 'display_name']); ?>!</h1>
+        <h1 id="logo" class="text-center mb-4" data-url="<?php echo $basePath === '/' ? '' : $basePath; ?>">Welcome to Wordrift <?php echo htmlspecialchars($_SESSION[PREFIX . 'display_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>!</h1>
     <?php endif; ?>
     <div class="text-center mb-3">
         <button id="daily-btn" class="btn btn-success me-2" disabled>Daily Game</button>
@@ -105,6 +105,26 @@ require __DIR__ . '/partials/header.php';
     <!-- Stats and Leaderboard -->
     <script type="module">
         document.addEventListener('DOMContentLoaded', function() {
+                        // --- Black out unused grid boxes and limit input to word length ---
+                        let wordLength = 5;
+                        function blackoutUnusedWordleCells(length) {
+                            wordLength = length;
+                            for (let row of grid) {
+                                let cells = row.querySelectorAll('.wordle-cell');
+                                for (let i = 0; i < cells.length; i++) {
+                                    if (i >= length) {
+                                        cells[i].classList.add('wordle-cell-unused');
+                                        cells[i].textContent = '';
+                                    } else {
+                                        cells[i].classList.remove('wordle-cell-unused');
+                                    }
+                                }
+                            }
+                            // Also trim currentGuess if needed
+                            if (currentGuess.length > wordLength) {
+                                currentGuess = currentGuess.slice(0, wordLength);
+                            }
+                        }
             var PATH = '';
             // --- Utility: get today's date as YYYY-MM-DD for DB, and DD-MM-YYYY for display ---
             const getTodayStr = function() {
@@ -141,7 +161,7 @@ require __DIR__ . '/partials/header.php';
                     if (gameOver) return;
                     if (key === 'BACK') {
                         currentGuess.pop();
-                    } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
+                    } else if (/^[A-Z]$/.test(key) && currentGuess.length < wordLength) {
                         currentGuess.push(key);
                     }
                     updateGridDisplay();
@@ -153,10 +173,10 @@ require __DIR__ . '/partials/header.php';
             if (submitBtn) {
                 submitBtn.addEventListener('click', function() {
                     if (gameOver) return;
-                    if (currentGuess.length === 5) {
+                    if (currentGuess.length === wordLength) {
                         handleGuess(currentGuess.join(''));
                     } else {
-                        feedback.textContent = 'Enter 5 letters to submit.';
+                        feedback.textContent = `Enter ${wordLength} letters to submit.`;
                     }
                 });
             }
@@ -165,8 +185,12 @@ require __DIR__ . '/partials/header.php';
             const updateGridDisplay = function() {
                 if (currentRow >= grid.length) return;
                 const rowCells = grid[currentRow].querySelectorAll('.wordle-cell');
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < wordLength; i++) {
                     rowCells[i].textContent = currentGuess[i] || '';
+                }
+                // Clear unused cells
+                for (let i = wordLength; i < rowCells.length; i++) {
+                    rowCells[i].textContent = '';
                 }
             }
 
@@ -223,8 +247,8 @@ require __DIR__ . '/partials/header.php';
                     const blocked = await blockIfPlayedToday();
                     if (blocked) return;
                 }
-                if (guess.length !== 5) {
-                    feedback.textContent = 'Please enter a 5-letter word.';
+                if (guess.length !== wordLength) {
+                    feedback.textContent = `Please enter a ${wordLength}-letter word.`;
                     return;
                 }
                 // Validate guess with backend using jQuery AJAX
@@ -318,9 +342,8 @@ require __DIR__ . '/partials/header.php';
                     }
                     emojiRow = emojiArr.join('');
                 }
-                // Store the actual guessed word, not emoji, in guessHistory
-                // Always store guessed word (not emoji) in guessHistory for backend
-                if (/^[A-Z]{5}$/.test(guess)) {
+                // Store the actual guessed word, not emoji, in guessHistory for backend
+                if (guess.length === wordLength && /^[A-Z]+$/.test(guess)) {
                     guessHistory.push(guess);
                 }
                 // Win/Lose feedback
@@ -592,6 +615,9 @@ require __DIR__ . '/partials/header.php';
                         success: function(data) {
                             if (data.word) {
                                 answer = data.word.toUpperCase();
+                                if (typeof blackoutUnusedWordleCells === 'function') {
+                                    blackoutUnusedWordleCells(answer.length);
+                                }
                                 resolve();
                             } else {
                                 feedback.textContent = 'Could not load word. Try refreshing.';
@@ -618,6 +644,9 @@ require __DIR__ . '/partials/header.php';
                             if (data.word) {
                                 answer = data.word.toUpperCase();
                                 gameOver = false;
+                                if (typeof blackoutUnusedWordleCells === 'function') {
+                                    blackoutUnusedWordleCells(answer.length);
+                                }
                             } else {
                                 feedback.textContent = 'Could not load word. Try refreshing.';
                                 gameOver = true;
@@ -652,11 +681,15 @@ require __DIR__ . '/partials/header.php';
                                     if (result && Array.isArray(result.guessed_words) && Array.isArray(result.guessed_results)) {
                                         let guesses = result.guessed_words;
                                         let results = result.guessed_results;
+                                        let wordLength = guesses[0]?.length || 5;
+                                        if (typeof blackoutUnusedWordleCells === 'function') {
+                                            blackoutUnusedWordleCells(wordLength);
+                                        }
                                         for (let row = 0; row < guesses.length && row < grid.length; row++) {
                                             const rowCells = grid[row].querySelectorAll('.wordle-cell');
                                             let guessWord = guesses[row];
                                             let resultRow = results[row] || [];
-                                            for (let i = 0; i < 5; i++) {
+                                            for (let i = 0; i < wordLength; i++) {
                                                 let letter = guessWord[i] ? guessWord[i].toUpperCase() : '';
                                                 rowCells[i].textContent = letter;
                                                 // Color cell based on result
@@ -695,15 +728,15 @@ require __DIR__ . '/partials/header.php';
 
             // --- Save result to backend ---
             const recordResult = async function(result, guesses, answer) {
-
-                // Extra debug: log PATH and request body
+                                // Debug: log guessHistory before building guesses_made
+                                console.log('recordResult guessHistory', guessHistory);
                 // Build guesses_made array for backend persistence
                 // Build guesses_made (words + color results) and guess_history (emoji grid)
                 const guesses_made = guessHistory.map((word, idx) => {
                     const rowCells = grid[idx]?.querySelectorAll('.wordle-cell');
                     let resultArr = [];
-                    if (rowCells && rowCells.length === 5) {
-                        for (let i = 0; i < 5; i++) {
+                    if (rowCells && rowCells.length >= wordLength) {
+                        for (let i = 0; i < wordLength; i++) {
                             const bg = rowCells[i].style.background;
                             if (bg === 'rgb(106, 170, 100)' || bg === '#6aaa64') {
                                 resultArr.push('correct');
@@ -723,8 +756,8 @@ require __DIR__ . '/partials/header.php';
                 emojiRows = guessHistory.map((word, idx) => {
                     const rowCells = grid[idx]?.querySelectorAll('.wordle-cell');
                     let emojiArr = [];
-                    if (rowCells && rowCells.length === 5) {
-                        for (let i = 0; i < 5; i++) {
+                    if (rowCells && rowCells.length >= wordLength) {
+                        for (let i = 0; i < wordLength; i++) {
                             const bg = rowCells[i].style.background;
                             if (bg === 'rgb(106, 170, 100)' || bg === '#6aaa64') {
                                 emojiArr.push('🟩');
@@ -740,7 +773,8 @@ require __DIR__ . '/partials/header.php';
                     return emojiArr.join('');
                 });
 
-                const requestBody = {
+                // Build requestBody first, then log it for debugging
+                let requestBody = {
                     game_date: getTodayStr(),
                     mode: mode,
                     result: result,
@@ -748,8 +782,12 @@ require __DIR__ . '/partials/header.php';
                     answer: answer,
                     // guess_history is now the emoji grid
                     guess_history: emojiRows.join('\n').substring(0, 255),
-                    guesses_made: guesses_made
+                    guesses_made: JSON.stringify(guesses_made)
                 };
+                // Debug: log requestBody to console for troubleshooting
+                console.log('recordResult requestBody', requestBody);
+
+                // (removed duplicate declaration)
                
                 // Validate required fields
                 if (!mode || !result || !guesses || !answer) {
@@ -837,11 +875,11 @@ require __DIR__ . '/partials/header.php';
                     updateGridDisplay();
                     e.preventDefault();
                 } else if (key === 'ENTER') {
-                    if (currentGuess.length === 5) {
+                    if (currentGuess.length === wordLength) {
                         handleGuess(currentGuess.join(''));
                     }
                     e.preventDefault();
-                } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
+                } else if (/^[A-Z]$/.test(key) && currentGuess.length < wordLength) {
                     currentGuess.push(key);
                     updateGridDisplay();
                     e.preventDefault();
