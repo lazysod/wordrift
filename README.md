@@ -5,14 +5,16 @@ Wordrift is a Wordle-inspired word guessing game powered by the Strata PHP Frame
 ## Quick Start
 
 1. **Clone the repository**
-2. **Copy and configure settings:**
+2. **Install Composer dependencies:**
+   - Run `composer install` in the project root to install PHP dependencies.
+3. **Copy and configure settings:**
    - Copy `htdocs/app/config-example.php` to `htdocs/app/config.php` and update your site settings.
    - Copy `htdocs/app/mail_config-example.php` to `htdocs/app/mail_config.php` and update mail settings (optional).
    - Copy `htdocs/app/db_conf.php` if you have an existing database config, or let the installer create it.
-3. **Prepare your environment:**
+4. **Prepare your environment:**
    - Ensure you have PHP and MySQL/MariaDB installed.
    - Set up your web server to serve the `htdocs/` directory.
-4. **Run the installer:**
+5. **Run the installer:**
    - Open `/app/install.php` in your browser and follow the step-by-step instructions.
    - The installer will check for required config files and set up the database.
 
