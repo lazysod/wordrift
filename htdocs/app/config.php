@@ -1,34 +1,30 @@
-  <?php
-  // Only load db_conf.php if it exists
-  if (file_exists(__DIR__ . '/db_conf.php')) {
-    $db_conf = include __DIR__ . '/db_conf.php';
-  } else {
-    $db_conf = [
-      'db_host' => '',
-      'db_user' => '',
-      'db_pass' => '',
-      'db_name' => ''
-    ];
-  }
-  // Add cookie banner settings
-  return array(
-    // ...existing config...
-    'cookie_banner_enabled' => true,
-    'cookie_banner_text' => 'This website uses cookies to ensure you get the best experience.',
-  );
-  // Only load db_conf.php if it exists
-  if (file_exists(__DIR__ . '/db_conf.php')) {
-    $db_conf = include __DIR__ . '/db_conf.php';
-  } else {
-    $db_conf = [
-      'db_host' => '',
-      'db_user' => '',
-      'db_pass' => '',
-      'db_name' => ''
-    ];
-  }
-  // main config array
-  return array(
+<?php
+// Only load db_conf.php if it exists
+if (file_exists(__DIR__ . '/db_conf.php')) {
+  $db_conf = include __DIR__ . '/db_conf.php';
+} else {
+  $db_conf = [
+    'db_host' => '',
+    'db_user' => '',
+    'db_pass' => '',
+    'db_name' => ''
+  ];
+}
+// mail configuration
+if (file_exists(__DIR__ . '/mail_config.php')) {
+  $mail_conf = include __DIR__ . '/mail_config.php';
+} else {
+  $mail_conf = [
+    'host' => '',
+    'username' => '',
+    'password' => '',
+    'port' => 587,
+    'encryption' => 'tls',
+    'from_email' => '',
+  ];
+}
+// main config array
+return array(
     'site_name' => 'Wordrift',
     'site_tagline' => 'The Word Guessing Game',
     'site_description' => 'Excisting Word Game based on the famous Wordle. Powered by the Strata Framework',
@@ -43,15 +39,16 @@
       'password' => $db_conf['db_pass'],
       'database' => $db_conf['db_name'],
     ),
+    
     // Mail configuration
     'mail' =>
     array(
-      'host' => 'mail.albaweb.net',
-      'username' => 'noreply@albaweb.net',
-      'password' => 'XEL~%(yGfWfH',
-      'port' => 587,
-      'encryption' => 'tls',
-      'from_email' => 'noreply@albaweb.net',
+      'host' => $mail_conf['host'],
+      'username' => $mail_conf['username'],
+      'password' => $mail_conf['password'],
+      'port' => $mail_conf['port'],
+      'encryption' => $mail_conf['encryption'],
+      'from_email' => $mail_conf['from_email'],
     ),
     'debug' => true,
     'timezone' => 'Europe/London',
@@ -115,5 +112,7 @@
       'privacy' => '/views/privacy.php',
       'terms' => '/views/terms.php',
     ),
+    'cookie_banner_enabled' => true,
+    'cookie_banner_text' => 'This website uses cookies to ensure you get the best experience.',
     'default_module' => 'home',
   );
