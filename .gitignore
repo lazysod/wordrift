@@ -71,8 +71,6 @@ storage/uploads/
 # Ignore node modules (if any)
 node_modules/
 
-htdocs/app/db_conf.php
-htdocs/app/config.php
 /seeds/
 /templates/
 /template/

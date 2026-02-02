@@ -1,4 +1,5 @@
 <?php
+// test Config file loading db_conf.php
 // Only load db_conf.php if it exists
 if (file_exists(__DIR__ . '/db_conf.php')) {
     $db_conf = include __DIR__ . '/db_conf.php';
