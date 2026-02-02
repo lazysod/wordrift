@@ -22,6 +22,13 @@
         <script src="<?php echo APP::config('base_url'); ?>/js/validator.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- Cookie banner config for JS -->
+        <script>
+        window.cookieBannerConfig = {
+            enabled: <?php echo json_encode(App::config('cookie_banner_enabled')); ?>,
+            text: <?php echo json_encode(App::config('cookie_banner_text')); ?>
+        };
+        </script>
         <!-- Core theme JS-->
         <script src="<?php echo App::config('theme_path'); ?>/js/scripts.js"></script>
         <?php

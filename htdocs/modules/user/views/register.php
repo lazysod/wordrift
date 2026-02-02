@@ -1,8 +1,5 @@
 <?php
 // DEBUG: Show all errors for troubleshooting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require dirname(__DIR__, 3) . '/views/partials/header.php';
 ?>
 <section class="py-5">

@@ -1,6 +1,4 @@
 <?php
-// DEBUG: Show all errors for troubleshooting
-// App::debug(true);
 if (isset($_SESSION[PREFIX . 'user_id'])) {
     // If user is already logged in, redirect to home or dashboard
     header('Location: /');

@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db = null;
         if (class_exists('DB')) {
             $db = new DB($config);
+        } else {
+            $error = 'Database class not found.';
         }
-        // DEBUG: Show which User class is loaded
-        // echo '<pre>User class loaded from: ' . (new ReflectionClass('User'))->getFileName() . '</pre>';
         $user = new User($db, $config);
         $loginResult = $user->login(['email' => $email, 'pwd' => $password]);
         APP::dump($loginResult);
