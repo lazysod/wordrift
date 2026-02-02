@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/AdminBaseController.php';
 // Admin User Management Controller
-class UserAdminController
+class UserAdminController extends AdminBaseController
 {
     // List/search users
     public function index()

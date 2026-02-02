@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/AdminBaseController.php';
 // Admin Links Management Controller
-class AdminLinksController
+class AdminLinksController extends AdminBaseController
 {
     public function order()
     {

@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/AdminBaseController.php';
 
-class WordsAdminController
+class WordsAdminController extends AdminBaseController
 {
     public function index()
     {
