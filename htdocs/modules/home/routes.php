@@ -8,16 +8,15 @@ if (!empty(App::config('default_module')) && App::config('default_module') === '
                 // App::log('DEBUG: / route dispatched');
             }
             if (class_exists('HomeController')) {
-                // App::log('DEBUG: HomeController found');
                 $controller = new HomeController();
                 if (method_exists($controller, 'index')) {
                     // App::log('DEBUG: HomeController::index() exists');
                     return $controller->index();
                 } else {
-                    // App::log('DEBUG: HomeController::index() missing');
+                    App::log('DEBUG: HomeController::index() missing');
                 }
             } else {
-                // App::log('DEBUG: HomeController missing');
+                App::log('DEBUG: HomeController missing');
             }
             echo 'Home route error: controller or method missing.';
         }

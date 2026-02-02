@@ -26,6 +26,7 @@ function getCookie(name) {
 }
 
 function showCookieBanner() {
+	if (!window.cookieBannerConfig || !window.cookieBannerConfig.enabled) return;
 	// Remove any existing banner before creating a new one
 	var oldBanner = document.getElementById('cookie-consent-banner');
 	if (oldBanner) oldBanner.remove();
@@ -41,7 +42,8 @@ function showCookieBanner() {
 		banner.style.padding = '16px';
 		banner.style.textAlign = 'center';
 		banner.style.zIndex = '9999';
-		banner.innerHTML = 'This website uses cookies to ensure you get the best experience. <button id="cookie-consent-accept" style="margin-left:16px;" class="btn btn-primary btn-sm">Accept</button>';
+		var text = window.cookieBannerConfig.text || 'This website uses cookies to ensure you get the best experience.';
+		banner.innerHTML = text + ' <button id="cookie-consent-accept" style="margin-left:16px;" class="btn btn-primary btn-sm">Accept</button>';
 		document.body.appendChild(banner);
 		banner.querySelector('#cookie-consent-accept').addEventListener('click', function () {
 			setCookie('cookie_consent', '1', 365);

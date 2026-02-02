@@ -17,10 +17,10 @@ return array (
   'site_tagline' => 'The Word Guessing Game',
   'site_description' => 'Word Game based on Wordle.',
   'admin_email' => '', // your admin email
-  'form_email' => '', // your form email
   'base_url' => '', // e.g. http://localhost:8888
   'dashboard_url' => '/admin/dashboard',
   'logo_small' => '/assets/images/logo_small.png',
+  // Database configuration - this will be loaded from db_conf.php
   'db' => 
   array (
     'host' => $db_conf['db_host'],
@@ -28,6 +28,7 @@ return array (
     'password' => $db_conf['db_pass'],
     'database' => $db_conf['db_name'],
   ),
+    // Mail configuration
   'mail' => 
   array (
     'host' => '',
