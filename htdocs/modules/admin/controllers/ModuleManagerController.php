@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/AdminBaseController.php';
 // Admin UI for module management
-class ModuleManagerController {
+class ModuleManagerController extends AdminBaseController {
     public function index() {
         global $config;
         // Use config['modules'] directly for suitability and enabled flags
