@@ -78,4 +78,6 @@ htdos/app/mail_config.php
 /seeds/
 /templates/
 /template/
-/tests/
+/tests/htdocs/app/config.php
+htdocs/app/db_conf.php
+htdocs/app/mail_config.php
