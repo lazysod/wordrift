@@ -42,3 +42,5 @@ This project is licensed under the MIT License.
 
 ---
 For advanced configuration and developer documentation, see `/docs/`.
+---
+For any issues contact me on https://barrysmith.dev
