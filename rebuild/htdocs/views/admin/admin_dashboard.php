@@ -10,7 +10,7 @@ require __DIR__ . '/../partials/admin_header.php'; ?>
         <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
             <div class="text-center mb-5">
                 <i class="bi bi-person-fill-lock"></i>
-                <h1 class="fw-bolder">Welcome</h1>
+                <h1 class="fw-bolder">Welcome to the Wordrift Admin Area</h1>
             </div>
             <div class="row gx-5 justify-content-center">
                 <div class="col-lg-8 col-xl-6 text-center">

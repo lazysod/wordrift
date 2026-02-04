@@ -26,7 +26,7 @@ return [
         'label' => 'Leaderboard',
         'show' => true,
         'order' => 2,
-        'new_tab' => true,
+        'new_tab' => false,
         'url' => '/leaderboard',
     ],
     'User History' => [

@@ -88,7 +88,17 @@ class DB
             throw new \RuntimeException('Database connection is not established.');
         }
         $stmt = $this->query($sql, $params);
-        return $stmt ? $stmt->fetch() : false;
+        if (!$stmt) {
+            error_log('DB::fetch: Query failed: ' . $sql . ' Params: ' . json_encode($params));
+            echo '<pre style="background:#ffecec;border:1px solid #ffb3b3;padding:10px;">DB::fetch ERROR: Query failed<br>SQL: ' . htmlspecialchars($sql) . '<br>Params: ' . htmlspecialchars(json_encode($params)) . '</pre>';
+            return false;
+        }
+        $row = $stmt->fetch();
+        if ($row === false) {
+            error_log('DB::fetch: No result for query: ' . $sql . ' Params: ' . json_encode($params));
+            echo '<pre style="background:#ffecec;border:1px solid #ffb3b3;padding:10px;">DB::fetch: No result<br>SQL: ' . htmlspecialchars($sql) . '<br>Params: ' . htmlspecialchars(json_encode($params)) . '</pre>';
+        }
+        return $row;
     }
 
     public function beginTransaction()

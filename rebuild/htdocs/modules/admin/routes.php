@@ -26,12 +26,6 @@ $router->post('/admin/module-installer/generate', [ModuleInstallerController::cl
 // Module Details Routes
 $router->get('/admin/modules/details/{module}', [ModuleDetailsController::class, 'show']);
 $router->post('/admin/modules/validate/{module}', [ModuleDetailsController::class, 'validate']);
-$router->get('/admin/modules/validate-all', [ModuleDetailsController::class, 'validateAll']);
-
-// Module Manager Routes
-$router->get('/admin/modules', [ModuleManagerController::class, 'index']);
-$router->post('/admin/modules', [ModuleManagerController::class, 'index']);
-$router->post('/admin/modules/delete/{module}', [ModuleManagerController::class, 'delete']);
 
 // Admin User Management Routes
 $router->get('/admin/users', [\App\Modules\Admin\Controllers\UserAdminController::class, 'index']);

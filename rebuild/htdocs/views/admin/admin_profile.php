@@ -1,5 +1,5 @@
-
 <?php
+use App\TokenManager;
 $startPath = dirname(__DIR__, 2) . '/app/start.php';
 if (file_exists($startPath)) {
     $config = include dirname(__DIR__, 2) . '/app/config.php';
@@ -11,7 +11,7 @@ if (!isset($_SESSION[PREFIX . 'admin']) || $_SESSION[PREFIX . 'admin'] < 1) {
     exit;
 }
 
-$db = class_exists('DB') ? new DB($config) : null;
+$db = class_exists('App\\DB') ? new \App\DB($config) : null;
 $adminId = $_SESSION[PREFIX . 'admin'] ?? null;
 $admin = null;
 if ($db && $adminId) {
@@ -24,34 +24,26 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tm = new TokenManager($config);
     $verify = $tm->verify($_POST['csrf_token'] ?? '');
-    if (!isset($_POST['csrf_token']) || $verify['status'] !== 'success') {
+    if (!isset($_['csrf_token']) || $verify['status'] !== 'success') {
         $error = 'Invalid CSRF token.';
     } elseif (!$admin) {
         $error = 'Admin not found.';
     } else {
-        $first_name = trim($_POST['first_name'] ?? '');
-        $second_name = trim($_POST['second_name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
+        $display_name = trim($_POST['display_name'] ?? '');
         $pwd = $_POST['pwd'] ?? '';
         $pwd2 = $_POST['pwd2'] ?? '';
-        if ($pwd && $pwd !== $pwd2) {
+        if (!$display_name) {
+            $error = 'Display Name is required.';
+        } elseif ($pwd && $pwd !== $pwd2) {
             $error = 'Passwords do not match.';
-        } elseif (!$first_name || !$second_name || !$email) {
-            $error = 'All fields except password are required.';
         } else {
-            $params = [$first_name, $second_name, $email, $adminId];
-            $sql = "UPDATE users SET first_name = ?, second_name = ?, email = ?";
+            $params = [$display_name, $adminId];
+            $sql = "UPDATE users SET display_name = ? WHERE id = ? AND is_admin = 1";
+            $db->query($sql, $params);
             if ($pwd) {
                 $hashed = password_hash($pwd, PASSWORD_DEFAULT);
-                $sql .= ", password = ?";
-                $params[] = $hashed;
+                $db->query("UPDATE users SET password = ? WHERE id = ? AND is_admin = 1", [$hashed, $adminId]);
             }
-            $sql .= " WHERE id = ? AND is_admin = 1";
-            if ($pwd) {
-                // Move id to end for param order
-                $params = [$first_name, $second_name, $email, $hashed, $adminId];
-            }
-            $db->query($sql, $params);
             $success = 'Profile updated successfully.';
             // Refresh admin data
             $admin = $db->fetch("SELECT * FROM users WHERE id = ? AND is_admin = 1", [$adminId]);
@@ -73,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>Admin Profile</h2>
                 <div class="card" style="max-width: 500px;">
                     <div class="card-body">
-                        <p><strong>Username:</strong> <?php echo htmlspecialchars($admin['username'] ?? '') ?></p>
+                        <p><strong>Display Name:</strong> <?php echo htmlspecialchars($admin['display_name'] ?? 'No display name set') ?></p>
                         <p><strong>Email:</strong> <?php echo htmlspecialchars($admin['email'] ?? '') ?></p>
                         <p><strong>Role:</strong> Admin</p>
                     </div>
@@ -83,16 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form method="post" action="">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(TokenManager::csrf($config)) ?>" />
                     <div class="form-floating mb-3">
-                        <input class="form-control" id="first_name" name="first_name" type="text" value="<?php echo htmlspecialchars($admin['first_name'] ?? '') ?>" required />
-                        <label for="first_name">First Name</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="second_name" name="second_name" type="text" value="<?php echo htmlspecialchars($admin['second_name'] ?? '') ?>" required />
-                        <label for="second_name">Second Name</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="email" name="email" type="email" value="<?php echo htmlspecialchars($admin['email'] ?? '') ?>" required />
-                        <label for="email">Email address</label>
+                        <input class="form-control" id="display_name" name="display_name" type="text" value="<?php echo htmlspecialchars($admin['display_name'] ?? '') ?>" required />
+                        <label for="display_name">Display Name</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input class="form-control" id="pwd" name="pwd" type="password" placeholder="New password (leave blank to keep current)" />
@@ -109,3 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </section>
 <?php require __DIR__ . '/../partials/footer.php'; ?>
+
+
+<pre>DEBUG adminId: <?php var_dump($adminId); ?></pre>

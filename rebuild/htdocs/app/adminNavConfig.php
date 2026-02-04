@@ -13,6 +13,12 @@ return [
         'order' => 3,
         'url' => '/admin/links',
     ],
+    '' => [
+        'label' => 'Word List',
+        'show' => true,
+        'order' => 5,
+        'url' => '/admin/words',
+    ],
     'user_management' => [
         'label' => 'User Management',
         'show' => true,

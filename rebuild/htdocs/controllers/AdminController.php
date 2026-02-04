@@ -26,23 +26,19 @@ class AdminController
             if (!$csrfValid) {
                 $error = 'Invalid CSRF token.';
             } else {
-                $first_name = trim($_POST['first_name'] ?? '');
-                $second_name = trim($_POST['second_name'] ?? '');
-                $email = trim($_POST['email'] ?? '');
+                $display_name = trim($_POST['display_name'] ?? '');
                 $pwd = $_POST['pwd'] ?? '';
                 $pwd2 = $_POST['pwd2'] ?? '';
-                if (!$first_name || !$second_name || !$email) {
-                    $error = 'All fields except password are required.';
-                } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $error = 'Invalid email address.';
+                if (!$display_name) {
+                    $error = 'Display Name is required.';
                 } elseif ($pwd && $pwd !== $pwd2) {
                     $error = 'Passwords do not match.';
                 } elseif ($pwd && strlen($pwd) < 8) {
                     $error = 'Password must be at least 8 characters.';
                 } else {
                     // Update user info
-                    $params = [$first_name, $second_name, $email, $userId];
-                    $db->query('UPDATE users SET first_name = ?, second_name = ?, email = ? WHERE id = ?', $params);
+                    $params = [$display_name, $userId];
+                    $db->query('UPDATE users SET display_name = ? WHERE id = ?', $params);
                     if ($pwd) {
                         $hash = password_hash($pwd, PASSWORD_DEFAULT);
                         $db->query('UPDATE users SET password = ? WHERE id = ?', [$hash, $userId]);
@@ -51,9 +47,7 @@ class AdminController
                     $sql = "SELECT * FROM users WHERE id = ?";
                     $rows = $db->fetchAll($sql, [$userId]);
                     $user = $rows[0] ?? [];
-                    $_SESSION[$sessionPrefix . 'user']['first_name'] = $user['first_name'] ?? '';
-                    $_SESSION[$sessionPrefix . 'user']['second_name'] = $user['second_name'] ?? '';
-                    $_SESSION[$sessionPrefix . 'user']['email'] = $user['email'] ?? '';
+                    $_SESSION[$sessionPrefix . 'user']['display_name'] = $user['display_name'] ?? '';
                     $success = 'Profile updated successfully.';
                 }
             }
