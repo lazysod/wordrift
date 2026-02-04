@@ -103,7 +103,10 @@ class Links
             if ($icon === '') {
                 $icon = $this->detectIcon($url);
             }
-            $this->db->query('INSERT INTO links (title, url, icon, nsfw) VALUES (?, ?, ?, ?)', [$title, $url, $icon, $nsfw]);
+            // Get the next order value
+            $maxOrder = $this->db->fetch('SELECT MAX(`order`) as max_order FROM links');
+            $nextOrder = isset($maxOrder['max_order']) && $maxOrder['max_order'] !== null ? ((int)$maxOrder['max_order'] + 1) : 1;
+            $this->db->query('INSERT INTO links (title, url, icon, nsfw, `order`) VALUES (?, ?, ?, ?, ?)', [$title, $url, $icon, $nsfw, $nextOrder]);
         } catch (Exception $e) {
             throw new Exception('Failed to add link: ' . $e->getMessage());
         }

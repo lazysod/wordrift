@@ -7,6 +7,12 @@ return [
         'order' => 1,
         'url' => '/admin/dashboard',
     ],
+    'Links' => [
+        'label' => 'Links',
+        'show' => true,
+        'order' => 3,
+        'url' => '/admin/links',
+    ],
     'user_management' => [
         'label' => 'User Management',
         'show' => true,

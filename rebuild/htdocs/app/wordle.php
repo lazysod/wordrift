@@ -11,7 +11,7 @@ if ($is_ajax || $action === 'last_result' || $action === 'leaderboard') {
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     // require_once __DIR__ . '/start.php';
     global $config;
-    $db = new DB($config);
+    $db = new \App\DB($config);
     if (session_status() === PHP_SESSION_NONE) session_start();
 
     $public_actions = ['validate', 'leaderboard', 'daily', 'get_stats'];
@@ -164,7 +164,7 @@ if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             } // else leave as-is (may be null or invalid)
         }
         file_put_contents($logFile, 'guesses_made (pre-save): '.print_r($guesses_made, true).PHP_EOL, FILE_APPEND);
-        require_once __DIR__ . '/class/game.php';
+        require_once __DIR__ . '/game.php';
         $game = new game($db); // <-- FIXED
         $insert_id = $game->addGameResult($user_id, $game_date, $mode, $result, $guesses, $answer, $guess_history);
         $is_complete = 1;
@@ -204,7 +204,7 @@ if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // --- Leaderboard API ---
 if ($action === 'leaderboard') {
-    require_once __DIR__ . '/class/game.php';
+    require_once __DIR__ . '/game.php';
     $game = new game($db); // <-- FIXED
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
     $rows = $game->getLeaderboard($limit);
@@ -221,13 +221,20 @@ if ($action === 'get_stats') {
         echo json_encode(['error' => 'Missing mode']);
         exit;
     }
-    if (!$user_id) {
-        // Guest: return default stats
-        echo json_encode(['stats' => ['played' => 0, 'wins' => 0, 'streak' => 0, 'maxStreak' => 0]]);
-        exit;
+    $game = new game($db);
+    if ($user_id) {
+        $stats = $game->getUserStats($user_id, $mode);
+    } else {
+        // Return empty/default stats for guests
+        $stats = [
+            'games_played' => 0,
+            'wins' => 0,
+            'current_streak' => 0,
+            'max_streak' => 0,
+            'win_percentage' => 0,
+            'guess_distribution' => []
+        ];
     }
-    $game = new game($db); // <-- FIXED
-    $stats = $game->getUserStats($user_id, $mode);
     echo json_encode(['stats' => $stats]);
     exit;
 }

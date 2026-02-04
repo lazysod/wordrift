@@ -31,7 +31,9 @@
                         </td>
                         <td>
                             <a href="/admin/links/edit/<?php echo $link['id']; ?>" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="/admin/links/delete/<?php echo $link['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this link?');">Delete</a>
+                            <form method="post" action="/admin/links/delete/<?php echo $link['id']; ?>" style="display:inline-block" onsubmit="return confirm('Delete this link?');">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
                         </td>
                     </tr>
 

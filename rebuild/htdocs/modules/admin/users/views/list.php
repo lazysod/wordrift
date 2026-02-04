@@ -28,8 +28,6 @@ require __DIR__ . '/../../../../views/partials/admin_header.php'; ?>
                             <tr>
                                 <th>ID</th>
                                 <th>Display Name</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Status</th>
@@ -42,8 +40,7 @@ require __DIR__ . '/../../../../views/partials/admin_header.php'; ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($user['id']) ?></td>
                                     <td><?php echo htmlspecialchars($user['display_name'] ?? '') ?></td>
-                                    <td><?php echo htmlspecialchars($user['first_name']) ?></td>
-                                    <td><?php echo htmlspecialchars($user['second_name']) ?></td>
+
                                     <td><?php echo htmlspecialchars($user['email']) ?></td>
                                     <td><?php echo isset($user['is_admin']) && $user['is_admin'] ? 'Admin' : 'User' ?></td>
                                     <td><?php echo isset($user['active']) && $user['active'] ? 'Active' : 'Inactive' ?></td>

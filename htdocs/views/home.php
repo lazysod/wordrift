@@ -125,7 +125,12 @@ require __DIR__ . '/partials/header.php';
                                 currentGuess = currentGuess.slice(0, wordLength);
                             }
                         }
+            // Dynamically determine base path for AJAX requests
             var PATH = '';
+            const logo = document.getElementById('logo');
+            if (logo && logo.dataset && logo.dataset.url !== undefined) {
+                PATH = logo.dataset.url;
+            }
             // --- Utility: get today's date as YYYY-MM-DD for DB, and DD-MM-YYYY for display ---
             const getTodayStr = function() {
                 const d = new Date();
@@ -626,7 +631,7 @@ require __DIR__ . '/partials/header.php';
                             }
                         },
                         error: function(xhr, status, err) {
-                            feedback.textContent = 'Error connecting to server!';
+                            if (feedback) feedback.textContent = 'Error connecting to server!';
                             gameOver = true;
                             resolve();
                         }
@@ -654,7 +659,7 @@ require __DIR__ . '/partials/header.php';
                             resolve();
                         },
                         error: function(xhr, status, error) {
-                            feedback.textContent = 'Error connecting to server!!';
+                            if (feedback) feedback.textContent = 'Error connecting to server!!';
                             gameOver = true;
                             resolve();
                         }
@@ -719,7 +724,7 @@ require __DIR__ . '/partials/header.php';
                     },
                     error: function(xhr, status, error) {
                         // fallback: allow play if error
-                        fetchAnswer().then(blockIfPlayedToday);
+                        if (typeof fetchAnswer === 'function') fetchAnswer().then(blockIfPlayedToday);
                     }
                 });
             } else {
@@ -817,15 +822,15 @@ require __DIR__ . '/partials/header.php';
                         try {
                             let data = JSON.parse(responseText);
                             if (jqXHR.status === 401) {
-                                feedback.innerHTML = '<div class="alert alert-danger">You must be logged in to record your result. <a href="login.php">Log in</a></div>';
+                                if (feedback) feedback.innerHTML = '<div class="alert alert-danger">You must be logged in to record your result. <a href="login.php">Log in</a></div>';
                                 return;
                             }
                             if (!data.success) {
-                                feedback.innerHTML = '<div class="alert alert-danger">Failed to record result: ' + (data.error || 'Unknown error') + '</div>';
+                                if (feedback) feedback.innerHTML = '<div class="alert alert-danger">Failed to record result: ' + (data.error || 'Unknown error') + '</div>';
                             }
                         } catch (err) {
                             console.error('Invalid JSON from server:', {url, responseText});
-                            feedback.innerHTML = '<div class="alert alert-danger">Invalid JSON from server:<br><b>' + url + '</b><br><pre>' + responseText + '</pre></div>';
+                            if (feedback) feedback.innerHTML = '<div class="alert alert-danger">Invalid JSON from server:<br><b>' + url + '</b><br><pre>' + responseText + '</pre></div>';
                         }
                     }
                 });

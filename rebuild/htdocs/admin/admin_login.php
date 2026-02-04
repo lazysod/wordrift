@@ -40,7 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db = new DB($config);
             $user = new User($db, $config);
             $loginResult = $user->login(['email' => $email, 'pwd' => $password]);
-            
+            // Debug: log login result and session
+            error_log('loginResult: ' . print_r($loginResult, true));
+            error_log('session: ' . print_r($_SESSION, true));
+
             // Only allow admin login if user is admin
             if ($loginResult['status'] === 'success' && !empty($_SESSION[$sessionPrefix . 'admin']) && $_SESSION[$sessionPrefix . 'admin'] > 0) {
                 // Set admin session variable to user_id for consistency
@@ -53,7 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: /admin/dashboard');
                 exit;
             } else {
-                $error = 'Invalid admin credentials.';
+                // Show the real error message from loginResult if available
+                if ($loginResult['status'] === 'fail' && !empty($loginResult['message'])) {
+                    $error = $loginResult['message'] === 'Login mismatch' ? 'Invalid email or password.' : $loginResult['message'];
+                } else {
+                    $error = 'Invalid admin credentials.';
+                }
                 // Unset only user-related session variables, preserve CSRF token
                 $userSessionKeys = [
                     $sessionPrefix . 'admin',
@@ -80,12 +88,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'email' => $email,
                         'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
                         'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
-                        'time' => date('Y-m-d H:i:s')
+                        'time' => date('Y-m-d H:i:s'),
+                        'loginResult' => $loginResult,
+                        'session' => $_SESSION
                     ]
                 );
             }
         } catch (Exception $e) {
-            $error = 'Database connection error. Please try again.';
+            error_log( 'logging: ' . print_r($db, true) );
+            $error = 'Database connection error. Please try again!!';
         }
     }
 }

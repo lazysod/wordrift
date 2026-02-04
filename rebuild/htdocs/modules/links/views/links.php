@@ -1,6 +1,9 @@
 <?php require dirname(__DIR__, 3) . '/views/partials/header.php'; ?>
 <main class="container py-5">
-    <h1 class="text-center mb-4">My Links</h1>
+    <div class="row">
+        <div class="col-lg-6 mx-auto card p-4 text-center mb-4">
+
+    <h1 class="text-center mb-4">Links</h1>
     <?php if (!empty($show_adult_warning)) : ?>
         <div class="alert alert-warning text-center">This page may contain links to adult sites. Please confirm you are 18+.</div>
     <?php endif; ?>
@@ -37,5 +40,6 @@
         });
         </script>
     </ul>
+        </div>
 </main>
 <?php require dirname(__DIR__, 3) . '/views/partials/footer.php'; ?>

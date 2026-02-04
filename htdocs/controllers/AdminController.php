@@ -45,8 +45,9 @@ class AdminController
                     $sql = "SELECT * FROM users WHERE id = ?";
                     $rows = $db->fetchAll($sql, [$userId]);
                     $user = $rows[0] ?? [];
-                    $_SESSION[PREFIX . 'user']['first_name'] = $user['first_name'] ?? '';
-                    $_SESSION[PREFIX . 'user']['second_name'] = $user['second_name'] ?? '';
+                    // $_SESSION[PREFIX . 'user']['first_name'] = $user['first_name'] ?? '';
+                    // $_SESSION[PREFIX . 'user']['second_name'] = $user['second_name'] ?? '';
+                    $_SESSION[PREFIX . 'user']['display_name'] = $user['display_name'] ?? '';
                     $_SESSION[PREFIX . 'user']['email'] = $user['email'] ?? '';
                     $success = 'Profile updated successfully.';
                 }

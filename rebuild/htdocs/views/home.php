@@ -125,7 +125,8 @@ require __DIR__ . '/partials/header.php';
                                 currentGuess = currentGuess.slice(0, wordLength);
                             }
                         }
-            var PATH = '';
+            // Set PATH from the data-url attribute on the logo element for robust AJAX pathing
+            var PATH = document.getElementById('logo')?.getAttribute('data-url') || '';
             // --- Utility: get today's date as YYYY-MM-DD for DB, and DD-MM-YYYY for display ---
             const getTodayStr = function() {
                 const d = new Date();

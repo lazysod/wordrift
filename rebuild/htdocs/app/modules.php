@@ -12,19 +12,9 @@ return array (
       'enabled' => false,
       'suitable_as_default' => false,
     ),
-    'cms' => 
-    array (
-      'enabled' => false,
-      'suitable_as_default' => true,
-    ),
-    'contact' => 
-    array (
-      'enabled' => true,
-      'suitable_as_default' => true,
-    ),
     'cookiebanner' => 
     array (
-      'enabled' => false,
+      'enabled' => true,
       'suitable_as_default' => false,
     ),
     'google_analytics' => 
@@ -49,7 +39,7 @@ return array (
     ),
     'user' => 
     array (
-      'enabled' => false,
+      'enabled' => true,
       'suitable_as_default' => false,
     ),
     'media' => 
