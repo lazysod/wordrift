@@ -22,19 +22,19 @@ return [
         'new_tab' => false,
         'url' => '/links',
     ],
-    'strata_home' => [
-        'label' => 'StrataPHP.org',
+    'Leaderboard' => [
+        'label' => 'Leaderboard',
         'show' => true,
         'order' => 2,
         'new_tab' => true,
-        'url' => 'https://strataphp.org',
+        'url' => '/leaderboard',
     ],
-    'Contact' => [
-        'label' => 'Contact Us',
-        'url' => '/contact',
+    'User History' => [
+        'label' => 'User History',
         'show' => true,
-        'order' => 3,
-        'new_tab' => false
+        'order' => 2,
+        'new_tab' => false,
+        'url' => '/userhistory'
     ]
     // ...other items
 ];

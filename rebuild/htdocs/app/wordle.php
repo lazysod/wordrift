@@ -1,5 +1,6 @@
 <?php
 // htdocs/app/wordle.php
+require_once __DIR__ . '/game.php';
 $action = $_GET['action'] ?? $_POST['action'] ?? null;
 $is_ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
 include_once __DIR__ . '/start.php'; // Load configuration and autoload
