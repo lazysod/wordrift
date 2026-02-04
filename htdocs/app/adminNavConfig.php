@@ -5,7 +5,19 @@ return [
         'label' => 'Home',
         'show' => true,
         'order' => 1,
-        'url' => '/admin',
+        'url' => '/admin/dashboard',
+    ],
+    'Links' => [
+        'label' => 'Links',
+        'show' => true,
+        'order' => 3,
+        'url' => '/admin/links',
+    ],
+    '' => [
+        'label' => 'Word List',
+        'show' => true,
+        'order' => 5,
+        'url' => '/admin/words',
     ],
     'user_management' => [
         'label' => 'User Management',
@@ -18,12 +30,18 @@ return [
         'show' => true,
         'order' => 4,
         'url' => '/admin/modules',
-    ],
-    'Words' => [
-        'label' => 'Words',
-        'url' => '/admin/words',
-        'show' => true,
-        'order' => 5
+        'children' => [
+            'manage' => [
+                'label' => 'Manage Modules',
+                'url' => '/admin/modules',
+                'show' => true
+            ],
+            'installer' => [
+                'label' => 'Install New Module',
+                'url' => '/admin/module-installer',
+                'show' => true
+            ]
+        ]
     ]
     // ...other items
 ];

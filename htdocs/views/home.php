@@ -73,6 +73,7 @@ require __DIR__ . '/partials/header.php';
                             <button type="button" id="wordle-submit-btn" class="btn btn-primary" style="width:120px;">Submit</button>
                         </div>
                     </div>
+
                     <?php if (isset($_SESSION[PREFIX . 'user_id'])): ?>
                         <div id="wordle-feedback" class="mt-3 text-center"></div>
                         <div id="wordle-definition" class="mt-3 text-center small"></div>
@@ -125,12 +126,8 @@ require __DIR__ . '/partials/header.php';
                                 currentGuess = currentGuess.slice(0, wordLength);
                             }
                         }
-            // Dynamically determine base path for AJAX requests
-            var PATH = '';
-            const logo = document.getElementById('logo');
-            if (logo && logo.dataset && logo.dataset.url !== undefined) {
-                PATH = logo.dataset.url;
-            }
+            // Set PATH from the data-url attribute on the logo element for robust AJAX pathing
+            var PATH = document.getElementById('logo')?.getAttribute('data-url') || '';
             // --- Utility: get today's date as YYYY-MM-DD for DB, and DD-MM-YYYY for display ---
             const getTodayStr = function() {
                 const d = new Date();
@@ -449,7 +446,8 @@ require __DIR__ . '/partials/header.php';
                         url: `${PATH}/app/wordle.php?action=get_stats&mode=${mode}`,
                         method: 'GET',
                         dataType: 'json',
-                        success: function(data) {
+                        success: function(data, textStatus, xhr) {
+                            console.log('fetchStats success', {data, textStatus, status: xhr.status});
                             if (data.stats) {
                                 resolve(data.stats);
                             } else {
@@ -457,7 +455,12 @@ require __DIR__ . '/partials/header.php';
                             }
                         },
                         error: function(xhr, status, error) {
-                            resolve({ played: 0, wins: 0, streak: 0, maxStreak: 0 });
+                            console.log('fetchStats error', {xhr, status, error, response: xhr.responseText});
+                            if (xhr.status === 401) {
+                                resolve({ played: null, wins: null, streak: null, maxStreak: null, error: '401', raw: xhr.responseText });
+                            } else {
+                                resolve({ played: 0, wins: 0, streak: 0, maxStreak: 0, error: status, raw: xhr.responseText });
+                            }
                         }
                     });
                 });
@@ -465,13 +468,29 @@ require __DIR__ . '/partials/header.php';
 
             const updateStatsDisplay = async function() {
                 const stats = await fetchStats(mode);
-                document.getElementById('wordle-stats').innerHTML = `
-                    <div>Games Played: <b>${stats.played}</b></div>
-                    <div>Wins: <b>${stats.wins}</b></div>
-                    <div>Current Streak: <b>${stats.streak}</b></div>
-                    <div>Max Streak: <b>${stats.maxStreak}</b></div>
-                    <div class="small text-muted">Mode: <b>${mode.charAt(0).toUpperCase() + mode.slice(1)}</b></div>
-                `;
+                const statsDiv = document.getElementById('wordle-stats');
+                console.log('updateStatsDisplay', stats);
+                // If not logged in and stats are all zero/null, show login required message
+                if (stats.error) {
+                    let extra = '';
+                    if (stats.raw) extra = `<pre style=\"font-size:0.8em\">${stats.raw}</pre>`;
+                    statsDiv.innerHTML = `<div class=\"alert alert-danger text-center\">Error loading stats: ${stats.error}${extra}</div>`;
+                } else {
+                    let loginNote = '';
+                    if (!window.currentUserId) {
+                        loginNote = '<div class=\"small text-muted mt-2\">Login to track your stats and streaks.</div>';
+                    }
+                    // Defensive: if any stat is undefined/null, show 0
+                    const safe = v => (typeof v === 'number' && !isNaN(v)) ? v : 0;
+                    statsDiv.innerHTML = `
+                        <div>Games Played: <b>${safe(stats.played)}</b></div>
+                        <div>Wins: <b>${safe(stats.wins)}</b></div>
+                        <div>Current Streak: <b>${safe(stats.streak)}</b></div>
+                        <div>Max Streak: <b>${safe(stats.maxStreak)}</b></div>
+                        <div class=\"small text-muted\">Mode: <b>${mode.charAt(0).toUpperCase() + mode.slice(1)}</b></div>
+                        ${loginNote}
+                    `;
+                }
             }
             // --- Real leaderboard ---
             const updateLeaderboardDisplay = async function() {
@@ -631,7 +650,7 @@ require __DIR__ . '/partials/header.php';
                             }
                         },
                         error: function(xhr, status, err) {
-                            if (feedback) feedback.textContent = 'Error connecting to server!';
+                            feedback.textContent = 'Error connecting to server!';
                             gameOver = true;
                             resolve();
                         }
@@ -659,7 +678,7 @@ require __DIR__ . '/partials/header.php';
                             resolve();
                         },
                         error: function(xhr, status, error) {
-                            if (feedback) feedback.textContent = 'Error connecting to server!!';
+                            feedback.textContent = 'Error connecting to server!!';
                             gameOver = true;
                             resolve();
                         }
@@ -724,7 +743,7 @@ require __DIR__ . '/partials/header.php';
                     },
                     error: function(xhr, status, error) {
                         // fallback: allow play if error
-                        if (typeof fetchAnswer === 'function') fetchAnswer().then(blockIfPlayedToday);
+                        fetchAnswer().then(blockIfPlayedToday);
                     }
                 });
             } else {
@@ -822,15 +841,15 @@ require __DIR__ . '/partials/header.php';
                         try {
                             let data = JSON.parse(responseText);
                             if (jqXHR.status === 401) {
-                                if (feedback) feedback.innerHTML = '<div class="alert alert-danger">You must be logged in to record your result. <a href="login.php">Log in</a></div>';
+                                feedback.innerHTML = '<div class="alert alert-danger">You must be logged in to record your result. <a href="login.php">Log in</a></div>';
                                 return;
                             }
                             if (!data.success) {
-                                if (feedback) feedback.innerHTML = '<div class="alert alert-danger">Failed to record result: ' + (data.error || 'Unknown error') + '</div>';
+                                feedback.innerHTML = '<div class="alert alert-danger">Failed to record result: ' + (data.error || 'Unknown error') + '</div>';
                             }
                         } catch (err) {
                             console.error('Invalid JSON from server:', {url, responseText});
-                            if (feedback) feedback.innerHTML = '<div class="alert alert-danger">Invalid JSON from server:<br><b>' + url + '</b><br><pre>' + responseText + '</pre></div>';
+                            feedback.innerHTML = '<div class="alert alert-danger">Invalid JSON from server:<br><b>' + url + '</b><br><pre>' + responseText + '</pre></div>';
                         }
                     }
                 });

@@ -1,42 +1,44 @@
 <?php
+namespace App\Controllers;
+use App\DB;
+use App\User;
+use PHPMailer\PHPMailer\PHPMailer;
+
 class AdminController
 {
     public function profile()
     {
+        $config = include dirname(__DIR__) . '/app/config.php';
+        $sessionPrefix = $config['session_prefix'] ?? 'app_';
         $showNav = true;
-        $admin = $_SESSION[PREFIX . 'user'] ?? null;
+        $admin = $_SESSION[$sessionPrefix . 'user'] ?? null;
         $success = '';
         $error = '';
         if (!$admin || empty($admin['is_admin'])) {
             header('Location: /admin/login');
             exit;
         }
-        $config = include dirname(__DIR__) . '/app/config.php';
-        $userId = $_SESSION[PREFIX . 'user_id'];
-        $db = new DB($config);
+        $userId = $_SESSION[$sessionPrefix . 'user_id'];
+    $db = new DB($config);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // CSRF check
-            $csrfValid = isset($_POST['csrf_token']) && isset($_SESSION[PREFIX . 'csrf_token']) && hash_equals($_SESSION[PREFIX . 'csrf_token'], $_POST['csrf_token']);
+            $csrfValid = isset($_POST['csrf_token']) && isset($_SESSION[$sessionPrefix . 'csrf_token']) && hash_equals($_SESSION[$sessionPrefix . 'csrf_token'], $_POST['csrf_token']);
             if (!$csrfValid) {
                 $error = 'Invalid CSRF token.';
             } else {
-                $first_name = trim($_POST['first_name'] ?? '');
-                $second_name = trim($_POST['second_name'] ?? '');
-                $email = trim($_POST['email'] ?? '');
+                $display_name = trim($_POST['display_name'] ?? '');
                 $pwd = $_POST['pwd'] ?? '';
                 $pwd2 = $_POST['pwd2'] ?? '';
-                if (!$first_name || !$second_name || !$email) {
-                    $error = 'All fields except password are required.';
-                } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $error = 'Invalid email address.';
+                if (!$display_name) {
+                    $error = 'Display Name is required.';
                 } elseif ($pwd && $pwd !== $pwd2) {
                     $error = 'Passwords do not match.';
                 } elseif ($pwd && strlen($pwd) < 8) {
                     $error = 'Password must be at least 8 characters.';
                 } else {
                     // Update user info
-                    $params = [$first_name, $second_name, $email, $userId];
-                    $db->query('UPDATE users SET first_name = ?, second_name = ?, email = ? WHERE id = ?', $params);
+                    $params = [$display_name, $userId];
+                    $db->query('UPDATE users SET display_name = ? WHERE id = ?', $params);
                     if ($pwd) {
                         $hash = password_hash($pwd, PASSWORD_DEFAULT);
                         $db->query('UPDATE users SET password = ? WHERE id = ?', [$hash, $userId]);
@@ -45,10 +47,7 @@ class AdminController
                     $sql = "SELECT * FROM users WHERE id = ?";
                     $rows = $db->fetchAll($sql, [$userId]);
                     $user = $rows[0] ?? [];
-                    // $_SESSION[PREFIX . 'user']['first_name'] = $user['first_name'] ?? '';
-                    // $_SESSION[PREFIX . 'user']['second_name'] = $user['second_name'] ?? '';
-                    $_SESSION[PREFIX . 'user']['display_name'] = $user['display_name'] ?? '';
-                    $_SESSION[PREFIX . 'user']['email'] = $user['email'] ?? '';
+                    $_SESSION[$sessionPrefix . 'user']['display_name'] = $user['display_name'] ?? '';
                     $success = 'Profile updated successfully.';
                 }
             }
@@ -73,7 +72,7 @@ class AdminController
     {
         $email = 'info@example.com';
         // APP::dump($_SESSION);
-        include __DIR__ . '/../views/admin/admin_dashboard.php';
+    include __DIR__ . '/../views/admin/admin_dashboard.php';
     }
 
     public function resetRequest()
@@ -82,15 +81,14 @@ class AdminController
         $message = '';
         global $config;
         $db = new DB($config);
-        $userModel = new User($db, $config);
+        $userModel = new \App\User($db, $config);
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['email'])) {
             $email = trim($_POST['email']);
             $result = $userModel->requestPasswordReset($email, $config['base_url'], true); // true = admin only
             if ($result['status'] === 'success') {
                 include_once dirname(__DIR__) . '/vendor/autoload.php';
                 $token = $result['token'];
-                $resetLink = $config['base_url'] . "/admin/reset-password/confirm?token=$token";
-                $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+                $mail = new PHPMailer(true);
                 try {
                     $mail->isSMTP();
                     $mail->Host = $config['mail']['host'];
@@ -160,3 +158,4 @@ class AdminController
         include __DIR__ . '/../views/admin/admin_reset_form.php';
     }
 }
+?>

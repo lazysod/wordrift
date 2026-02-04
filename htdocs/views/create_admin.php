@@ -7,7 +7,7 @@ require __DIR__ . '/partials/header.php';
         <div class="col-lg-6 mx-auto">
             <h1 class="mb-4">Wordrift Installation</h1>
             <h2>Create Admin User</h2>
-            <form action="/create_admin" method="post" class="card p-4 shadow-sm">
+            <form action="/create_admin.php" method="post" class="card p-4 shadow-sm">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" class="form-control" required><br>
                 <label for="email">Email:</label>

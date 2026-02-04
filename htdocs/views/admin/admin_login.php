@@ -1,4 +1,11 @@
+
 <?php
+// Import namespaced classes
+use App\DB;
+use App\User;
+use App\Logger;
+use App\TokenManager;
+
 // Load config and bootstrap
 $startPath = dirname(__DIR__, 2) . '/app/start.php';
 if (file_exists($startPath)) {
@@ -20,15 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $db = null;
-        if (class_exists('DB')) {
-            $db = new DB($config);
-        } else {
-            $error = 'Database class not found.';
-        }
+        $db = new DB($config['db']);
         $user = new User($db, $config);
         $loginResult = $user->login(['email' => $email, 'pwd' => $password]);
-        APP::dump($loginResult);
-        APP::dump($_SESSION);
+        \App\App::dump($loginResult);
+        \App\App::dump($_SESSION);
         die();
         if ($loginResult['status'] === 'success' && !empty($_SESSION[PREFIX . 'admin']) && $_SESSION[PREFIX . 'admin'] > 0) {
             // Only allow admin users

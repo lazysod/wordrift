@@ -1,4 +1,6 @@
 RewriteEngine On
+# Map /create_admin to /create_admin.php
+RewriteRule ^create_admin$ create_admin.php [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]

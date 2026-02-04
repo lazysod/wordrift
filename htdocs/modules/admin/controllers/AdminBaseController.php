@@ -1,4 +1,6 @@
 <?php
+namespace App\Modules\Admin\Controllers;
+
 // Base controller for admin modules to enforce admin authentication
 class AdminBaseController {
     public function __construct() {

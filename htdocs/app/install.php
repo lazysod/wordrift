@@ -1,5 +1,28 @@
+
 <?php
-// htdocs/app/install.php
+// Error/exception handler: always return JSON
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => "PHP Error: $errstr in $errfile on line $errline"
+    ]);
+    exit;
+});
+set_exception_handler(function($exception) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Uncaught Exception: ' . $exception->getMessage(),
+        'file' => $exception->getFile(),
+        'line' => $exception->getLine()
+    ]);
+    exit;
+});
+// rebuild/htdocs/app/install.php
 header('Content-Type: application/json');
 
 // Only allow POST
@@ -63,7 +86,9 @@ foreach ($queries as $query) {
     }
 }
 
-// Delete install.sql after successful execution
+$mysqli->close();
+
+// Delete install.sql after successful install
 @unlink(__DIR__ . '/install.sql');
 $mysqli->close();
 

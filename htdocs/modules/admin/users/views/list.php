@@ -1,5 +1,7 @@
 <?php
-if (empty($_SESSION[PREFIX . 'admin'])) {
+$config = include dirname(__DIR__, 4) . '/app/config.php';
+$sessionPrefix = $config['session_prefix'] ?? 'app_';
+if (empty($_SESSION[$sessionPrefix . 'admin'])) {
     header('Location: /admin');
     exit;
 }
@@ -38,6 +40,7 @@ require __DIR__ . '/../../../../views/partials/admin_header.php'; ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($user['id']) ?></td>
                                     <td><?php echo htmlspecialchars($user['display_name'] ?? '') ?></td>
+
                                     <td><?php echo htmlspecialchars($user['email']) ?></td>
                                     <td><?php echo isset($user['is_admin']) && $user['is_admin'] ? 'Admin' : 'User' ?></td>
                                     <td><?php echo isset($user['active']) && $user['active'] ? 'Active' : 'Inactive' ?></td>

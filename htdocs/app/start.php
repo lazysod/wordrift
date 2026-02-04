@@ -1,11 +1,36 @@
 <?php
 // Redirect to /install if db_conf.php does not exist and not already on /install or /app/install.php
 if (!file_exists(__DIR__ . '/db_conf.php')) {
-    $uri = $_SERVER['REQUEST_URI'] ?? '';
-    if (strpos($uri, '/install') === false && strpos($uri, '/app/install.php') === false) {
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+    $isInstallPage = (strpos($requestUri, '/install') !== false || strpos($requestUri, '/app/install.php') !== false);
+    $isApi = (strpos($requestUri, '/api/') !== false);
+    if (!$isInstallPage && !$isApi) {
         header('Location: /install');
         exit;
     }
+}
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
+
+use App\Token;
+use App\Logger;
+use App\Modules\Admin\Controllers\ModuleManagerController;
+use App\Modules\Admin\Controllers\AdminLinksController;
+use App\Modules\Admin\Controllers\UserAdminController;
+use App\Controllers\AdminController;
+// Load config early for session prefix
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..'); // if start.php is in htdocs/app/
+$dotenv->load();
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    include_once __DIR__ . '/../vendor/autoload.php';
+    if (class_exists('Dotenv\\Dotenv')) {
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->load();
+        error_log('TINYMCE_API_KEY after Dotenv: ' . getenv('TINYMCE_API_KEY'));
+    }
+}
+$config = require __DIR__ . '/config.php';
+if (function_exists('opcache_invalidate')) {
+    opcache_invalidate(__DIR__ . '/config.php', true);
 }
 $config = isset($config) ? $config : (file_exists(__DIR__ . '/config.php') ? require __DIR__ . '/config.php' : []);
 
@@ -28,33 +53,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Set up autoloading for controllers, models, and app classes
-spl_autoload_register(
-    function ($class) {
-        $paths = [
-        __DIR__ . '/../controllers/' . $class . '.php',
-        __DIR__ . '/../models/' . $class . '.php',
-        __DIR__ . '/' . $class . '.php', // For app/App.php, Token.php, etc.
-        __DIR__ . '/class/' . $class . '.php', // For app/class/TokenManager.php, etc.
-        ];
-        // Add all modules/*/controllers/ and modules/*/models/ paths
-        $modulesDir = __DIR__ . '/../modules/';
-        if (is_dir($modulesDir)) {
-            foreach (glob($modulesDir . '*/controllers/' . $class . '.php') as $modController) {
-                $paths[] = $modController;
-            }
-            foreach (glob($modulesDir . '*/models/' . $class . '.php') as $modModel) {
-                $paths[] = $modModel;
-            }
-        }
-        foreach ($paths as $file) {
-            if (file_exists($file)) {
-                include_once $file;
-                return;
-            }
-        }
-    }
-);
+
+// Set up session prefix for middleware
+$sessionPrefix = $config['session_prefix'] ?? 'app_';
 
 // Set up global router
 require_once __DIR__ . '/Router.php';
@@ -63,55 +64,44 @@ if (!isset($router)) {
     $router = new Router();
 }
 
-$router->get('/install', function() {
-    require __DIR__ . '/../views/install.php';
-    exit;
-});
-$router->get('/create_admin', function() {
-    require __DIR__ . '/../views/create_admin.php';
-    exit;
-});
-
-$router->post('/create_admin', function() {
-    require __DIR__ . '/../app/create_admin.php';
-    exit;
-});
-// Register static routes for privacy and terms (after router is initialized)
-$router->get('/privacy', function() {
-    require __DIR__ . '/../views/privacy.php';
-    exit;
-});
-$router->get('/terms', function() {
-    require __DIR__ . '/../views/terms.php';
-    exit;
-});
-
-$router->get('/admin_created', function() {
-    require __DIR__ . '/../views/admin_created.php';
-    exit;
-});
-
 // Register core admin routes
-$router->get('/admin/modules', ['ModuleManagerController', 'index']);
-$router->post('/admin/modules/update', ['ModuleManagerController', 'update']);
-$router->get('/admin/dashboard/profile', ['AdminController', 'profile']);
-$router->get('/admin', ['AdminController', 'index']);
-$router->get('/admin/dashboard', ['AdminController', 'dashboard']);
-$router->get('/admin/reset-password', ['AdminController', 'resetRequest']);
-$router->post('/admin/reset-password', ['AdminController', 'resetRequest']);
-$router->get('/admin/reset-password/confirm', ['AdminController', 'resetPassword']);
-$router->post('/admin/reset-password/confirm', ['AdminController', 'resetPassword']);
-$router->post('/admin/dashboard/profile', ['AdminController', 'profile']);
+$router->get('/admin/dashboard/profile', [AdminController::class, 'profile']);
+$router->get('/admin', [AdminController::class, 'index']);
+$router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
+$router->get('/admin/reset-password', [AdminController::class, 'resetRequest']);
+$router->post('/admin/reset-password', [AdminController::class, 'resetRequest']);
+$router->get('/admin/reset-password/confirm', [AdminController::class, 'resetPassword']);
+$router->post('/admin/reset-password/confirm', [AdminController::class, 'resetPassword']);
+$router->post('/admin/dashboard/profile', [AdminController::class, 'profile']);
+
+// Register /about, /terms, /privacy routes using controllers (must be after $router is initialized)
+$router->get('/about', [\App\Controllers\AboutController::class, 'index']);
+$router->get('/terms', [\App\Controllers\TermsController::class, 'index']);
+$router->get('/privacy', [\App\Controllers\PrivacyController::class, 'index']);
 
 // Register admin links routes
 if (isset($router) && $router instanceof Router) {
-    $router->get('/admin/links', ['AdminLinksController', 'index']);
-    $router->get('/admin/links/add', ['AdminLinksController', 'add']);
-    $router->post('/admin/links/add', ['AdminLinksController', 'add']);
-    $router->get('/admin/links/edit/{id}', ['AdminLinksController', 'edit']);
-    $router->post('/admin/links/edit/{id}', ['AdminLinksController', 'edit']);
-    $router->get('/admin/links/delete/{id}', ['AdminLinksController', 'delete']);
-    $router->post('/admin/links/order', ['AdminLinksController', 'order']);
+    // Admin authentication middleware
+    $router->middleware(function ($request, $next) use ($sessionPrefix) {
+        $path = $request['path'];
+        $isAdminRoute = strpos($path, '/admin') === 0;
+        $isLoginPage = $path === '/admin' || $path === '/admin/reset-password';
+        
+        if ($isAdminRoute && !$isLoginPage && empty($_SESSION[$sessionPrefix . 'admin'])) {
+            // Check if this is an AJAX request or API call
+            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                     strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+            $isJsonRequest = isset($_SERVER['CONTENT_TYPE']) && 
+                           strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
+            $isApiCall = strpos($path, '/admin/modules/') === 0;
+            
+            header('Location: /admin/admin_login.php');
+            exit;
+        }
+        return $next($request);
+    });
+
+    // Admin routes are now loaded from modules/admin/routes.php
 }
 
 // Modular system loader: load routes for all enabled modules
@@ -142,8 +132,21 @@ if (is_dir($modulesDir)) {
     }
     // Load routes for enabled modules
     global $router;
-    foreach ($config['modules'] as $modName => $enabled) {
-        if (!$enabled) continue;
+    
+    // Always load admin routes (core functionality)
+    $adminRouteFile = $modulesDir . 'admin/routes.php';
+    if (file_exists($adminRouteFile)) {
+        include $adminRouteFile;
+    }
+    
+    foreach ($config['modules'] as $modName => $modInfo) {
+        // Skip admin since we already loaded it
+        if ($modName === 'admin') {
+            continue;
+        }
+        if (is_array($modInfo) && !$modInfo['enabled']) {
+            continue;
+        }
         $routeFile = $modulesDir . $modName . '/routes.php';
         if (file_exists($routeFile)) {
             include $routeFile;
@@ -151,11 +154,28 @@ if (is_dir($modulesDir)) {
     }
 }
 
+// Dependency Injection Container setup
+require_once __DIR__ . '/Container.php';
+global $container;
+$container = new Container();
+
+// Register Logger service
+$container->factory('logger', function ($c) use ($config) {
+    return new Logger($config);
+});
+
+// Register DB service
+$container->factory('db', function ($c) use ($config) {
+    return new App\DB($config['db']);
+});
+
 // Example: define app constants
 define('APP_VERSION', '0.1.0');
 // define('BASE_URL', '/htdocs/');
 
 // Auto-generate a CSRF token for every user session
-if (empty($_SESSION[PREFIX . 'csrf_token'])) {
-    $_SESSION[PREFIX . 'csrf_token'] = Token::generate();
+$sessionPrefix = $config['session_prefix'] ?? 'app_';
+if (empty($_SESSION[$sessionPrefix . 'csrf_token'])) {
+    $_SESSION[$sessionPrefix . 'csrf_token'] = Token::generate();
 }
+

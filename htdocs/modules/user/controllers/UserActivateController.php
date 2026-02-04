@@ -1,19 +1,37 @@
 <?php
-// modules/user/controllers/UserActivateController.php
+namespace App\Modules\User\Controllers;
+
+use App\DB;
+
+/**
+ * User Account Activation Controller
+ * 
+ * Handles user account activation via email verification links
+ * Validates activation tokens and activates user accounts
+ */
 class UserActivateController
 {
+    /**
+     * Handle user account activation
+     * 
+     * Validates activation keys and activates user accounts
+     * Includes proper error handling and security validation
+     * 
+     * @return void
+     */
     public function index()
     {
-        include_once dirname(__DIR__, 3) . '/app/start.php';
-        $config = include dirname(__DIR__, 3) . '/app/config.php';
-        $success = '';
-        $error = '';
-        $key = $_GET['key'] ?? '';
-        if (!$key) {
-            $error = 'Invalid activation link.';
-            include __DIR__ . '/../views/activate.php';
-            return;
-        }
+        try {
+            include_once dirname(__DIR__, 3) . '/app/start.php';
+            $config = include dirname(__DIR__, 3) . '/app/config.php';
+            $success = '';
+            $error = '';
+            $key = $_GET['key'] ?? '';
+            if (!$key) {
+                $error = 'Invalid activation link.';
+                include __DIR__ . '/../views/activate.php';
+                return;
+            }
         $db = new DB($config);
         $sql = "SELECT * FROM user_activation WHERE activation_key = ?";
         $rows = $db->fetchAll($sql, [$key]);
@@ -33,7 +51,12 @@ class UserActivateController
         // Activate user
         $db->query('UPDATE users SET active = 1 WHERE id = ?', [$activation['user_id']]);
         $db->query('DELETE FROM user_activation WHERE id = ?', [$activation['id']]);
-        $success = 'Your account has been activated! You can now login.';
+        $success = 'Your account has been activated! You can now <a href="/user/login">login</a>.';
         include __DIR__ . '/../views/activate.php';
+        } catch (\Exception $e) {
+            $error = 'An unexpected error occurred during activation. Please try again.';
+            $success = '';
+            include __DIR__ . '/../views/activate.php';
+        }
     }
 }

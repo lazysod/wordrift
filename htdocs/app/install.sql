@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jan 30, 2026 at 04:44 PM
+-- Generation Time: Feb 04, 2026 at 02:46 PM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `1f_test`
+-- Database: `a_wordgame_rebuild`
 --
 
 -- --------------------------------------------------------
@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `cookie_login`
 --
 
-CREATE TABLE `cookie_login` (
+CREATE TABLE IF NOT EXISTS `cookie_login` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `cookie_hash` varchar(255) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `cookie_login` (
 -- Table structure for table `daily_played`
 --
 
-CREATE TABLE `daily_played` (
+CREATE TABLE IF NOT EXISTS `daily_played` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `game_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -54,7 +54,7 @@ CREATE TABLE `daily_played` (
 -- Table structure for table `game_results`
 --
 
-CREATE TABLE `game_results` (
+CREATE TABLE IF NOT EXISTS `game_results` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `game_date` date NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE `game_results` (
 -- Table structure for table `game_sessions`
 --
 
-CREATE TABLE `game_sessions` (
+CREATE TABLE IF NOT EXISTS `game_sessions` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `game_date` date NOT NULL,
@@ -91,13 +91,37 @@ CREATE TABLE `game_sessions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ip_log`
+-- Table structure for table `links`
 --
 
-CREATE TABLE `ip_log` (
-  `ip_id` int(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `links` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `icon` varchar(64) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `order` int(11) NOT NULL DEFAULT '0',
+  `nsfw` tinyint(1) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `links`
+--
+
+INSERT IGNORE INTO `links` (`id`, `title`, `url`, `icon`, `created_at`, `order`, `nsfw`) VALUES
+(3, 'B.Smith Home Page', 'https://barrysmith.dev', 'fas fa-link', '2025-08-13 08:25:14', 1, 0),
+(4, 'Lazy Links Project', 'https://lazylinks.co.uk', 'fas fa-link', '2025-08-13 08:26:48', 4, 0),
+(6, 'Wordrift on Github', 'https://github.com/lazysod/wordrift', 'fab fa-github', '2026-02-04 12:05:30', 5, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login_tracker`
+--
+
+CREATE TABLE IF NOT EXISTS `login_tracker` (
+  `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
-  `ip_address` varchar(100) NOT NULL,
   `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -107,7 +131,7 @@ CREATE TABLE `ip_log` (
 -- Table structure for table `rank`
 --
 
-CREATE TABLE `rank` (
+CREATE TABLE IF NOT EXISTS `rank` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `title` varchar(23) NOT NULL,
@@ -119,28 +143,8 @@ CREATE TABLE `rank` (
 -- Dumping data for table `rank`
 --
 
-INSERT INTO `rank` (`id`, `user_id`, `title`, `level`, `admin`) VALUES
-(1, 1, 'Admin', 100, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `rank_info`
---
-
-CREATE TABLE `rank_info` (
-  `ri_id` int(11) NOT NULL,
-  `rank_title` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `rank_info`
---
-
-INSERT INTO `rank_info` (`ri_id`, `rank_title`) VALUES
-(1, 'Admin!'),
-(2, 'TCH Staff'),
-(3, 'Medical Staff');
+INSERT IGNORE INTO `rank` (`id`, `user_id`, `title`, `level`, `admin`) VALUES
+(1, 1, 'Administrator', 10, 1);
 
 -- --------------------------------------------------------
 
@@ -148,11 +152,11 @@ INSERT INTO `rank_info` (`ri_id`, `rank_title`) VALUES
 -- Table structure for table `reset`
 --
 
-CREATE TABLE `reset` (
+CREATE TABLE IF NOT EXISTS `reset` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `key` varchar(255) NOT NULL,
-  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_date` timestamp NULL DEFAULT NULL,
   `expiry_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -162,8 +166,8 @@ CREATE TABLE `reset` (
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(255) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `display_name` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `pwd` varchar(128) NOT NULL,
@@ -172,7 +176,6 @@ CREATE TABLE `users` (
   `avatar` varchar(120) DEFAULT 'assets/images/blank_user.png',
   `rank` int(1) NOT NULL DEFAULT '0',
   `is_admin` int(1) DEFAULT '0',
-  `created_at` datetime DEFAULT NULL,
   `sys_admin` int(1) DEFAULT '0',
   `last_access` datetime DEFAULT NULL,
   `active` int(1) DEFAULT '1',
@@ -180,7 +183,8 @@ CREATE TABLE `users` (
   `dead_switch` int(1) DEFAULT '0',
   `avatar_color` varchar(10) DEFAULT NULL,
   `correct_answers_count` int(11) DEFAULT '0',
-  `reputation_points` int(11) DEFAULT '0'
+  `reputation_points` int(11) DEFAULT '0',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -189,7 +193,7 @@ CREATE TABLE `users` (
 -- Table structure for table `user_activation`
 --
 
-CREATE TABLE `user_activation` (
+CREATE TABLE IF NOT EXISTS `user_activation` (
   `id` int(255) NOT NULL,
   `user_id` int(255) NOT NULL,
   `activation_key` varchar(255) NOT NULL,
@@ -200,10 +204,29 @@ CREATE TABLE `user_activation` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `user_sessions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `device_id` varchar(128) NOT NULL,
+  `device_type` varchar(32) DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `device_info` varchar(255) DEFAULT NULL,
+  `session_token` varchar(128) NOT NULL,
+  `revoked` tinyint(1) DEFAULT '0',
+  `last_seen` datetime NOT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `word_list`
 --
 
-CREATE TABLE `word_list` (
+CREATE TABLE IF NOT EXISTS `word_list` (
   `word_id` int(255) NOT NULL,
   `word` varchar(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -212,7 +235,7 @@ CREATE TABLE `word_list` (
 -- Dumping data for table `word_list`
 --
 
-INSERT INTO `word_list` (`word_id`, `word`) VALUES
+INSERT IGNORE INTO `word_list` (`word_id`, `word`) VALUES
 (1, 'cigar'),
 (2, 'rebut'),
 (3, 'sissy'),
@@ -2528,7 +2551,7 @@ INSERT INTO `word_list` (`word_id`, `word`) VALUES
 (2313, 'artsy'),
 (2314, 'rural'),
 (2315, 'shave'),
-(2317, 'hated');
+(2316, 'hated');
 
 --
 -- Indexes for dumped tables
@@ -2537,150 +2560,102 @@ INSERT INTO `word_list` (`word_id`, `word`) VALUES
 --
 -- Indexes for table `cookie_login`
 --
-ALTER TABLE `cookie_login`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- Indexes for table `daily_played`
 --
-ALTER TABLE `daily_played`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- Indexes for table `game_results`
 --
-ALTER TABLE `game_results`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+
 
 --
 -- Indexes for table `game_sessions`
 --
-ALTER TABLE `game_sessions`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_daily_session` (`user_id`,`game_date`,`mode`);
+
 
 --
--- Indexes for table `ip_log`
+-- Indexes for table `links`
 --
-ALTER TABLE `ip_log`
-  ADD PRIMARY KEY (`ip_id`);
+
+
+--
+-- Indexes for table `login_tracker`
+--
+
 
 --
 -- Indexes for table `rank`
 --
-ALTER TABLE `rank`
-  ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `rank_info`
---
-ALTER TABLE `rank_info`
-  ADD PRIMARY KEY (`ri_id`);
 
 --
 -- Indexes for table `reset`
 --
-ALTER TABLE `reset`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- Indexes for table `users`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- Indexes for table `user_activation`
 --
-ALTER TABLE `user_activation`
-  ADD PRIMARY KEY (`id`);
+
+
+--
+-- Indexes for table `user_sessions`
+--
+
 
 --
 -- Indexes for table `word_list`
 --
-ALTER TABLE `word_list`
-  ADD PRIMARY KEY (`word_id`);
+
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `cookie_login`
---
-ALTER TABLE `cookie_login`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `daily_played`
---
-ALTER TABLE `daily_played`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `game_results`
---
-ALTER TABLE `game_results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `game_sessions`
---
-ALTER TABLE `game_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `ip_log`
---
-ALTER TABLE `ip_log`
-  MODIFY `ip_id` int(255) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `rank`
---
-ALTER TABLE `rank`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 
 --
--- AUTO_INCREMENT for table `rank_info`
---
-ALTER TABLE `rank_info`
-  MODIFY `ri_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 
 --
--- AUTO_INCREMENT for table `reset`
---
-ALTER TABLE `reset`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `user_activation`
---
-ALTER TABLE `user_activation`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
 
 --
--- AUTO_INCREMENT for table `word_list`
---
-ALTER TABLE `word_list`
-  MODIFY `word_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2319;
+
 
 --
--- Constraints for dumped tables
---
 
---
--- Constraints for table `game_results`
---
-ALTER TABLE `game_results`
-  ADD CONSTRAINT `game_results_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

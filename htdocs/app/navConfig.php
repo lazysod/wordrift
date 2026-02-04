@@ -8,12 +8,26 @@ return [
         'new_tab' => false,
         'url' => '/',
     ],
+    'About' => [
+        'label' => 'About',
+        'show' => true,
+        'order' => 2,
+        'new_tab' => false,
+        'url' => '/about',
+    ],
+    'Links' => [
+        'label' => 'Links',
+        'show' => true,
+        'order' => 3,
+        'new_tab' => false,
+        'url' => '/links',
+    ],
     'Leaderboard' => [
         'label' => 'Leaderboard',
         'show' => true,
         'order' => 2,
         'new_tab' => false,
-        'url' => '/leaderboard'
+        'url' => '/leaderboard',
     ],
     'User History' => [
         'label' => 'User History',
@@ -22,4 +36,5 @@ return [
         'new_tab' => false,
         'url' => '/userhistory'
     ]
+    // ...other items
 ];
