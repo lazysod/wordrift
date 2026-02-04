@@ -68,13 +68,8 @@ class CmsHelper
      */
     public static function getPostLoginRedirect(bool $isAdmin, string $fallbackUrl = '/'): string
     {
-        if ($isAdmin) {
-            // Admin users: prefer CMS admin if available, otherwise basic admin
-            return self::isCmsEnabled() ? '/admin/cms' : '/admin';
-        }
-        
-        // Regular users: prefer profile if available, otherwise fallback
-        return '/user/profile';
+        // Always redirect to the front page after login
+        return '/';
     }
     
     /**

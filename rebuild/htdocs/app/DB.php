@@ -90,14 +90,10 @@ class DB
         $stmt = $this->query($sql, $params);
         if (!$stmt) {
             error_log('DB::fetch: Query failed: ' . $sql . ' Params: ' . json_encode($params));
-            echo '<pre style="background:#ffecec;border:1px solid #ffb3b3;padding:10px;">DB::fetch ERROR: Query failed<br>SQL: ' . htmlspecialchars($sql) . '<br>Params: ' . htmlspecialchars(json_encode($params)) . '</pre>';
             return false;
         }
         $row = $stmt->fetch();
-        if ($row === false) {
-            error_log('DB::fetch: No result for query: ' . $sql . ' Params: ' . json_encode($params));
-            echo '<pre style="background:#ffecec;border:1px solid #ffb3b3;padding:10px;">DB::fetch: No result<br>SQL: ' . htmlspecialchars($sql) . '<br>Params: ' . htmlspecialchars(json_encode($params)) . '</pre>';
-        }
+        // No logging for empty result sets; only log actual query failures above
         return $row;
     }
 

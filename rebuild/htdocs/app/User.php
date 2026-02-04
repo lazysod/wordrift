@@ -193,8 +193,7 @@ class User
                             }
                             $_SESSION[$sessionPrefix . 'display_name'] = $row2['display_name'];
                             $_SESSION[$sessionPrefix . 'email'] = $row2['email'];
-                            $_SESSION[$sessionPrefix . 'first_name'] = $row2['first_name'];
-                            $_SESSION[$sessionPrefix . 'second_name'] = $row2['second_name'];
+
                             $_SESSION[$sessionPrefix . 'user_id'] = $userId;
                             $_SESSION[$sessionPrefix . 'rank_title'] = $rank['title'];
                             $_SESSION[$sessionPrefix . 'rank_level'] = $rank['level'];
@@ -205,8 +204,6 @@ class User
                             $_SESSION[$sessionPrefix . 'user'] = [
                                 'id' => $row2['id'],
                                 'display_name' => $row2['display_name'],
-                                // 'first_name' => $row2['first_name'],
-                                // 'second_name' => $row2['second_name'],
                                 'email' => $row2['email'],
                                 'is_admin' => ($rank['admin'] > 0 ? 1 : 0),
                                 'rank_title' => $rank['title'],
@@ -258,10 +255,12 @@ class User
         $email = $userInfo['email'];
         $pass = $userInfo['pwd'];
         $pass2 = $userInfo['confirm_pwd'];
-        $fName = $userInfo['first_name'];
-        $sName = $userInfo['second_name'];
-        $displayName = isset($userInfo['display_name']) ? $userInfo['display_name'] : null;
-        if (empty($fName) || empty($sName) || empty($email) || empty($pass) || empty($pass2)) {
+
+        $displayName = isset($userInfo['display_name']) ? trim($userInfo['display_name']) : null;
+        $email = isset($userInfo['email']) ? trim($userInfo['email']) : null;
+        $pass = isset($userInfo['pwd']) ? $userInfo['pwd'] : null;
+        $pass2 = isset($userInfo['confirm_pwd']) ? $userInfo['confirm_pwd'] : null;
+        if (empty($displayName) || empty($email) || empty($pass) || empty($pass2)) {
             return [
                 'status' => 'fail',
                 'message' => 'Please fill in all fields.',
@@ -284,15 +283,10 @@ class User
             ];
         } else {
             // Insert user with active=0
-            if ($displayName !== null) {
-                $sql = "INSERT INTO users (id, first_name, second_name, display_name, email, pwd, security_hash, active) VALUES (NULL, ?, ?, ?, ?, ?, ?, 0)";
-                $this->db->query($sql, [$fName, $sName, $displayName, $email, $pwdEncrypted, $hash]);
-            } else {
-                $sql = "INSERT INTO users (id, first_name, second_name, email, pwd, security_hash, active) VALUES (NULL, ?, ?, ?, ?, ?, 0)";
-                $this->db->query($sql, [$fName, $sName, $email, $pwdEncrypted, $hash]);
-            }
+            $sql = "INSERT INTO users (id, display_name, email, pwd, security_hash, active) VALUES (NULL, ?, ?, ?, ?, 0)";
+            $this->db->query($sql, [$displayName, $email, $pwdEncrypted, $hash]);
             $userId = $this->db->insertId();
-            // Generate activation key and expiry (24h) 
+            // Generate activation key and expiry (24h)
             $activationKey = bin2hex(random_bytes(32));
             $entryDate = date('Y-m-d H:i:s');
             $expiryDate = date('Y-m-d H:i:s', strtotime('+1 day'));
@@ -308,7 +302,7 @@ class User
             $this->db->query("INSERT INTO user_activation (user_id, activation_key, entry_date, expiry_date) VALUES (?, ?, ?, ?)", [$userId, $activationKey, $entryDate, $expiryDate]);
             // Send activation email
             $activationLink = $this->config['base_url'] . "/user/activate?key=$activationKey";
-            if (class_exists('PHPMailer\PHPMailer\PHPMailer')) {
+            if (class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
                 $mail = new PHPMailer(true);
                 try {
                     $mail->isSMTP();
@@ -340,14 +334,6 @@ class User
         $params = [];
         $sql2 = "UPDATE users SET ";
         $fields = [];
-        if (isset($userInfo['first_name'])) {
-            $fields[] = "first_name = ?";
-            $params[] = $userInfo['first_name'];
-        }
-        if (isset($userInfo['second_name'])) {
-            $fields[] = "second_name = ?";
-            $params[] = $userInfo['second_name'];
-        }
         if (isset($userInfo['display_name'])) {
             $fields[] = "display_name = ?";
             $params[] = $userInfo['display_name'];
@@ -422,15 +408,15 @@ class User
                     if ($rank['admin'] > 0) {
                         $_SESSION[$sessionPrefix . 'admin'] = $rank['admin'];
                     }
+                    $_SESSION[$sessionPrefix . 'display_name'] = $row['display_name'];
                     $_SESSION[$sessionPrefix . 'email'] = $row['email'];
                     $_SESSION[$sessionPrefix . 'user_id'] = $row['id'];
                     $_SESSION[$sessionPrefix . 'sec_hash'] = $row['security_hash'];
-                    $_SESSION[$sessionPrefix . 'first_name'] = $row['first_name'];
-                    $_SESSION[$sessionPrefix . 'second_name'] = $row['second_name'];
                     $_SESSION[$sessionPrefix . 'last_log'] = $row['last_access'];
                     $_SESSION[$sessionPrefix . 'avatar'] = $row['avatar'];
                     $_SESSION[$sessionPrefix . 'user'] = [
                         'id' => $row['id'],
+                        'display_name' => $row['display_name'],
                         'email' => $row['email'],
                         'is_admin' => ($rank['admin'] > 0 ? 1 : 0),
                         'rank_title' => $rank['title'],
