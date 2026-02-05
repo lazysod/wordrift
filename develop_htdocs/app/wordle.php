@@ -98,7 +98,10 @@ if ($action === 'validate' && isset($_GET['guess'])) {
 // --- Record game result ---
 if ($action === 'record_result' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     // Debug: log incoming request for troubleshooting
-    $logFile = __DIR__ . '/../storage/logs/wordle_debug.log';
+    global $config;
+    $logFile = isset($config['log_path'])
+        ? (is_dir($config['log_path']) ? rtrim($config['log_path'], '/').'/wordle_debug.log' : $config['log_path'])
+        : __DIR__ . '/../storage/logs/wordle_debug.log';
     file_put_contents($logFile, "\n==== record_result ====".PHP_EOL, FILE_APPEND);
     $rawInput = file_get_contents('php://input');
 

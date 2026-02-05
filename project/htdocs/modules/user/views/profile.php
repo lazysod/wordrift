@@ -43,14 +43,6 @@ require dirname(__DIR__, 3) . '/views/partials/header.php';
                             <label for="display_name">Display Name <span style="color:red">*</span></label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="first_name" name="first_name" type="text" value="<?php echo htmlspecialchars($user['first_name'] ?? '') ?>" required />
-                            <label for="first_name">First Name <span style="color:red">*</span></label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input class="form-control" id="second_name" name="second_name" type="text" value="<?php echo htmlspecialchars($user['second_name'] ?? '') ?>" required />
-                            <label for="second_name">Second Name <span style="color:red">*</span></label>
-                        </div>
-                        <div class="form-floating mb-3">
                             <input class="form-control" id="email" name="email" type="email" value="<?php echo htmlspecialchars($user['email'] ?? '') ?>" required />
                             <label for="email">Email address <span style="color:red">*</span></label>
                         </div>

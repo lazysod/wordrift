@@ -13,7 +13,10 @@ session_start();
 
 // Paths are constructed using dirname and are not user-controlled, ensuring safety.
 $settingsPath = dirname(__DIR__, 3) . '/storage/settings/google_analytics.json';
-$debugLog = dirname(__DIR__, 3) . '/storage/logs/ga_settings_debug.log';
+global $config;
+$debugLog = isset($config['log_path'])
+    ? (is_dir($config['log_path']) ? rtrim($config['log_path'], '/').'/ga_settings_debug.log' : $config['log_path'])
+    : dirname(__DIR__, 3) . '/storage/logs/ga_settings_debug.log';
 
 // Extra safety: ensure settings path is within allowed directory
 if (strpos(realpath(dirname($settingsPath)), realpath(dirname(__DIR__, 3) . '/storage/settings')) !== 0) {

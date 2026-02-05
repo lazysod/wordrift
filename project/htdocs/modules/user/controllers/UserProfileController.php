@@ -84,8 +84,8 @@ class UserProfileController
             if ($error == '') {
                 $updateInfo = [
                     'id' => $userId,
-                    'first_name' => trim($_POST['first_name'] ?? ($user['first_name'] ?? '')),
-                    'second_name' => trim($_POST['second_name'] ?? ($user['second_name'] ?? '')),
+                    // 'first_name' => trim($_POST['first_name'] ?? ($user['first_name'] ?? '')),
+                    // 'second_name' => trim($_POST['second_name'] ?? ($user['second_name'] ?? '')),
                     'display_name' => trim($_POST['display_name'] ?? ($user['display_name'] ?? '')),
                     'email' => trim($_POST['email'] ?? ($user['email'] ?? '')),
                     'pwd' => $_POST['pwd'] ?? '',

@@ -65,8 +65,10 @@ class Links
     public function getAll()
     {
         try {
-            return $this->db->fetchAll('SELECT * FROM links ORDER BY `order` ASC');
+            $result = $this->db->fetchAll('SELECT * FROM links ORDER BY `id` ASC');
+            return $result;
         } catch (Exception $e) {
+
             throw new Exception('Failed to retrieve links: ' . $e->getMessage());
         }
     }

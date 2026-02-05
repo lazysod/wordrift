@@ -193,8 +193,8 @@ class User
                             }
                             $_SESSION[$sessionPrefix . 'display_name'] = $row2['display_name'];
                             $_SESSION[$sessionPrefix . 'email'] = $row2['email'];
-                            $_SESSION[$sessionPrefix . 'first_name'] = $row2['first_name'];
-                            $_SESSION[$sessionPrefix . 'second_name'] = $row2['second_name'];
+                            // $_SESSION[$sessionPrefix . 'first_name'] = $row2['first_name'];
+                            // $_SESSION[$sessionPrefix . 'second_name'] = $row2['second_name'];
                             $_SESSION[$sessionPrefix . 'user_id'] = $userId;
                             $_SESSION[$sessionPrefix . 'rank_title'] = $rank['title'];
                             $_SESSION[$sessionPrefix . 'rank_level'] = $rank['level'];
@@ -425,8 +425,9 @@ class User
                     $_SESSION[$sessionPrefix . 'email'] = $row['email'];
                     $_SESSION[$sessionPrefix . 'user_id'] = $row['id'];
                     $_SESSION[$sessionPrefix . 'sec_hash'] = $row['security_hash'];
-                    $_SESSION[$sessionPrefix . 'first_name'] = $row['first_name'];
-                    $_SESSION[$sessionPrefix . 'second_name'] = $row['second_name'];
+                     $_SESSION[$sessionPrefix . 'display_name'] = $row['display_name'];
+                    // $_SESSION[$sessionPrefix . 'first_name'] = $row['first_name'];
+                    // $_SESSION[$sessionPrefix . 'second_name'] = $row['second_name'];
                     $_SESSION[$sessionPrefix . 'last_log'] = $row['last_access'];
                     $_SESSION[$sessionPrefix . 'avatar'] = $row['avatar'];
                     $_SESSION[$sessionPrefix . 'user'] = [

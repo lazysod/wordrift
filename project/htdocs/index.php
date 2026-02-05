@@ -144,8 +144,8 @@ if (isset($router) && $router instanceof Router) {
     $controller->index();
 }
 
-set_error_handler(function($errno, $errstr, $errfile, $errline) {
-    error_log("[ERROR] $errstr in $errfile on line $errline\n", 3, LOG_PATH);
+set_error_handler(function($errno, $errstr, $errfile, $errline) use ($config) {
+    error_log("[ERROR] $errstr in $errfile on line $errline\n", 3, $config['log_path']);
     // Optionally show a friendly error page
     if ($errno === E_USER_ERROR) {
         include BASE_PATH . '/htdocs/views/errors/500.php';
@@ -153,8 +153,8 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
     }
 });
 
-set_exception_handler(function($exception) {
-    error_log("[EXCEPTION] " . $exception->getMessage() . "\n", 3, LOG_PATH);
+set_exception_handler(function($exception) use ($config) {
+    error_log("[EXCEPTION] " . $exception->getMessage() . "\n", 3, $config['log_path']);
     include BASE_PATH . '/htdocs/views/errors/500.php';
     exit;
 });

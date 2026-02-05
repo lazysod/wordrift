@@ -19,19 +19,19 @@
                 <?php foreach ($links as $i => $link): ?>
 
                     <tr>
-                        <td><i class="<?php echo htmlspecialchars($link['icon'] ?? 'fas fa-link'); ?>"></i></td>
+                        <td><i class="<?php echo htmlspecialchars($link['icon'] ?? 'fas fa-link'); ?> fa-fw"></i></td>
                         <td><?php echo htmlspecialchars($link['title']); ?></td>
                         <td><a href="<?php echo htmlspecialchars($link['url']); ?>" target="_blank"><?php echo htmlspecialchars($link['url']); ?></a></td>
                         <td>
                             <form method="post" action="/admin/links/order" style="display:inline-block">
                                 <input type="hidden" name="id" value="<?php echo $link['id']; ?>">
-                                <button type="submit" name="direction" value="up" class="btn btn-sm btn-light" <?php if ($i === 0) echo 'disabled'; ?>>&#8593;</button>
-                                <button type="submit" name="direction" value="down" class="btn btn-sm btn-light" <?php if ($i === count($links) - 1) echo 'disabled'; ?>>&#8595;</button>
+                                <button type="submit" name="direction" value="up" class="btn btn-sm btn-light" <?php if ($i === 0) echo 'disabled'; ?> title="Move Up"><i class="fas fa-arrow-up"></i></button>
+                                <button type="submit" name="direction" value="down" class="btn btn-sm btn-light" <?php if ($i === count($links) - 1) echo 'disabled'; ?> title="Move Down"><i class="fas fa-arrow-down"></i></button>
                             </form>
                         </td>
                         <td>
-                            <a href="/admin/links/edit/<?php echo $link['id']; ?>" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="/admin/links/delete/<?php echo $link['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this link?');">Delete</a>
+                            <a href="/admin/links/edit/<?php echo $link['id']; ?>" class="btn btn-sm btn-warning" title="Edit"><i class="fas fa-edit"></i></a>
+                            <a href="/admin/links/delete/<?php echo $link['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this link?');" title="Delete"><i class="fas fa-trash-alt"></i></a>
                         </td>
                     </tr>
 

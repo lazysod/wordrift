@@ -15,6 +15,20 @@ return [
         'new_tab' => false,
         'url' => '/about',
     ],
+    'Leaderboard' => [
+        'label' => 'Leaderboard',
+        'show' => true,
+        'order' => 3,
+        'new_tab' => false,
+        'url' => '/leaderboard',
+    ],
+    'Userhistory' => [
+        'label' => 'User History',
+        'show' => true,
+        'order' => 4,
+        'new_tab' => false,
+        'url' => '/userhistory',
+    ],
     'Links' => [
         'label' => 'Links',
         'show' => true,
@@ -22,19 +36,5 @@ return [
         'new_tab' => false,
         'url' => '/links',
     ],
-    'strata_home' => [
-        'label' => 'StrataPHP.org',
-        'show' => true,
-        'order' => 2,
-        'new_tab' => true,
-        'url' => 'https://strataphp.org',
-    ],
-    'Contact' => [
-        'label' => 'Contact Us',
-        'url' => '/contact',
-        'show' => true,
-        'order' => 3,
-        'new_tab' => false
-    ]
     // ...other items
 ];

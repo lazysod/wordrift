@@ -15,7 +15,11 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     if (class_exists('Dotenv\\Dotenv')) {
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
         $dotenv->load();
-        error_log('TINYMCE_API_KEY after Dotenv: ' . getenv('TINYMCE_API_KEY'));
+        if (isset($config['log_path'])) {
+            error_log('TINYMCE_API_KEY after Dotenv: ' . getenv('TINYMCE_API_KEY'), 3, $config['log_path']);
+        } else {
+            error_log('TINYMCE_API_KEY after Dotenv: ' . getenv('TINYMCE_API_KEY'));
+        }
     }
 }
 $config = require __DIR__ . '/config.php';

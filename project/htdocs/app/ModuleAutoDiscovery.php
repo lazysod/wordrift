@@ -44,8 +44,13 @@ class ModuleAutoDiscovery
             if (is_dir($modulePath) && file_exists($indexFile)) {
                 $meta = include $indexFile;
                 // Debug: log the raw metadata for each module
+                if (isset($config['log_path'])) {
+                    $logFile = is_dir($config['log_path']) ? rtrim($config['log_path'], '/').'/module_autodiscovery_debug.log' : $config['log_path'];
+                } else {
+                    $logFile = __DIR__ . '/../../storage/logs/module_autodiscovery_debug.log';
+                }
                 file_put_contents(
-                    __DIR__ . '/../../storage/logs/module_autodiscovery_debug.log',
+                    $logFile,
                     date('c') . " [$moduleName] " . var_export($meta, true) . "\n",
                     FILE_APPEND
                 );
