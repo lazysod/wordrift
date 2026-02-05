@@ -1,6 +1,6 @@
-
 <?php
-require_once __DIR__ . '/app/App.php';
+require_once '/Users/barry/MAMP_SITES/wordrift-dev/htdocs/app/App.php';
+if (!class_exists('App\\App')) { die('App class still not found after absolute path require!'); }
 use App\App;
 // /rebuild/htdocs/create_admin.php
 

@@ -1,9 +1,15 @@
+
 <?php
-if (empty($_SESSION[PREFIX . 'admin'])) {
-    header('Location: /admin');
-    exit;
+if (!defined('PREFIX')) {
+    $siteConfig = include __DIR__ . '/../../app/config.php';
+    define('PREFIX', $siteConfig['session_prefix'] ?? 'wordrift_');
 }
+// if (empty($_SESSION[PREFIX . 'admin'])) {
+//     header('Location: /admin');
+//     exit;
+// }
 require __DIR__ . '/../partials/admin_header.php'; ?>
+<pre>DEBUG SESSION: <?php var_dump($_SESSION); ?></pre>
 <section class="py-5">
     <div class="container px-5">
         <!-- Contact form-->

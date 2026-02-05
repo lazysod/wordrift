@@ -61,8 +61,10 @@ class UserLoginController
                 ];
                 $result = $user->login($loginInfo);
                 if ($result['status'] === 'success') {
-                    // Use CmsHelper for smart redirect based on role and CMS availability
+                    // Debug output for session and prefix
                     $sessionPrefix = $config['session_prefix'] ?? 'app_';
+                    error_log('USER LOGIN SESSION DEBUG: ' . print_r($_SESSION, true));
+                    error_log('USER LOGIN PREFIX: ' . $sessionPrefix);
                     $isAdmin = isset($_SESSION[$sessionPrefix . 'admin']) && $_SESSION[$sessionPrefix . 'admin'] > 0;
                     $redirect = CmsHelper::getPostLoginRedirect($isAdmin);
                     header('Location: ' . $redirect);

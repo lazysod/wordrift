@@ -1,13 +1,11 @@
-
-
 <?php
 // Ensure Composer autoloader is loaded so App class is available
-if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
-    require_once __DIR__ . '/../../vendor/autoload.php';
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
 }
 // Manually require App class in case autoload is missing or not configured
-if (!class_exists('App\\App') && file_exists(__DIR__ . '/../../app/App.php')) {
-    require_once __DIR__ . '/../../app/App.php';
+if (!class_exists('App\\App') && file_exists(__DIR__ . '/../app/App.php')) {
+    require_once __DIR__ . '/../app/App.php';
 }
 $config = include __DIR__ . '/../../app/config.php';
 
@@ -33,7 +31,7 @@ if (!file_exists(__DIR__ . '/../../app/navConfig.php')) {
     exit;
 }
 
-$controllersDir = __DIR__ . '/../../controllers/';
+$controllersDir = __DIR__ . '/../controllers/';
 $controllerFiles = glob($controllersDir . '*Controller.php');
 $navConfig = include __DIR__ . '/../../app/navConfig.php';
 

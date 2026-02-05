@@ -12,7 +12,7 @@ if (!isset($_SESSION[PREFIX . 'admin']) || $_SESSION[PREFIX . 'admin'] < 1) {
 }
 
 $db = class_exists('App\\DB') ? new \App\DB($config) : null;
-$adminId = $_SESSION[PREFIX . 'admin'] ?? null;
+$adminId = $_SESSION[PREFIX . 'user_id'] ?? null;
 $admin = null;
 if ($db && $adminId) {
     $admin = $db->fetch("SELECT * FROM users WHERE id = ? AND is_admin = 1", [$adminId]);

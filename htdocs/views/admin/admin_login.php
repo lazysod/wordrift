@@ -30,13 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db = new DB($config['db']);
         $user = new User($db, $config);
         $loginResult = $user->login(['email' => $email, 'pwd' => $password]);
-        \App\App::dump($loginResult);
-        \App\App::dump($_SESSION);
-        die();
+        // \App\App::dump($loginResult);
+        // \App\App::dump($_SESSION);
+        // die();
         if ($loginResult['status'] === 'success' && !empty($_SESSION[PREFIX . 'admin']) && $_SESSION[PREFIX . 'admin'] > 0) {
             // Only allow admin users
-            $_SESSION[PREFIX . 'admin'] = $_SESSION[PREFIX . 'user_id'];
-            header('Location: /admin');
+            // Explicitly set admin session key for dashboard access
+            $_SESSION[PREFIX . 'admin'] = 1;
+            header('Location: /admin/dashboard');
             exit;
         } else {
             $error = 'Invalid admin credentials.';

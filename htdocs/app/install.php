@@ -86,11 +86,9 @@ foreach ($queries as $query) {
     }
 }
 
-$mysqli->close();
 
 // Delete install.sql after successful install
 @unlink(__DIR__ . '/install.sql');
-$mysqli->close();
 
 // Write config to db_conf.php
 $config_file = __DIR__ . '/db_conf.php';

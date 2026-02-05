@@ -48,8 +48,9 @@ if (file_exists($composerAutoload)) {
     include_once $composerAutoload;
 }
 
-// Start session for authentication and tokens
+// Start session for authentication and tokens (force consistent session name)
 if (session_status() === PHP_SESSION_NONE) {
+    session_name('site_session_id');
     session_start();
 }
 

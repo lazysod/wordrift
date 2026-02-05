@@ -1,6 +1,8 @@
 <?php
 $title = 'Admin User Created';
-require __DIR__ . '/partials/header.php';
+if (!class_exists('App\\App') && file_exists(__DIR__ . '/../app/App.php')) {
+    require_once __DIR__ . '/../app/App.php';
+}
 ?>
 <div class="container py-5">
     <div class="row d-flex">

@@ -1,3 +1,16 @@
+<?php require_once dirname(__DIR__, 3) . '/app/start.php'; ?>
+<?php
+// Debug session and cookies after login redirect
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+echo '<pre>DEBUG SESSION (login.php after redirect): ';
+var_dump($_SESSION);
+echo "\nDEBUG COOKIES: ";
+var_dump($_COOKIE);
+echo '</pre>';
+?>
+
 <?php
 $config = include dirname(__DIR__, 3) . '/app/config.php';
 $sessionPrefix = $config['session_prefix'] ?? 'app_';
@@ -7,6 +20,7 @@ if (isset($_SESSION[$sessionPrefix . 'user_id'])) {
     exit;
 }
 require dirname(__DIR__, 3) . '/views/partials/header.php';
+print_r($_SESSION);
 ?>
 
 <section class="py-5">

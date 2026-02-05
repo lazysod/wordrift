@@ -26,10 +26,10 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "rebuild/htdocs/app/",
+            "App\\": "htdocs/app/",
             "App\\Controllers\\": "htdocs/controllers/",
             "App\\Models\\": "htdocs/models/",
-            "App\\Modules\\": "rebuild/htdocs/modules/",
+            "App\\Modules\\": "htdocs/modules/",
             "App\\Modules\\Test-module\\Controllers\\": "htdocs/modules/test-module/controllers/",
             "App\\Modules\\Test-module\\Models\\": "htdocs/modules/test-module/models/",
             "App\\Modules\\Test-security\\Controllers\\": "htdocs/modules/test-security/controllers/",

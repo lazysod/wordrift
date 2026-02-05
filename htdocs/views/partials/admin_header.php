@@ -1,5 +1,5 @@
 <?php
-$autoloadPath = __DIR__ . '/../../../vendor/autoload.php';
+$autoloadPath = __DIR__ . '/../../vendor/autoload.php';
 if (file_exists($autoloadPath)) {
     require_once $autoloadPath;
 }
@@ -8,9 +8,19 @@ if (!defined('PREFIX')) {
     $sessionPrefix = $siteConfig['session_prefix'] ?? ($siteConfig['prefix'] ?? 'app_');
     define('PREFIX', $sessionPrefix);
 }
-$controllersDir = __DIR__ . '/../../controllers/';
+$controllersDir = __DIR__ . '/../controllers/';
 $controllerFiles = glob($controllersDir . '*Controller.php');
-$navConfig = include __DIR__ . '/../../app/adminNavConfig.php';
+$navConfigPath = __DIR__ . '/../../app/adminNavConfig.php';
+if (file_exists($navConfigPath) && is_readable($navConfigPath)) {
+    $navConfig = include $navConfigPath;
+    if (!is_array($navConfig)) {
+        error_log("adminNavConfig.php did not return an array");
+        $navConfig = [];
+    }
+} else {
+    error_log("adminNavConfig.php missing or not readable: $navConfigPath");
+    $navConfig = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +40,7 @@ $navConfig = include __DIR__ . '/../../app/adminNavConfig.php';
     <meta name="robots" content="noindex,nofollow,noodp,noydir, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Font Awesome for link icons -->
@@ -48,6 +58,7 @@ $navConfig = include __DIR__ . '/../../app/adminNavConfig.php';
                 <a class="navbar-brand" href="<?php echo \App\App::config('base_url'); ?>/admin"><img src="<?php echo \App\App::config('logo_url'); ?>" class="img-fluid" alt="<?php echo \App\App::config('site_name'); ?>" id="logo_img" style="max-width: 30px;"> <?php echo \App\App::config('site_name'); ?> | Admin</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
 
@@ -56,7 +67,8 @@ $navConfig = include __DIR__ . '/../../app/adminNavConfig.php';
                         }
                         if ($showNav) {
 
-                            foreach ($navConfig as $key => $config) {
+                            if (is_array($navConfig)) {
+                                foreach ($navConfig as $key => $config) {
                                 if (!($config['show'] ?? true)) { continue;
                                 }
                                 $label = $config['label'] ?? $key;
@@ -118,6 +130,7 @@ $navConfig = include __DIR__ . '/../../app/adminNavConfig.php';
                                 <li class="nav-item"><a class="nav-link" href="/user/register">Register</a></li>
                             <?php endif; ?>
                     </ul>
+                    <?php } ?>
                 </div>
             </div>
         </nav>

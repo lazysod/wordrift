@@ -1,7 +1,8 @@
 <?php
+require_once __DIR__ . '/app/start.php';
 
 // --- Autoload sanity check ---
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 if (!class_exists('App\\User')) {
     echo '<div style="background:#fff3f3;color:#c0392b;padding:2em;margin:2em auto;max-width:600px;border:2px solid #e74c3c;font-family:sans-serif;text-align:center;">';
     echo '<strong>Autoloading failed:</strong> Class <code>App\\User</code> not found.<br>';
