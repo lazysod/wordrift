@@ -37,6 +37,8 @@ if (!$cmsEnabled || (!empty(App::config('default_module')) && App::config('defau
     );
 }
     // Additional context lines can be added here if necessary
+$router->get('/terms', [\App\Controllers\TermsController::class, 'index']);
+$router->get('/privacy', [\App\Controllers\PrivacyController::class, 'index']);
 $router->get('/about', [\App\Controllers\AboutController::class, 'index']);
 $router->get('/leaderboard', [\App\Controllers\LeaderboardController::class, 'index']);
 $router->get('/user_history', [\App\Controllers\UserHistoryController::class, 'index']);

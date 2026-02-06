@@ -20,9 +20,20 @@ use App\App;
         <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <link href="/themes/wordle/css/styles.css" rel="stylesheet" />
-        <link href="/themes/wordle/css/custom.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKB4Imkb9hFQ9Qb1z0p6b6Y5ZCkxzgv2Fne5+5ZT2J/NzNw2K6JqqPiR+jYwS/pY5bYl+5nAA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="/themes/default/css/styles.css" rel="stylesheet" />
+        <link href="/themes/default/css/custom.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <?php
+    // Google Analytics integration
+    $gaConfigPath = __DIR__ . '/../../modules/google_analytics/config.php';
+    if (file_exists($gaConfigPath)) {
+        $gaConfig = include $gaConfigPath;
+        require_once __DIR__ . '/../../modules/google_analytics/GoogleAnalytics.php';
+        $ga = new \App\Modules\GoogleAnalytics\GoogleAnalytics($gaConfig);
+        echo $ga->renderScript();
+    }
+    ?>
     </head>
 
 <body class="d-flex flex-column h-100">

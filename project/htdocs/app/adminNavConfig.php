@@ -13,6 +13,24 @@ return [
         'order' => 2,
         'url' => '/admin/users/',
     ],
+    'links' => [
+        'label' => 'Link Management',
+        'show' => true,
+        'order' => 3,
+        'url' => '/admin/links/',
+    ],
+    'words' => [
+        'label' => 'Word List',
+        'show' => true,
+        'order' => 3,
+        'url' => '/admin/words/',
+    ],
+    'google_analytics' => [
+        'label' => 'Google Analytics',
+        'show' => true,
+        'order' => 4,
+        'url' => '/admin/google-analytics-settings',
+    ],
     'modules' => [
         'label' => 'Modules',
         'show' => true,
@@ -31,35 +49,4 @@ return [
             ]
         ]
     ],
-    // CMS menu example
-    // 'cms' => [
-    //     'label' => 'CMS',
-    //     'show' => true,
-    //     'order' => 5,
-    //     'url' => '/admin/cms',
-    //     'children' => [
-    //         'dashboard' => [
-    //             'label' => 'CMS Dashboard',
-    //             'url' => '/admin/cms',
-    //             'show' => true
-    //         ],
-    //         'pages' => [
-    //             'label' => 'Manage Pages',
-    //             'url' => '/admin/cms/pages',
-    //             'show' => true
-    //         ],
-    //         'create' => [
-    //             'label' => 'Create Page',
-    //             'url' => '/admin/cms/pages/create',
-    //             'show' => true
-    //         ]
-    //     ]
-    // ],
-    'example_link' => [
-        'label' => 'Example link',
-        'url' => '#example',
-        'show' => true,
-        'order' => 4
-    ]
-    // ...other items
 ];

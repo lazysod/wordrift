@@ -14,6 +14,8 @@ if (!empty(App::config('modules')['links']['enabled'])) {
         $router->get('/', [LinksController::class, 'index']);
     }
     $router->get('/links', [LinksController::class, 'index']);
+    $router->get('/admin/links/list', [LinksController::class, 'index']);
     $router->get('/links/about', [LinksController::class, 'about']);
+    $router->get('/admin/links/delete/{id}', [LinksController::class, 'delete']);
 }
     // Additional context lines can be added here if necessary

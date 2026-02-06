@@ -68,13 +68,8 @@ class CmsHelper
      */
     public static function getPostLoginRedirect(bool $isAdmin, string $fallbackUrl = '/'): string
     {
-        if ($isAdmin) {
-            // Admin users: prefer CMS admin if available, otherwise basic admin
-            return self::isCmsEnabled() ? '/admin/cms' : '/admin';
-        }
-        
-        // Regular users: prefer profile if available, otherwise fallback
-        return '/user/profile';
+        // Redirect all users to main page after login
+        return '/';
     }
     
     /**
@@ -85,10 +80,7 @@ class CmsHelper
      */
     public static function getLoggedInRedirect(bool $isAdmin): string
     {
-        if ($isAdmin) {
-            return self::isCmsEnabled() ? '/admin/cms' : '/admin';
-        }
-        
-        return '/user/profile';
+        // Redirect all users to main page if already logged in
+        return '/';
     }
 }

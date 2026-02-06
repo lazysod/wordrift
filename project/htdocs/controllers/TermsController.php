@@ -2,14 +2,14 @@
 namespace App\Controllers;
 use App\View;
 use App\App;
-class AboutController
+class TermsController
 {
     public function index()
     {
         $config = require __DIR__ . '/../app/config.php';
         $view = new View($config);
         $data = [
-            'title' => 'About and Conditions',
+            'title' => 'Terms and Conditions',
             'content' => 'We are a modern PHP framework company.',
             'site_name' => App::config('site_name')
         ];
@@ -17,11 +17,11 @@ class AboutController
         // Example: Conditionally render PHP or Twig view based on config
         // If Twig is enabled in config, render Twig template
         if (!empty($config['use_twig']) && $config['use_twig'] !== false && $config['use_twig'] !== 'false') {
-            // Render Twig template (about.twig)
-            $view->render('about.twig', $data);
+            // Render Twig template (terms.twig)
+            $view->render('terms.twig', $data);
         } else {
-            // Render classic PHP view (About.php) with theme support
-            App::loadView('about', $data);
+            // Render classic PHP view (terms.php) with theme support
+            App::loadView('terms', $data);
         }
     }
 

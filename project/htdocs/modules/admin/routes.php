@@ -1,4 +1,10 @@
 <?php
+$router->get('/admin/words', [\App\Modules\Admin\Controllers\WordsAdminController::class, 'index']);
+$router->post('/admin/words/add', [\App\Modules\Admin\Controllers\WordsAdminController::class, 'add']);
+$router->post('/admin/words/remove', [\App\Modules\Admin\Controllers\WordsAdminController::class, 'remove']);
+$router->post('/admin/words/upload', [\App\Modules\Admin\Controllers\WordsAdminController::class, 'upload']);
+$router->post('/admin/words/deleteall', [\App\Modules\Admin\Controllers\WordsAdminController::class, 'deleteAll']);
+$router->get('/admin/words/export', [\App\Modules\Admin\Controllers\WordsAdminController::class, 'export']);
 // Google Analytics Admin Settings Route (protected by admin middleware)
 $router->get('/admin/google-analytics-settings', [\App\Modules\GoogleAnalytics\Controllers\GoogleAnalyticsAdminController::class, 'settings']);
 use App\Controllers\AdminController;

@@ -58,4 +58,25 @@ class LinksController
             include __DIR__ . '/../views/about.php';
         }
     }
+    /**
+     * Delete a link by ID (GET request)
+     * @param int $id
+     * @return void
+     */
+    public function delete($id)
+    {
+        try {
+            global $config;
+            $db = new DB($config);
+            $linksModel = new Links($db, $config);
+            $linksModel->deleteLink($id);
+            // Redirect back to the links list after deletion
+            header('Location: /admin/links/');
+            exit;
+        } catch (\Exception $e) {
+            // Optionally, show an error page or redirect with error
+            header('Location: /admin/links/?error=1');
+            exit;
+        }
+    }
 }
