@@ -46,10 +46,10 @@ class Links
             $link1 = $this->getById($id1);
             $link2 = $this->getById($id2);
             if ($link1 && $link2) {
-                $order1 = $link1['order'];
-                $order2 = $link2['order'];
-                $this->db->query('UPDATE links SET `order` = ? WHERE id = ?', [$order2, $id1]);
-                $this->db->query('UPDATE links SET `order` = ? WHERE id = ?', [$order1, $id2]);
+                    $order1 = $link1['link_order'];
+                    $order2 = $link2['link_order'];
+                    $this->db->query('UPDATE links SET `link_order` = ? WHERE id = ?', [$order2, $id1]);
+                    $this->db->query('UPDATE links SET `link_order` = ? WHERE id = ?', [$order1, $id2]);
             }
         } catch (Exception $e) {
             throw new Exception('Failed to swap link order: ' . $e->getMessage());
@@ -65,7 +65,7 @@ class Links
     public function getAll()
     {
         try {
-            $result = $this->db->fetchAll('SELECT * FROM links ORDER BY `id` ASC');
+            $result = $this->db->fetchAll('SELECT * FROM links ORDER BY `link_order` ASC');
             return $result;
         } catch (Exception $e) {
 
@@ -80,8 +80,7 @@ class Links
      * @return array|null Link data or null if not found
      * @throws Exception If database query fails
      */
-    public function getById($id)
-    {
+    public function getById($id) {
         try {
             return $this->db->fetch('SELECT * FROM links WHERE id = ?', [$id]);
         } catch (Exception $e) {

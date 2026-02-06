@@ -2,10 +2,22 @@
 use App\App;
 $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
     . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+if( isset($title)){
+    $title_tag = $title;
+}else{
+    $title_tag = App::config('site_tag');
+}
+// Description
+if( isset($description)){
+    $description_tag = $description;
+}else{
+    $description_tag = App::config('site_description');
+}
 ?>
-<title><?php echo App::config('site_name'); ?> | <?php echo App::config('site_description'); ?></title>
+<title><?php echo App::config('site_name'); ?> | <?php echo  $title_tag; ?></title>
 <meta name="Author" content="<?php echo App::config('site_name'); ?>"> 
-<meta name="description" content="<?php echo App::config('site_name'); ?> is the fun word puzzle game that challenges your vocabulary and creativity.">
+<meta name="description" content="<?php echo $description_tag; ?> is the fun word puzzle game that challenges your vocabulary and creativity.">
 <meta name="keywords" content="writing, editing, collaboration, <?php echo App::config('site_name'); ?>">
 <meta name="expires" content="never"> 
 <meta name="language" content="EN"> 

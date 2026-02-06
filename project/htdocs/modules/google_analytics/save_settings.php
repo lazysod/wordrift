@@ -12,17 +12,17 @@ session_start();
 
 
 // Paths are constructed using dirname and are not user-controlled, ensuring safety.
-$settingsPath = dirname(__DIR__, 3) . '/storage/settings/google_analytics.json';
+$settingsPath = dirname(__DIR__, 4) . '/wordrift_storage/settings/google_analytics.json';
 global $config;
 $debugLog = isset($config['log_path'])
     ? (is_dir($config['log_path']) ? rtrim($config['log_path'], '/').'/ga_settings_debug.log' : $config['log_path'])
-    : dirname(__DIR__, 3) . '/storage/logs/ga_settings_debug.log';
+    : dirname(__DIR__, 4) . '/wordrift_storage/logs/ga_settings_debug.log';
 
 // Extra safety: ensure settings path is within allowed directory
-if (strpos(realpath(dirname($settingsPath)), realpath(dirname(__DIR__, 3) . '/storage/settings')) !== 0) {
+if (strpos(realpath(dirname($settingsPath)), realpath(dirname(__DIR__, 4) . '/wordrift_storage/settings')) !== 0) {
     throw new Exception('Settings path is outside allowed directory.');
 }
-if (strpos(realpath(dirname($debugLog)), realpath(dirname(__DIR__, 3) . '/storage/logs')) !== 0) {
+if (strpos(realpath(dirname($debugLog)), realpath(dirname(__DIR__, 4) . '/wordrift_storage/logs')) !== 0) {
     throw new Exception('Debug log path is outside allowed directory.');
 }
 

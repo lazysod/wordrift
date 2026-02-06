@@ -1,6 +1,7 @@
 <?php
 $title = 'About - New Framework';
 $pageJs = 'about';
+if (isset($data)) extract($data);
 require __DIR__ . '/partials/header.php';
 ?>
 <section class="py-5" id="features">

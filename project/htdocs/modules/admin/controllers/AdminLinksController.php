@@ -82,15 +82,12 @@ class AdminLinksController
     {
         try {
             global $config;
-            error_log('[DEBUG] AdminLinksController::index() called\n', 3, $config['log_path']);
             $this->requireAdmin();
             $db = new DB($config);
             $linksModel = new Links($db, $config);
             $links = $linksModel->getAll();
-            error_log('[DEBUG] AdminLinksController::index() $links: ' . var_export($links, true) . "\n", 3, $config['log_path']);
             include __DIR__ . '/../links/views/list.php';
         } catch (Exception $e) {
-            error_log('[DEBUG] AdminLinksController::index() error: ' . $e->getMessage() . "\n", 3, $config['log_path']);
             $links = [];
             include __DIR__ . '/../links/views/list.php';
         }

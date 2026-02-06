@@ -8,11 +8,11 @@ class AboutController
     {
         $config = require __DIR__ . '/../app/config.php';
         $view = new View($config);
-        $data = [
-            'title' => 'About and Conditions',
+        $data = array(
+            'title' => 'About ' . $config['site_name'],
             'content' => 'We are a modern PHP framework company.',
             'site_name' => App::config('site_name')
-        ];
+        );
 
         // Example: Conditionally render PHP or Twig view based on config
         // If Twig is enabled in config, render Twig template

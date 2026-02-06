@@ -1,0 +1,8 @@
+# Deny access to everything by default
+Order deny,allow
+Deny from all
+
+# Allow access to images only (optional)
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Allow from all
+</FilesMatch>
